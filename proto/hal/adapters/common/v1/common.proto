@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package hal.adapters.common.v1;
+
+// Shared request/response shapes reused across every device-type adapter
+// service (source, switch, time tagger, and whatever gets added later).
+// Kept intentionally minimal and device-agnostic: anything specific to one
+// device type belongs in that device's own proto, not here.
+
+// Liveness of the adapter process itself (UP/DOWN), independent of the
+// hardware it manages. Never reaches the device. Takes no arguments.
+message HealthCheckRequest {}
+
+message HealthCheckResponse {
+  string message = 1;
+}
+
+// product_id identifies a specific physical device instance -- one adapter
+// process can front multiple devices of the same resource_type.
+//
+// resource_type identifies which onboarded product a request addresses --
+// an opaque identifier, not an enum, because onboarding a new product is a
+// controller-side registration, not a change to this spec. An adapter
+// integrating with the controller sets it to whatever identifier the
+// controller has assigned that product. Omitting it (empty string) is
+// rejected with INVALID_ARGUMENT rather than defaulted.
+
+// Health of the physical hardware behind the adapter, as reported by the
+// vendor's own driver/API for that device -- not just process liveness.
+// Implementations query whatever the vendor exposes and translate it into
+// an UP / DOWN / DEGRADED-style result, which may be informed by the
+// device's own lifecycle state enum.
+message ResourceHealthCheckRequest {
+  string product_id = 1;
+  string resource_type = 2;
+}
+
+message ResourceHealthCheckResponse {
+  string message = 1;
+}
+
+// Attempts the adapter's built-in automated recovery sequence to bring the
+// device back from its DEGRADED (or FAULT) state toward READY -- whatever
+// vendor-specific remediation applies. Safe to call at any time; a no-op if
+// the device isn't degraded.
+message AutoRecoverRequest {
+  string product_id = 1;
+  string resource_type = 2;
+}
+
+message AutoRecoverResponse {
+  string message = 1;
+}
+
+// Applies a single targeted adjustment as an alternative to a full
+// AutoRecover sequence. Vendor-specific tuning parameters (which setpoint
+// to adjust, target value, etc.), encoded as a JSON object; each product's
+// adapter implementation defines and documents its own schema for
+// config_json and is responsible for parsing it.
+message TuneRequest {
+  string product_id = 1;
+  string config_json = 2;
+  string resource_type = 3;
+}
+
+message TuneResponse {
+  string message = 1;
+}

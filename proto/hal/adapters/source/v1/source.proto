@@ -1,0 +1,224 @@
+syntax = "proto3";
+
+package hal.adapters.source.v1;
+
+import "hal/adapters/common/v1/common.proto";
+
+service AdapterSourceService {
+  // --- Liveness & discovery ---
+
+  // Liveness of the adapter process itself. See common.proto.
+  rpc HealthCheck(hal.adapters.common.v1.HealthCheckRequest) returns (hal.adapters.common.v1.HealthCheckResponse);
+
+  // Health of the physical source hardware behind the adapter. See
+  // common.proto; the UP / DOWN / DEGRADED-style result may be informed by
+  // the device's current SourceState.
+  rpc ResourceHealthCheck(hal.adapters.common.v1.ResourceHealthCheckRequest) returns (hal.adapters.common.v1.ResourceHealthCheckResponse);
+
+  // Static identity of the hardware behind the adapter: serial number,
+  // vendor, firmware/software version.
+  rpc GetProductInfo(GetProductInfoRequest) returns (GetProductInfoResponse);
+
+  // --- Lifecycle ---
+
+  // Brings the source from a freshly power-cycled state to
+  // SOURCE_STATE_READY: applies the operating configuration (pump power,
+  // temperature/TEC setpoint, laser locking, etc.) and runs whatever
+  // bring-up sequence the hardware needs. Returns as soon as the sequence
+  // is accepted -- bring-up can take minutes and cannot sit inside a call
+  // the caller has a deadline on -- so callers poll GetStatus until the
+  // state reaches READY or FAULT.
+  rpc Initialize(InitializeRequest) returns (InitializeResponse);
+
+  // The opposite of Initialize: orderly shutdown once all jobs are done --
+  // turns off the pump laser and de-energizes whatever else Initialize
+  // brought up -- back toward SOURCE_STATE_IDLE.
+  rpc Deinitialize(DeinitializeRequest) returns (DeinitializeResponse);
+
+  // --- Status & configuration ---
+
+  // Current lifecycle state and health of the source, plus which run (if
+  // any) it is bound to. Poll this after Initialize/Deinitialize, and
+  // during emission.
+  rpc GetStatus(GetStatusRequest) returns (GetStatusResponse);
+
+  // Updates the source's operating configuration without a full
+  // Initialize/Deinitialize cycle.
+  rpc SetConfig(SetConfigRequest) returns (SetConfigResponse);
+
+  // --- Recovery ---
+
+  // Attempts the adapter's built-in automated recovery sequence to bring
+  // the source back from SOURCE_STATE_DEGRADED (or FAULT) toward READY --
+  // e.g. re-running the resonance lock, restarting the pump laser, or
+  // whatever vendor-specific remediation applies. See common.proto. Returns
+  // as soon as the sequence is accepted -- recovery can take as long as
+  // Initialize -- so callers poll GetStatus for the outcome.
+  rpc AutoRecover(hal.adapters.common.v1.AutoRecoverRequest) returns (hal.adapters.common.v1.AutoRecoverResponse);
+
+  // Applies a single targeted adjustment as an alternative to a full
+  // AutoRecover sequence -- e.g. nudge one setpoint rather than re-running
+  // the whole remediation. See common.proto. Vendor-specific; adapters with
+  // no such fine-grained control may return UNIMPLEMENTED.
+  rpc Tune(hal.adapters.common.v1.TuneRequest) returns (hal.adapters.common.v1.TuneResponse);
+
+  // --- Emission (job) control ---
+
+  // Starts generating entanglement pairs for the given run. Called when
+  // the controller begins a job -- e.g. an entanglement-distribution
+  // intent between two endpoints. Requires SOURCE_STATE_READY; moves the
+  // source into SOURCE_STATE_EMITTING for the duration of the run.
+  rpc StartEmission(StartEmissionRequest) returns (StartEmissionResponse);
+
+  // Stops generating entanglement pairs and returns the source to
+  // SOURCE_STATE_READY, available for the next job.
+  rpc StopEmission(StopEmissionRequest) returns (StopEmissionResponse);
+
+  // --- Special actions (optional) ---
+
+  // Triggers a special, adapter-defined action for a running job -- not
+  // limited to fault/emulation scenarios (e.g. an induced fault or an
+  // environmental perturbation for testing); anything else the device
+  // might need done mid-run that doesn't fit the RPCs above. Optional: an
+  // adapter with no such capability may return UNIMPLEMENTED.
+  rpc TriggerEvent(TriggerEventRequest) returns (TriggerEventResponse);
+}
+
+// resource_type identifies which onboarded source product a request
+// addresses -- an opaque identifier, not an enum, because onboarding a new
+// product is a controller-side registration, not a change to this spec. An
+// adapter integrating with the controller sets it to whatever identifier the
+// controller has assigned that product. Every device-scoped request carries
+// one; omitting it (empty string) is rejected with INVALID_ARGUMENT rather
+// than defaulted, since guessing which bench hardware a request meant is
+// worse than failing.
+
+// Lifecycle of the source hardware.
+//
+// Values 1-3 predate the lifecycle work and keep their original numbers so
+// already-generated stubs stay wire-compatible.  SOURCE_STATE_IDLE is the
+// "powered, no loops running" state -- the OFF of the state machine.
+enum SourceState {
+  SOURCE_STATE_UNSPECIFIED = 0;
+  SOURCE_STATE_IDLE = 1;
+  // Actively generating entanglement pairs for the run bound via
+  // StartEmission -- the "busy" state; not available for a new job until
+  // StopEmission returns it to READY.
+  SOURCE_STATE_EMITTING = 2;
+  SOURCE_STATE_FAULT = 3;
+  // Safety check, pump laser, TEC bring-up, thermistor verification.
+  SOURCE_STATE_INITIALIZING = 4;
+  // Temperature sweep and resonance-dip acquisition.  Multi-minute.
+  SOURCE_STATE_LOCKING = 5;
+  // All loops locked, ready to be bound to a run via StartEmission.
+  SOURCE_STATE_READY = 6;
+  // Emitting, but at least one loop is outside tolerance.
+  SOURCE_STATE_DEGRADED = 7;
+  SOURCE_STATE_DEINITIALIZING = 8;
+}
+
+message GetProductInfoRequest {
+  string product_id = 1;
+  string resource_type = 2;
+}
+
+message GetProductInfoResponse {
+  string serial_number = 1;
+  string product_code = 2;
+  string software_version = 3;
+  string vendor = 4;
+}
+
+// Vendor-specific operating configuration (pump power, temperature
+// setpoint, laser locking parameters, wavelength tuning, etc. -- whatever a
+// given product needs). This spec doesn't model those fields: each
+// product's adapter implementation defines and documents its own JSON
+// schema for config_json and is responsible for parsing it. Neither the
+// controller nor this spec validates or interprets its contents.
+message SourceConfig {
+  string config_json = 1;
+}
+
+message InitializeRequest {
+  string product_id = 1;
+  SourceConfig config = 2;
+  string resource_type = 3;
+}
+
+message InitializeResponse {
+  string message = 1;
+}
+
+message DeinitializeRequest {
+  string product_id = 1;
+  string resource_type = 2;
+}
+
+message DeinitializeResponse {
+  string message = 1;
+}
+
+message GetStatusRequest {
+  string product_id = 1;
+  string resource_type = 2;
+}
+
+message GetStatusResponse {
+  SourceState state = 1;
+  string run_id = 2;
+  float uptime_seconds = 3;
+
+  // Vendor-specific status detail (e.g. pump laser on/off, temperature-lock
+  // state, per-loop tolerances, etc.) -- whatever a given product exposes
+  // beyond the common SourceState. Encoded as a JSON object; each product's
+  // adapter implementation defines and documents its own schema for it.
+  string status_json = 4;
+}
+
+message SetConfigRequest {
+  string product_id = 1;
+  SourceConfig config = 2;
+  string resource_type = 3;
+}
+
+message SetConfigResponse {
+  string message = 1;
+}
+
+message StartEmissionRequest {
+  string product_id = 1;
+  string run_id = 2;
+  SourceConfig config = 3;
+  string resource_type = 4;
+}
+
+message StartEmissionResponse {
+  string message = 1;
+}
+
+message StopEmissionRequest {
+  string product_id = 1;
+  string run_id = 2;
+  string resource_type = 3;
+}
+
+message StopEmissionResponse {
+  string message = 1;
+}
+
+// event_type names which action to trigger (e.g. "fault", "perturbation",
+// or anything else a product needs mid-run) -- adapter- and
+// product-defined, not enumerated here. payload_json carries whatever
+// parameters that action needs, encoded as a JSON object, per a schema the
+// adapter implementation defines and documents for that event_type.
+message TriggerEventRequest {
+  string product_id = 1;
+  string run_id = 2;
+  string event_type = 3;
+  string payload_json = 4;
+  string resource_type = 5;
+}
+
+message TriggerEventResponse {
+  string message = 1;
+}

@@ -1,0 +1,217 @@
+syntax = "proto3";
+
+package hal.adapters.timetagger.v1;
+
+import "hal/adapters/common/v1/common.proto";
+
+service AdapterTimeTaggerService {
+  // --- Liveness & discovery ---
+
+  // Liveness of the adapter process itself. See common.proto.
+  rpc HealthCheck(hal.adapters.common.v1.HealthCheckRequest) returns (hal.adapters.common.v1.HealthCheckResponse);
+
+  // Health of the physical time-tagger hardware behind the adapter. See
+  // common.proto; the UP / DOWN / DEGRADED-style result may be informed by
+  // the device's current TimeTaggerState.
+  rpc ResourceHealthCheck(hal.adapters.common.v1.ResourceHealthCheckRequest) returns (hal.adapters.common.v1.ResourceHealthCheckResponse);
+
+  // Static identity of the hardware behind the adapter: serial number,
+  // vendor, firmware/software version.
+  rpc GetProductInfo(GetProductInfoRequest) returns (GetProductInfoResponse);
+
+  // --- Lifecycle ---
+
+  // Brings the time tagger from a freshly power-cycled state to
+  // ready-to-collect: connects to the device, loads calibration, and runs
+  // whatever bring-up sequence the hardware needs. Not every product needs
+  // preparation -- an adapter for hardware that's ready as soon as it's
+  // powered on may implement this as an immediate no-op that reports READY.
+  rpc Initialize(InitializeRequest) returns (InitializeResponse);
+
+  // The opposite of Initialize: orderly shutdown once all jobs are done,
+  // releasing whatever Initialize acquired (e.g. closing the device
+  // connection). May also be a no-op where Initialize was.
+  rpc Deinitialize(DeinitializeRequest) returns (DeinitializeResponse);
+
+  // --- Status & configuration ---
+
+  // Current lifecycle state of the time tagger, plus which run (if any) it
+  // is bound to and its uptime. Poll this after Initialize/Deinitialize,
+  // and during data collection.
+  rpc GetStatus(GetStatusRequest) returns (GetStatusResponse);
+
+  // Updates the time tagger's operating configuration without a full
+  // Initialize/Deinitialize cycle.
+  rpc SetConfig(SetConfigRequest) returns (SetConfigResponse);
+
+  // --- Recovery ---
+
+  // Attempts the adapter's built-in automated recovery sequence to bring
+  // the time tagger back from TIME_TAGGER_STATE_DEGRADED (or FAULT) toward
+  // READY -- e.g. reconnecting to the device or re-loading calibration. See
+  // common.proto. Not every product needs a real recovery sequence -- an
+  // adapter may implement this as an immediate no-op, same as Initialize.
+  rpc AutoRecover(hal.adapters.common.v1.AutoRecoverRequest) returns (hal.adapters.common.v1.AutoRecoverResponse);
+
+  // Applies a single targeted adjustment as an alternative to a full
+  // AutoRecover sequence -- e.g. re-calibrate one channel rather than the
+  // whole device. See common.proto. Vendor-specific; adapters with no such
+  // fine-grained control may return UNIMPLEMENTED.
+  rpc Tune(hal.adapters.common.v1.TuneRequest) returns (hal.adapters.common.v1.TuneResponse);
+
+  // --- Data collection control ---
+
+  // Starts recording detector-click data for the given run. Called when the
+  // controller begins a job that needs timing/coincidence data (e.g. a
+  // heralding or QBER measurement). Requires TIME_TAGGER_STATE_READY; moves
+  // the time tagger into TIME_TAGGER_STATE_COLLECTING for the duration of
+  // the run. Vendor-specific measurement parameters (which channels,
+  // coincidence window, per-channel delays, where results are written,
+  // etc.) go in config_json.
+  rpc StartDataCollection(StartDataCollectionRequest) returns (StartDataCollectionResponse);
+
+  // Stops recording detector-click data for the given run and returns the
+  // time tagger to TIME_TAGGER_STATE_READY, available for the next run.
+  rpc StopDataCollection(StopDataCollectionRequest) returns (StopDataCollectionResponse);
+
+  // --- Test / simulation hooks (optional) ---
+
+  // Triggers a special emulation/test condition for a running run -- e.g. a
+  // simulated eavesdropper, an induced fault, or an environmental
+  // perturbation. Not part of normal operation: an adapter with no such
+  // capability may return UNIMPLEMENTED.
+  rpc TriggerEvent(TriggerEventRequest) returns (TriggerEventResponse);
+}
+
+// resource_type identifies which onboarded time-tagger product a request
+// addresses -- an opaque identifier, not an enum, because onboarding a new
+// product is a controller-side registration, not a change to this spec. An
+// adapter integrating with the controller sets it to whatever identifier the
+// controller has assigned that product. Omitting it (empty string) is
+// rejected with INVALID_ARGUMENT rather than defaulted.
+
+// Lifecycle of the time-tagger hardware.
+enum TimeTaggerState {
+  TIME_TAGGER_STATE_UNSPECIFIED = 0;
+  // Powered, not yet initialized -- the OFF of the state machine.
+  TIME_TAGGER_STATE_IDLE = 1;
+  // Connecting to the device and/or loading calibration.
+  TIME_TAGGER_STATE_INITIALIZING = 2;
+  // Ready to accept StartDataCollection.
+  TIME_TAGGER_STATE_READY = 3;
+  // Actively recording detector-click data for the run bound via
+  // StartDataCollection; not available for a new run until
+  // StopDataCollection returns it to READY.
+  TIME_TAGGER_STATE_COLLECTING = 4;
+  TIME_TAGGER_STATE_FAULT = 5;
+  TIME_TAGGER_STATE_DEINITIALIZING = 6;
+  // Collecting, but at least one channel is outside tolerance (e.g. noisy
+  // or reporting an out-of-spec count rate).
+  TIME_TAGGER_STATE_DEGRADED = 7;
+}
+
+message GetProductInfoRequest {
+  string product_id = 1;
+  string resource_type = 2;
+}
+
+message GetProductInfoResponse {
+  string serial_number = 1;
+  string product_code = 2;
+  string software_version = 3;
+  string vendor = 4;
+}
+
+// Vendor-specific bring-up parameters, if a given product needs any (e.g.
+// calibration data, a device connection string). Encoded as a JSON object;
+// each product's adapter implementation defines and documents its own
+// schema and is responsible for parsing it. Leave empty if the product
+// needs no configuration to initialize.
+message InitializeRequest {
+  string product_id = 1;
+  string config_json = 2;
+  string resource_type = 3;
+}
+
+message InitializeResponse {
+  string message = 1;
+}
+
+message DeinitializeRequest {
+  string product_id = 1;
+  string resource_type = 2;
+}
+
+message DeinitializeResponse {
+  string message = 1;
+}
+
+message GetStatusRequest {
+  string product_id = 1;
+  string resource_type = 2;
+}
+
+message GetStatusResponse {
+  TimeTaggerState state = 1;
+  string run_id = 2;
+  float uptime_seconds = 3;
+
+  // Vendor-specific status detail beyond the common TimeTaggerState (e.g.
+  // per-channel count rates, temperature). Encoded as a JSON object; each
+  // product's adapter implementation defines and documents its own schema
+  // for it.
+  string status_json = 4;
+}
+
+message SetConfigRequest {
+  string product_id = 1;
+  string config_json = 2;
+  string resource_type = 3;
+}
+
+message SetConfigResponse {
+  string message = 1;
+}
+
+// Vendor-specific data-collection configuration (measurement type(s),
+// channel mapping, coincidence window, bulk delays, where results are
+// written, etc. -- whatever a given product needs). This spec doesn't model
+// those fields: each product's adapter implementation defines and documents
+// its own JSON schema for config_json and is responsible for parsing it.
+message StartDataCollectionRequest {
+  string product_id = 1;
+  string run_id = 2;
+  string config_json = 3;
+  string resource_type = 4;
+}
+
+message StartDataCollectionResponse {
+  string message = 1;
+}
+
+message StopDataCollectionRequest {
+  string product_id = 1;
+  string run_id = 2;
+  string resource_type = 3;
+}
+
+message StopDataCollectionResponse {
+  string message = 1;
+}
+
+// event_type names which emulation/test condition to trigger (e.g.
+// "eavesdropper", "fault", ...) -- adapter- and product-defined, not
+// enumerated here. payload_json carries whatever parameters that event type
+// needs, encoded as a JSON object, per a schema the adapter implementation
+// defines and documents for that event_type.
+message TriggerEventRequest {
+  string product_id = 1;
+  string run_id = 2;
+  string event_type = 3;
+  string payload_json = 4;
+  string resource_type = 5;
+}
+
+message TriggerEventResponse {
+  string message = 1;
+}

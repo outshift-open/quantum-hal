@@ -1,0 +1,237 @@
+syntax = "proto3";
+
+package hal.adapters.switch.v1;
+
+import "hal/adapters/common/v1/common.proto";
+
+service AdapterSwitchService {
+  // --- Liveness & discovery ---
+
+  // Liveness of the adapter process itself. See common.proto.
+  rpc HealthCheck(hal.adapters.common.v1.HealthCheckRequest) returns (hal.adapters.common.v1.HealthCheckResponse);
+
+  // Health of the physical switch hardware behind the adapter. See
+  // common.proto; the UP / DOWN / DEGRADED-style result may be informed by
+  // the device's current SwitchState.
+  rpc ResourceHealthCheck(hal.adapters.common.v1.ResourceHealthCheckRequest) returns (hal.adapters.common.v1.ResourceHealthCheckResponse);
+
+  // Static identity of the hardware behind the adapter: serial number,
+  // vendor, firmware/software version, and the switch matrix size(s) it
+  // exposes.
+  rpc GetProductInfo(GetProductInfoRequest) returns (GetProductInfoResponse);
+
+  // --- Lifecycle ---
+
+  // Brings the switch from a freshly power-cycled state to ready-to-route:
+  // homes/calibrates the switch fabric (e.g. MEMS mirror homing, fiber
+  // alignment) and runs whatever self-test the hardware needs. Unlike
+  // source's Initialize, switch homing is a short operation -- this call is
+  // expected to block until it completes rather than requiring a status
+  // poll.
+  rpc Initialize(InitializeRequest) returns (InitializeResponse);
+
+  // The opposite of Initialize: orderly shutdown once the switch is no
+  // longer needed -- parks the switch fabric and releases whatever
+  // Initialize acquired.
+  rpc Deinitialize(DeinitializeRequest) returns (DeinitializeResponse);
+
+  // --- Status & configuration ---
+
+  // Current lifecycle state of the switch, plus its uptime. Poll this after
+  // Initialize/Deinitialize.
+  rpc GetStatus(GetStatusRequest) returns (GetStatusResponse);
+
+  // Updates the switch's operating configuration without a full
+  // Initialize/Deinitialize cycle.
+  rpc SetConfig(SetConfigRequest) returns (SetConfigResponse);
+
+  // --- Recovery ---
+
+  // Attempts the adapter's built-in automated recovery sequence to bring
+  // the switch back from SWITCH_STATE_DEGRADED (or FAULT) toward READY --
+  // e.g. re-homing the fabric or whatever vendor-specific remediation
+  // applies. See common.proto. Like Initialize, this is expected to block
+  // until it completes rather than requiring a status poll.
+  rpc AutoRecover(hal.adapters.common.v1.AutoRecoverRequest) returns (hal.adapters.common.v1.AutoRecoverResponse);
+
+  // Applies a single targeted adjustment as an alternative to a full
+  // AutoRecover sequence -- e.g. re-home one path rather than the whole
+  // fabric. See common.proto. Vendor-specific; adapters with no such
+  // fine-grained control may return UNIMPLEMENTED.
+  rpc Tune(hal.adapters.common.v1.TuneRequest) returns (hal.adapters.common.v1.TuneResponse);
+
+  // --- Connection control ---
+
+  // Establishes (or replaces) a signal path from input_port to output_port.
+  rpc CommitConnection(CommitConnectionRequest) returns (CommitConnectionResponse);
+
+  // Tears down the connections on the given ports, freeing them for reuse.
+  rpc ClearConnections(ClearConnectionsRequest) returns (ClearConnectionsResponse);
+
+  // --- Raw command (optional) ---
+
+  // Vendor-specific passthrough for commands not covered by the RPCs above
+  // (e.g. a diagnostic or provisioning command with no structured
+  // equivalent here). Implementing this RPC is optional: an adapter with no
+  // need for raw command passthrough may return UNIMPLEMENTED.
+  rpc ExecuteCommand(ExecuteCommandRequest) returns (ExecuteCommandResponse);
+
+  // --- Special actions (optional) ---
+
+  // Triggers a special, adapter-defined action -- not limited to
+  // fault/emulation scenarios (e.g. an induced fault or an environmental
+  // perturbation for testing); anything else the device might need done
+  // mid-job that doesn't fit the RPCs above. Optional: an adapter with no
+  // such capability may return UNIMPLEMENTED.
+  rpc TriggerEvent(TriggerEventRequest) returns (TriggerEventResponse);
+}
+
+// resource_type identifies which onboarded switch product a request
+// addresses -- an opaque identifier, not an enum, because onboarding a new
+// product is a controller-side registration, not a change to this spec. An
+// adapter integrating with the controller sets it to whatever identifier the
+// controller has assigned that product. Omitting it (empty string) is
+// rejected with INVALID_ARGUMENT rather than defaulted.
+
+// Lifecycle of the switch hardware.
+enum SwitchState {
+  SWITCH_STATE_UNSPECIFIED = 0;
+  // Powered, not yet homed/calibrated -- the OFF of the state machine.
+  SWITCH_STATE_IDLE = 1;
+  // Homing/calibrating the switch fabric and running self-test.
+  SWITCH_STATE_INITIALIZING = 2;
+  // Homed and calibrated; accepts CommitConnection/ClearConnections.
+  SWITCH_STATE_READY = 3;
+  SWITCH_STATE_FAULT = 4;
+  SWITCH_STATE_DEINITIALIZING = 5;
+  // Operational, but the hardware reports degraded performance on at least
+  // one path (e.g. elevated insertion loss, a flaky port).
+  SWITCH_STATE_DEGRADED = 6;
+}
+
+message GetProductInfoRequest {
+  string product_id = 1;
+  string resource_type = 2;
+}
+
+message GetProductInfoResponse {
+  string serial_number = 1;
+  string product_code = 2;
+  string software_version = 3;
+  string vendor = 4;
+  // Sizes of the switch matrix/matrices this product exposes (e.g. an 8x8
+  // fabric reports 8).
+  repeated int64 switch_sizes = 5;
+}
+
+// Vendor-specific bring-up parameters, if a given product needs any (e.g.
+// calibration targets, a default routing table). Encoded as a JSON object;
+// each product's adapter implementation defines and documents its own
+// schema and is responsible for parsing it. Leave empty if the product
+// needs no configuration to home/calibrate.
+message InitializeRequest {
+  string product_id = 1;
+  string config_json = 2;
+  string resource_type = 3;
+}
+
+message InitializeResponse {
+  string message = 1;
+}
+
+message DeinitializeRequest {
+  string product_id = 1;
+  string resource_type = 2;
+}
+
+message DeinitializeResponse {
+  string message = 1;
+}
+
+message GetStatusRequest {
+  string product_id = 1;
+  string resource_type = 2;
+}
+
+message GetStatusResponse {
+  SwitchState state = 1;
+  float uptime_seconds = 2;
+
+  // Vendor-specific status detail beyond the common SwitchState (e.g.
+  // per-port link status, temperature, fan speed). Encoded as a JSON
+  // object; each product's adapter implementation defines and documents its
+  // own schema for it.
+  string status_json = 3;
+}
+
+message SetConfigRequest {
+  string product_id = 1;
+  string config_json = 2;
+  string resource_type = 3;
+}
+
+message SetConfigResponse {
+  string message = 1;
+}
+
+message CommitConnectionRequest {
+  string product_id = 1;
+  int64 input_port = 2;
+  int64 output_port = 3;
+  // Physical routing mode for this connection, for fabrics that support
+  // more than one: "bar" passes the signal straight through (the classic
+  // 2x2-switch bar state, input N to output N on the same side of the
+  // fabric); "cross" routes it to the other output instead. Vendor-defined
+  // encoding; adapters for hardware with only one routing mode may ignore
+  // this field. 0 means "not applicable / use whatever the hardware
+  // supports."
+  int32 routing_case = 4;
+  string resource_type = 5;
+}
+
+message CommitConnectionResponse {
+  string message = 1;
+}
+
+message ClearConnectionsRequest {
+  string product_id = 1;
+  repeated int64 ports = 2;
+  string resource_type = 3;
+}
+
+message ClearConnectionsResponse {
+  string message = 1;
+}
+
+// Vendor-specific raw command, encoded as a JSON object. This spec doesn't
+// model connection transport (tcp/serial), addressing, or payload shape --
+// each product's adapter implementation defines and documents its own
+// schema for command_json and is responsible for parsing it.
+message ExecuteCommandRequest {
+  string product_id = 1;
+  string command_json = 2;
+  string resource_type = 3;
+}
+
+message ExecuteCommandResponse {
+  // Vendor-specific result, per whatever schema the adapter implementation
+  // defined for command_json.
+  string response_json = 1;
+}
+
+// event_type names which action to trigger (e.g. "fault", "perturbation",
+// or anything else a product needs mid-job) -- adapter- and
+// product-defined, not enumerated here. payload_json carries whatever
+// parameters that action needs, encoded as a JSON object, per a schema the
+// adapter implementation defines and documents for that event_type.
+message TriggerEventRequest {
+  string product_id = 1;
+  string run_id = 2;
+  string event_type = 3;
+  string payload_json = 4;
+  string resource_type = 5;
+}
+
+message TriggerEventResponse {
+  string message = 1;
+}

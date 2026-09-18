@@ -1,0 +1,38 @@
+version: v1
+
+# Managed mode injects go_package at generation time instead of it being
+# hardcoded in the .proto files (deliberately omitted from the shared spec
+# -- see README.md). Update go_package_prefix.default to wherever this repo
+# is actually published before anyone generates code against it for real.
+managed:
+  enabled: true
+  go_package_prefix:
+    default: github.com/cisco-eti/hal-api/gen/go
+
+plugins:
+  - plugin: go
+    out: gen/go
+    opt: paths=source_relative
+  - plugin: go-grpc
+    out: gen/go
+    opt: paths=source_relative
+
+  # Python is off by default so a plain `buf generate proto` only produces
+  # Go. To generate Python too:
+  #   1. Uncomment the block below.
+  #   2. Run: buf generate proto        (writes gen/python/**/*_pb2.py --
+  #      buf's built-in `python` plugin, no extra binary needed)
+  #   3. Then generate the gRPC service stubs separately -- there's no local
+  #      (non-BSR) gRPC-Python plugin buf can shell out to, since Python's
+  #      gRPC codegen lives inside the grpc_tools.protoc module itself, not
+  #      as a standalone protoc-gen-* binary:
+  #        pip install grpcio-tools
+  #        python -m grpc_tools.protoc --proto_path=proto \
+  #          --grpc_python_out=gen/python \
+  #          proto/hal/adapters/common/v1/common.proto \
+  #          proto/hal/adapters/source/v1/source.proto \
+  #          proto/hal/adapters/switch/v1/switch.proto \
+  #          proto/hal/adapters/timetagger/v1/timetagger.proto
+  #
+  # - plugin: python
+  #   out: gen/python

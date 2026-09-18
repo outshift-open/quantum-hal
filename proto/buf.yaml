@@ -1,0 +1,14 @@
+version: v1
+lint:
+  use:
+    - DEFAULT
+  except:
+    # Intentional: common.proto's HealthCheck/ResourceHealthCheck/AutoRecover/
+    # Tune request-response types are deliberately shared across every
+    # device-type service (source, switch, timetagger, and future ones) so
+    # they generate to the same type in every target language instead of N
+    # structurally-identical copies. See hal/adapters/common/v1/common.proto.
+    - RPC_REQUEST_RESPONSE_UNIQUE
+breaking:
+  use:
+    - FILE
