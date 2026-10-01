@@ -15,7 +15,7 @@ from ..proto_constants import (
 
 
 TEST_PRODUCT_ID = "test-switch-001"
-TEST_RESOURCE_TYPE = "test-switch-type"
+TEST_RESOURCE_TYPE = "QSWITCH"
 TEST_RUN_ID = "test-run-123"
 
 
@@ -39,8 +39,35 @@ def grpc_channel():
 
 
 @pytest.fixture(scope="module")
-def client(grpc_channel):
-    """Create gRPC client stub"""
+def metadata():
+    """Get gRPC metadata from environment if specified."""
+    reqtype = os.getenv("GRPC_HEADER_METADATA_REQTYPE", "")
+    if not reqtype:
+        return None
+    return [("reqtype", reqtype.strip())]
+
+
+@pytest.fixture(scope="module")
+def client(grpc_channel, metadata):
+    """Create gRPC client stub with optional metadata interceptor."""
+    if metadata:
+        class MetadataInterceptor(grpc.UnaryUnaryClientInterceptor):
+            def __init__(self, metadata):
+                self._metadata = metadata
+
+            def intercept_unary_unary(
+                self, continuation, client_call_details, request
+            ):
+                new_details = client_call_details._replace(
+                    metadata=self._metadata
+                )
+                return continuation(new_details, request)
+
+        channel = grpc.intercept_channel(
+            grpc_channel, MetadataInterceptor(metadata)
+        )
+        return switch_pb2_grpc.AdapterSwitchServiceStub(channel)
+
     return switch_pb2_grpc.AdapterSwitchServiceStub(grpc_channel)
 
 

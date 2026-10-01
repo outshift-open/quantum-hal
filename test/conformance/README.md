@@ -52,7 +52,7 @@ TIMETAGGER_ADAPTER_ADDRESS=adapter.cloud.com:9000
 Install grpcio-tools (if not already installed):
 
 ```bash
-pip install grpcio-tools>=1.84.0
+pip install `grpcio-tools>=1.84.0`
 ```
 
 Generate stubs from repository root:
