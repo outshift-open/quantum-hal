@@ -46,7 +46,7 @@ def metadata():
     if not reqtype:
         return None
     
-    return [("reqType", reqtype)]
+    return [("reqtype", reqtype.strip())]
 
 
 @pytest.fixture(scope="module")
