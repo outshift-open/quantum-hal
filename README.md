@@ -1,6 +1,6 @@
-# Cisco's Quantum Network Controller — HAL API
+# Cisco's Quantum Network Controller - HAL
 
-The **Cisco's Quantum Network Controller (Qentra)** orchestrates the lab
+The **Cisco's Quantum Network Controller** orchestrates the lab
 hardware behind quantum-networking experiments — bringing devices up,
 running jobs or networking intent such as an entanglement-distribution intent between two
 endpoints, and monitoring and recovering hardware health while a job runs.
