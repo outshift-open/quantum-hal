@@ -219,7 +219,7 @@ def test_commit_connection(client):
         resource_type=TEST_RESOURCE_TYPE,
         input_port=1,
         output_port=2,
-        routing_case=0
+        routing_case=1
     )
     response = client.CommitConnection(request)
     assert response is not None
