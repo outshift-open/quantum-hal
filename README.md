@@ -1,6 +1,6 @@
-# Cisco's Quantum Network Controller — HAL API
+# Cisco's Quantum Network Controller - HAL
 
-The **Cisco's Quantum Network Controller (Qentra)** orchestrates the lab
+The **Cisco's Quantum Network Controller** orchestrates the lab
 hardware behind quantum-networking experiments — bringing devices up,
 running jobs or networking intent such as an entanglement-distribution intent between two
 endpoints, and monitoring and recovering hardware health while a job runs.
@@ -166,7 +166,6 @@ gRPC reflection, and version pinning once tags exist.
 
 ## License
 
-Not yet finalized — see [`LICENSE`](./LICENSE) for the open decisions and
-a placeholder notice. Until that file is replaced with real license text,
-treat this spec as internal and confirm usage rights with the owning team
-before building against it externally.
+Copyright 2026 Cisco Systems, Inc. and its affiliates.
+
+Licensed under the Apache License, Version 2.0. See [`LICENSE.md`](./LICENSE.md).

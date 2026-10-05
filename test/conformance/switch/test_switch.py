@@ -1,3 +1,7 @@
+# Copyright 2026 Cisco Systems, Inc. and its affiliates
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Conformance tests for AdapterSwitchService"""
 import os
 import grpc
@@ -215,7 +219,7 @@ def test_commit_connection(client):
         resource_type=TEST_RESOURCE_TYPE,
         input_port=1,
         output_port=2,
-        routing_case=0
+        routing_case=1
     )
     response = client.CommitConnection(request)
     assert response is not None

@@ -4,12 +4,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repo is
 
-`qentra-hal-api` holds the Protocol Buffer / gRPC **API contracts** for the Hardware
-Abstraction Layer (HAL) agents in the Qentra quantum-networking stack. There is no
+`Cisco's Quantum Network Controller - HAL` holds the Protocol Buffer / gRPC **API contracts** for the Hardware
+Abstraction Layer (HAL) agents in Cisco's Quantum Network Controller stack. There is no
 implementation code here — just the `.proto` service and message definitions that get
-compiled into stubs consumed elsewhere (the `go_package` option in each file points at
-`github.com/cisco-eti/qentra-controller/pkg/agents/v1/...`, i.e. the `qentra-controller`
-repo). There is currently no build/lint/codegen tooling (no `buf.yaml`, `Makefile`, or
+compiled into stubs consumed elsewhere. There is currently no build/lint/codegen tooling (no `buf.yaml`, `Makefile`, or
 `protoc` invocation) checked into this repo — generation happens downstream.
 
 ## The HAL agent pattern
@@ -67,8 +65,6 @@ follows the same shape, so understanding one means understanding all three:
 
 ## Working in this repo
 
-- Package naming: `qentra.agents.<domain>.v1` proto package, mirrored by
-  `github.com/cisco-eti/qentra-controller/pkg/agents/v1/<domain>` Go package.
 - When adding a new HAL agent service, follow the existing pattern: a `ResourceType`
   enum scoped to that hardware class, `HealthCheck`/`ResourceHealthCheck` split, and
   `resource_type` (plus `product_id` or `run_id` where relevant) on every request.
