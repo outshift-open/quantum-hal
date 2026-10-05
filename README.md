@@ -1,6 +1,6 @@
-# Cisco's Quantum Network Controller - HAL
+# Cisco's Quantum Network Controller - HAL (Hardware Abstraction Layer) API
 
-The **Cisco's Quantum Network Controller** orchestrates the lab
+The **Cisco's Quantum Network Controller** orchestrates the
 hardware behind quantum-networking experiments — bringing devices up,
 running jobs or networking intent such as an entanglement-distribution intent between two
 endpoints, and monitoring and recovering hardware health while a job runs.
