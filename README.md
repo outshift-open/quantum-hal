@@ -1,13 +1,11 @@
 # Cisco's Quantum Network Controller - HAL (Hardware Abstraction Layer) API
 
-The **Cisco's Quantum Network Controller** orchestrates the
-hardware behind quantum-networking experiments — bringing devices up,
-running jobs or networking intent such as an entanglement-distribution intent between two
-endpoints, and monitoring and recovering hardware health while a job runs.
-It does this by driving each physical device through a **Hardware
-Abstraction Layer (HAL)**: a fixed gRPC contract that every device-type
-adapter implements, so the controller drives a source, a switch, or a time
-tagger the same way regardless of vendor.
+The **Cisco's Quantum Network Controller** maintains quantum-networking hardware and topologies, 
+runs quantum network intent tasks — such as an entanglement-distribution request 
+between two endpoints — and monitors and recovers hardware health while that task runs, 
+orchestrating every device through a **Hardware Abstraction Layer (HAL)**: 
+a fixed gRPC contract that every device-type adapter implements, so the controller 
+drives a source, a switch, or a time tagger the same way regardless of vendor.
 
 **This repo is that contract, and only that contract.** It holds the
 Protocol Buffer / gRPC service and message definitions for the HAL — no
