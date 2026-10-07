@@ -1,26 +1,12 @@
-# Cisco's Quantum Network Controller - HAL (Hardware Abstraction Layer) API
+# Cisco's Quantum Network Controller's - HAL (Hardware Abstraction Layer) API
 
-The **Cisco's Quantum Network Controller** orchestrates the
-hardware behind quantum-networking experiments — bringing devices up,
-running jobs or networking intent such as an entanglement-distribution intent between two
-endpoints, and monitoring and recovering hardware health while a job runs.
-It does this by driving each physical device through a **Hardware
-Abstraction Layer (HAL)**: a fixed gRPC contract that every device-type
-adapter implements, so the controller drives a source, a switch, or a time
-tagger the same way regardless of vendor.
+Cisco's Quantum Network Controller maintains quantum-networking hardware and topologies, runs quantum network intent tasks — such as an entanglement-distribution request between two endpoints — and monitors and recovers hardware health while that task runs, orchestrating every device through a Hardware Abstraction Layer (HAL): a fixed gRPC contract that every device-type adapter implements, so the controller drives a source, a switch, or a time tagger the same way regardless of vendor.
 
-**This repo is that contract, and only that contract.** It holds the
-Protocol Buffer / gRPC service and message definitions for the HAL — no
-controller code, no adapter implementations, no vendor drivers. That
-separation is deliberate: any team building a device adapter (in-house or
-third-party) integrates against a single, versioned spec, independent of
-how the controller or any other adapter happens to be implemented
-internally.
+Each adapter runs as its own independently deployable service, not a driver compiled into the controller — it streams live telemetry, calibration data, and availability straight into the Network Manager's state, and can be updated, extended, or hot-swapped without touching the controller core. The same interface covers simulated hardware too: a simulated device implements the identical adapter contract as a physical one, so the controller runs a task the exact same way whether it's driving real photon sources or a fully simulated topology.
 
-For the deeper look — how the controller, adapters, and physical devices
-fit together, why the HAL is shaped the way it is, and what each device
-type's hardware actually does — see [`ARCHITECTURE.md`](./ARCHITECTURE.md).
-This README stays focused on the spec itself.
+This repo is that contract, and only that contract. It holds the Protocol Buffer / gRPC service and message definitions for the HAL — no controller code, no adapter implementations, no vendor drivers. That separation is deliberate: any team building a device adapter (in-house or third-party) integrates against a single, versioned spec, independent of how the controller or any other adapter happens to be implemented internally.
+
+For the deeper look — how the controller, adapters, and physical devices fit together, why the HAL is shaped the way it is, and what each device type's hardware actually does — see `ARCHITECTURE.md`. This README stays focused on the spec itself.
 
 ## Proto spec at a glance
 
@@ -55,10 +41,10 @@ others, that's called out in the last column.
 | `CommitConnection` / `ClearConnections` | — | ✓ | — | Set/tear down a signal path between ports |
 | `StartDataCollection` / `StopDataCollection` | — | — | ✓ | Start/stop recording detector-click data for a run |
 | `ExecuteCommand` | — | ✓ *(optional)* | — | Raw vendor passthrough command |
-| `TriggerEvent` | ✓ *(optional)* | ✓ *(optional)* | ✓ *(optional)* | Adapter-defined mid-job hook (fault injection, environmental perturbation, etc.) — `UNIMPLEMENTED` if the adapter has no such capability |
+| `TriggerEvent` | ✓ *(optional)* | ✓ *(optional)* | ✓ *(optional)* | Adapter-defined mid-task hook (fault injection, environmental perturbation, etc.) — `UNIMPLEMENTED` if the adapter has no such capability |
 
 Lifecycle states follow the same pattern in every service — `IDLE` →
-bring-up → `READY` → a device-specific "busy" state while a job is bound to
+bring-up → `READY` → a device-specific "busy" state while a task is bound to
 it, with `DEGRADED`/`FAULT` as the two ways things go wrong:
 
 | State | Source (`SourceState`) | Switch (`SwitchState`) | Time Tagger (`TimeTaggerState`) |
