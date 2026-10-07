@@ -1,20 +1,22 @@
 # Architecture
 
-This is the deep dive behind [`README.md`](./README.md): what the Cisco's
-Quantum Network Controller does, how the HAL fits into it, what
-each device type's hardware actually is, and why the spec in this repo is
-shaped the way it is.
+This is the deep dive behind [`README.md`](./README.md): where the HAL
+fits in the system that uses it, why the spec in this repo is shaped the
+way it is, and what each device type's hardware actually does.
 
-## The Cisco's Quantum Network Controller, at a level up
+## Where HAL fits
 
-Controller runs quantum-networking intents as jobs — for example, an
-entanglement-distribution intent between two endpoints. Running a job
-means bringing up and coordinating several pieces of lab hardware at once:
-a source generating entangled photon pairs, switches routing them through
-the optical path, and time taggers recording the detector clicks used to
-measure heralding rate, QBER, or whatever the experiment is measuring.
+The HAL exists to serve one job: letting the Cisco Quantum Network
+Controller run a quantum-networking intent task — for example, an
+entanglement-distribution request between two endpoints — without caring
+which vendor's hardware is on the bench. Running a task means bringing up
+and coordinating several pieces of lab hardware at once: a source
+generating entangled photon pairs, switches routing them through the
+optical path, and time taggers recording the detector clicks used to
+measure coincidence rate, CAR (coincidence-to-accidental ratio),
+pair rate or whatever the experiment is measuring.
 
-The controller doesn't talk to any of that hardware directly. It talks to
+The controller never talks to that hardware directly. It talks to
 **adapters** — one gRPC server per device type — over the contract defined
 in this repo, and each adapter owns everything below that boundary:
 translating HAL calls into whatever the vendor's SDK, driver, or wire
@@ -67,9 +69,9 @@ sequence is *accepted*, not once it's *done*, and the caller polls
 `GetStatus` for the outcome. This is different from switch and time
 tagger, where the equivalent operations are fast enough to just block.
 
-A job binds a source to itself via `StartEmission(run_id, ...)`, which
+A task binds a source to itself via `StartEmission(run_id, ...)`, which
 moves the source into `SOURCE_STATE_EMITTING` — busy, and unavailable for
-another run — until `StopEmission` returns it to `READY`.
+another task — until `StopEmission` returns it to `READY`.
 
 ### Switch — optical path routing
 
@@ -81,7 +83,7 @@ requiring a status poll.
 
 There's no busy/emitting state here: `CommitConnection(input_port,
 output_port, routing_case)` and `ClearConnections(ports)` are treated as
-near-instant path changes, not long-running operations bound to a run.
+near-instant path changes, not long-running operations bound to a task.
 `routing_case` distinguishes "bar" (straight-through) vs. "cross" routing
 for fabrics that support more than one mode; adapters for simpler hardware
 can ignore it.
@@ -96,12 +98,12 @@ optional; adapters with no need for it return `UNIMPLEMENTED`.
 `AdapterTimeTaggerService` (`hal.adapters.timetagger.v1`) fronts
 time-correlated single-photon counting hardware — the equipment that
 records detector-click timestamps used for heralding or QBER measurement
-during a job. Bring-up varies by product: some need to connect and load
+during a task. Bring-up varies by product: some need to connect and load
 calibration; others are ready as soon as they're powered, in which case
 `Initialize` (and `AutoRecover`) can be an immediate no-op that reports
 `READY` right away.
 
-A job binds a time tagger to itself via `StartDataCollection(run_id,
+A task binds a time tagger to itself via `StartDataCollection(run_id,
 config_json)`, moving it into `TIME_TAGGER_STATE_COLLECTING` until
 `StopDataCollection` returns it to `READY`. Which channels to record,
 coincidence windows, per-channel delays, and where results are written are
@@ -125,7 +127,7 @@ without a full `Deinitialize`/`Initialize` cycle:
   `UNIMPLEMENTED`.
 
 Every service also exposes `TriggerEvent` — a generic, adapter-defined,
-optional hook for anything a device needs mid-job that doesn't fit the
+optional hook for anything a device needs mid-task that doesn't fit the
 RPCs above: fault injection or an environmental perturbation for testing,
 or anything else a specific product requires. Same `UNIMPLEMENTED` escape
 hatch applies if an adapter has no such capability.
