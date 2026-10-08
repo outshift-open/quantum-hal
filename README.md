@@ -135,6 +135,9 @@ buf lint proto     # style/consistency checks (see proto/buf.yaml for the one
 
 ## Installing the SDKs
 
+> If you wish to generate your own protobufs for a specific language, see the
+> "Generating stubs yourself" section below.
+
 Generated Go and Python clients are committed in-repo under `sdk/go` and
 `sdk/python` and kept in sync with `proto/` by CI (see
 [Repository layout](#repository-layout)). Both install directly from
