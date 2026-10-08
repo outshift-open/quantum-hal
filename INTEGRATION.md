@@ -22,26 +22,49 @@ code), this is enough to confirm you have a consistent checkout.
 
 ## 2. Generate stubs
 
+Both Go and Python already have a published SDK generated straight from
+this repo's `proto/` — install it instead of generating your own copy:
+
+```sh
+# Go
+go get github.com/outshift-open/quantum-hal/sdk/go@latest
+
+# Python
+pip install "git+https://github.com/outshift-open/quantum-hal.git#subdirectory=sdk/python"
+```
+
+See [`sdk/README.md`](./sdk/README.md) for the full table (both languages,
+plus how to pin to a release) and the root `README.md`'s
+[Installing the SDKs](./README.md#installing-the-sdks) section for how
+those SDKs get regenerated and tagged.
+
+The rest of this section covers generating stubs yourself instead — useful
+for a language other than Go/Python, or to regenerate locally before
+sending a proto change as a PR (`make generate`, see the root `Makefile`,
+regenerates both and is what CI's stale-SDK check in `proto-ci.yml`
+compares against).
+
 `proto/hal/adapters/**/*.proto` files deliberately **do not** set
-`go_package` (or an equivalent for other languages) — that's an internal
-detail of your own codebase, not something this shared spec should dictate.
+`go_package` (or an equivalent for other languages) — that's injected at
+generation time, not something this shared spec should dictate.
 
 ### Go (via Buf — the supported path)
 
 `buf.gen.yaml` is wired up with [managed mode](https://buf.build/docs/generate/managed-mode/),
 which injects `go_package` at generation time based on `go_package_prefix.default`
-in that file:
+in that file (currently `github.com/outshift-open/quantum-hal/sdk/go`, the
+published SDK's own module path):
 
 ```sh
 go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 
-buf generate proto   # writes to ./gen/go, which is gitignored -- not committed here
+buf generate proto   # writes to ./sdk/go -- the same path CI commits to
 ```
 
-Before relying on this for real, edit `go_package_prefix.default` in
-`buf.gen.yaml` to the actual module path you'll import the generated code
-from — it's currently a placeholder (`github.com/cisco-eti/hal-api/gen/go`).
+If you're generating for a codebase other than this repo, edit
+`go_package_prefix.default` in your own copy of `buf.gen.yaml` to wherever
+you'll actually import the generated code from.
 
 ### Go (raw `protoc`, if you'd rather not use Buf)
 
@@ -61,33 +84,27 @@ protoc \
 Repeat the `-M` mapping pair for `switch/v1/switch.proto` and
 `timetagger/v1/timetagger.proto` if you need those too.
 
-### Python (message classes via Buf, service stubs via grpc_tools)
+### Python (via `grpc_tools.protoc`)
 
-Python is **commented out** in `buf.gen.yaml` by default, so a plain `buf
-generate proto` only produces Go. To generate Python:
-
-1. Open `buf.gen.yaml` and uncomment the `plugin: python` block (there's a
-   `gen/python` output path right there, plus this same set of steps
-   repeated in that file's comments).
-2. Run `buf generate proto` — writes `gen/python/**/*_pb2.py` message
-   classes via Buf's built-in `python` plugin, no extra binary needed.
-3. There's no local (non-BSR) gRPC-Python plugin to add to `buf.gen.yaml` —
-   Python's gRPC codegen lives inside the `grpc_tools.protoc` module
-   itself, not as a standalone `protoc-gen-*` binary buf could shell out
-   to. Generate the `_pb2_grpc.py` service stubs separately and let them
-   land alongside:
+Python isn't generated through Buf — there's no local (non-BSR)
+gRPC-Python plugin buf can shell out to, since Python's gRPC codegen lives
+inside the `grpc_tools.protoc` module itself, not as a standalone
+`protoc-gen-*` binary. `make generate-python` (or the equivalent raw
+command) produces both the message classes and the service stubs in one
+shot:
 
 ```sh
 pip install grpcio-tools
 python -m grpc_tools.protoc \
   --proto_path=proto \
-  --grpc_python_out=gen/python \
+  --python_out=sdk/python \
+  --grpc_python_out=sdk/python \
+  --pyi_out=sdk/python \
   proto/hal/adapters/common/v1/common.proto \
-  proto/hal/adapters/source/v1/source.proto
+  proto/hal/adapters/source/v1/source.proto \
+  proto/hal/adapters/switch/v1/switch.proto \
+  proto/hal/adapters/timetagger/v1/timetagger.proto
 ```
-
-(Skipping `--python_out` here since `buf generate` already produced those
-message classes in step 2 -- this command only adds the `_grpc.py` files.)
 
 Python doesn't need an import-path mapping — packages fall out of the
 directory structure.
@@ -108,8 +125,8 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	commonv1 "yourmodule/genpb/hal/adapters/common/v1"
-	sourcev1 "yourmodule/genpb/hal/adapters/source/v1"
+	commonv1 "github.com/outshift-open/quantum-hal/sdk/go/hal/adapters/common/v1"
+	sourcev1 "github.com/outshift-open/quantum-hal/sdk/go/hal/adapters/source/v1"
 )
 
 func main() {
@@ -153,10 +170,22 @@ setup against the spec.
 
 ## 5. Pinning a version
 
-Once this repo starts tagging releases (see `CHANGELOG.md`), pin your
-`proto_path`/generation step to a specific tag or commit rather than
-tracking the default branch, so a spec change upstream doesn't silently
-change what your generated code expects:
+Releases are tagged `vMAJOR.MINOR.PATCH` at the repo root (see
+`CHANGELOG.md`'s versioning policy). Pin to one instead of tracking the
+default branch, so a spec change upstream doesn't silently change what
+your installed SDK expects:
+
+```sh
+# Go -- sdk/go is a nested module, so it's pinned via its own
+# sdk/go/vMAJOR.MINOR.PATCH tag, not the bare repo-root tag
+go get github.com/outshift-open/quantum-hal/sdk/go@v1.0.0
+
+# Python
+pip install "git+https://github.com/outshift-open/quantum-hal.git@v1.0.0#subdirectory=sdk/python"
+```
+
+If you're generating your own stubs instead of using the published SDK,
+pin the clone itself the same way:
 
 ```sh
 git clone --branch v1.0.0 <this-repo-url>
