@@ -1,0 +1,41 @@
+{
+  "_comment": "request bodies for time tagger tests. The `timetagger` array is the matrix: one object per kind the adapter should exercise. Top-level `product_id` and `resource_type` are copied onto every RPC.",
+  "timetagger": [
+    {
+      "resource_type": "SWABIAN",
+      "product_id": "swabian-timetagger-x",
+      "rpcs": {
+        "HealthCheck": {},
+        "ResourceHealthCheck": {},
+        "GetProductInfo": {},
+        "Initialize": {
+          "config_json": {}
+        },
+        "Deinitialize": {},
+        "GetStatus": {},
+        "SetConfig": {
+          "config_json": {}
+        },
+        "AutoRecover": {},
+        "Tune": {
+          "config_json": {}
+        },
+        "StartDataCollection": {
+          "run_id": "mock-run-1",
+          "config_json": {
+            "measurement_types": ["coincidence_rate_static_default"],
+            "influx_bucket_name": "qentra-data-mock"
+          }
+        },
+        "StopDataCollection": {
+          "run_id": "mock-run-1"
+        },
+        "TriggerEvent": {
+          "run_id": "mock-run-1",
+          "event_type": "eavesdropper",
+          "payload_json": {}
+        }
+      }
+    }
+  ]
+}

@@ -47,12 +47,18 @@ TIMETAGGER_ADAPTER_ADDRESS=adapter.cloud.com:9000
 
 ## Setup
 
+Setup virtual env and run the below commands in it.
+```
+python -m venv .venv
+source .venv/bin/activate
+```
+
 ### 1. Generate Python stubs
 
 Install grpcio-tools (if not already installed):
 
 ```bash
-pip install `grpcio-tools>=1.84.0`
+pip install 'grpcio-tools>=1.84.0'
 ```
 
 Generate stubs from repository root:
@@ -76,16 +82,19 @@ python -m grpc_tools.protoc \
 ```bash
 cd test/conformance
 cp .env.example .env
-# Edit .env to set adapter addresses
 ```
 
-Adapter addresses should be set in `.env` :
+Edit these files:
 
-```bash
-SOURCE_ADAPTER_ADDRESS=localhost:50051
-SWITCH_ADAPTER_ADDRESS=localhost:50052
-TIMETAGGER_ADAPTER_ADDRESS=localhost:50053
-```
+| File | What to set |
+|---|---|
+| `.env` | Adapter host/port and optional `GRPC_HEADER_METADATA_REQTYPE` |
+| `testdata/switch.json` | Per-switch request fields. Copy and point the env `SWITCH_CONFORMANCE_CONFIG` at your file; default is this path. |
+| `testdata/source.json` | Per-source request fields. Copy and point the env `SOURCE_CONFORMANCE_CONFIG` at your file; default is this path. |
+| `testdata/timetagger.json` | Per-time-tagger request fields. Copy and point the env `TIMETAGGER_CONFORMANCE_CONFIG` at your file; default is this path. |
+
+Each JSON file supplies the gRPC request body for every adapter RPC. Top-level `product_id` and `resource_type` are copied onto every RPC except `HealthCheck`. Edit values so they match what the server the test is being run against accepts.
+
 
 ### 3. Install dependencies
 
