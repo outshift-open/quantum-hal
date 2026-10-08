@@ -1,0 +1,183 @@
+# Copyright 2026 Cisco Systems, Inc. and its affiliates
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+# =============================================================================
+# Validate and Publish SDKs — Triggered on version tags (e.g. v0.0.1)
+# =============================================================================
+#
+# Both the Go and Python SDKs are consumed directly from this repo's source
+# (no PyPI package, no module proxy): once a `vX.Y.Z` tag exists,
+#
+#   Go:     go get github.com/outshift-open/quantum-hal/sdk/go@vX.Y.Z
+#   Python: pip install "git+https://github.com/outshift-open/quantum-hal.git@vX.Y.Z#subdirectory=sdk/python"
+#
+# `proto-release.yml` creates the `vX.Y.Z` tag itself (after regenerating
+# and committing both SDKs). This workflow runs after that tag lands, and
+# does two things:
+#   1. Validates both install paths actually work from the tagged commit.
+#   2. Creates the one piece of state the repo tag alone doesn't provide:
+#      a nested `sdk/go/vX.Y.Z` tag. Go's module resolver only finds a
+#      tagged release for a nested module (sdk/go has its own go.mod) from
+#      a tag of the exact form `<subdir>/vX.Y.Z` -- a bare `vX.Y.Z` tag at
+#      the repo root is invisible to it.
+#
+# =============================================================================
+
+name: Validate and Publish SDKs
+
+on:
+  push:
+    tags:
+      - "v*"
+  pull_request:
+    branches:
+      - "main"
+
+jobs:
+  validate-python:
+    name: Validate Python SDK installs from source
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validate tag matches pyproject version
+        run: |
+          TAG_NAME="${{ github.ref_name }}"
+          TAG_VERSION="${TAG_NAME#v}"
+
+          echo "Git tag: $TAG_NAME"
+          echo "Normalized tag version: $TAG_VERSION"
+
+          export TAG_VERSION
+
+          python3 << 'EOF'
+          import os
+          import sys
+          import tomllib
+
+          tag_version = os.environ["TAG_VERSION"]
+
+          with open("sdk/python/pyproject.toml", "rb") as f:
+              data = tomllib.load(f)
+
+          pyproject_version = data["project"]["version"]
+
+          print(f"pyproject.toml version: {pyproject_version}")
+          print(f"tag version: {tag_version}")
+
+          if pyproject_version != tag_version:
+              print(
+                  f"Version mismatch: sdk/python/pyproject.toml has '{pyproject_version}' but Git tag is '{tag_version}'",
+                  file=sys.stderr,
+              )
+              sys.exit(1)
+
+          print("Version validation passed.")
+          EOF
+
+      - name: Install from GitHub source and import
+        run: |
+          TAG_NAME="${{ github.ref_name }}"
+          python3 -m venv /tmp/sdk-check
+          /tmp/sdk-check/bin/pip install --upgrade pip
+          /tmp/sdk-check/bin/pip install "git+${{ github.server_url }}/${{ github.repository }}.git@${TAG_NAME}#subdirectory=sdk/python"
+          /tmp/sdk-check/bin/python -c "import hal.adapters.common.v1.common_pb2; print('import OK')"
+
+  validate-go:
+    name: Validate and Tag Go SDK Module
+    needs: validate-python
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required to create and push the nested sdk/go tag
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Need full history/tags
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+
+      - name: Determine version from git tag
+        id: version
+        run: |
+          TAG_NAME="${{ github.ref_name }}"
+          VERSION="${TAG_NAME#v}"
+
+          echo "Git tag: $TAG_NAME"
+          echo "Normalized version: $VERSION"
+
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "go_module_tag=sdk/go/v${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Check if Go module tag already exists
+        id: check_tag
+        run: |
+          TAG="${{ steps.version.outputs.go_module_tag }}"
+
+          if git ls-remote --tags origin | grep -q "refs/tags/$TAG$"; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "Tag $TAG already exists on remote"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "Tag $TAG does not exist, ready to create"
+          fi
+
+      - name: Validate Go module path in go.mod
+        run: |
+          EXPECTED_PATH="github.com/outshift-open/quantum-hal/sdk/go"
+          ACTUAL_PATH=$(grep "^module " sdk/go/go.mod | awk '{print $2}')
+
+          if [ "$ACTUAL_PATH" != "$EXPECTED_PATH" ]; then
+            echo "Error: sdk/go/go.mod has incorrect module path"
+            echo "Expected: $EXPECTED_PATH"
+            echo "Actual:   $ACTUAL_PATH"
+            exit 1
+          fi
+
+          echo "sdk/go/go.mod module path is correct: $ACTUAL_PATH"
+
+      - name: Build generated Go SDK
+        run: cd sdk/go && go build ./...
+
+      - name: Create and push Go module tag
+        if: steps.check_tag.outputs.exists == 'false'
+        run: |
+          TAG="${{ steps.version.outputs.go_module_tag }}"
+          VERSION="${{ steps.version.outputs.version }}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          echo "Creating tag: $TAG"
+          git tag -a "$TAG" -m "quantum-hal Go SDK v$VERSION"
+
+          echo "Pushing tag to origin..."
+          git push origin "$TAG"
+
+      - name: Skip - tag already exists
+        if: steps.check_tag.outputs.exists == 'true'
+        run: |
+          echo "Tag ${{ steps.version.outputs.go_module_tag }} already exists, skipping."
+          echo "This is normal if re-running a previous release's workflow."
+
+      - name: Summary
+        if: steps.check_tag.outputs.exists == 'false'
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          echo "Go SDK installable at: github.com/outshift-open/quantum-hal/sdk/go@v$VERSION"
