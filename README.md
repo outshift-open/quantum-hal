@@ -101,7 +101,6 @@ scripts/
   check-license-headers.sh                # fails if any .proto/.go/.py/.yml/.yaml/.sh file lacks it
 .github/workflows/
   proto-ci.yml                            # PR checks: lint, breaking-change detection, stale-SDK check
-  proto-release.yml                       # on push to main: regenerate SDKs, commit, tag a release
   publish.yaml                            # on tag push: validate both SDKs install from source, tag sdk/go
   license-headers.yml                     # every PR/push to main: every file above carries the header
 ```
@@ -113,9 +112,13 @@ adding a new `proto/hal/adapters/<type>/v1/` package that follows the same
 shape as the existing three — it doesn't change how the controller or
 existing adapters work.
 
-GitHub is the schema registry here (protos + git history + tags), and
-GitHub Actions is the SDK factory: every merge to `main` that touches
-`proto/` regenerates both SDKs, commits them, and cuts a release tag — see
+GitHub is the schema registry here (protos + git history + tags). Pull
+requests that touch `proto/` must include the regenerated SDKs —
+`proto-ci.yml` regenerates both and fails the pipeline on any diff, so
+contributors run `make generate` and commit the result themselves. Once
+such a PR merges, a maintainer tags the release manually
+(`git tag vX.Y.Z && git push origin vX.Y.Z`); `publish.yaml` then
+validates both SDKs and tags the nested `sdk/go` module. See
 [Installing the SDKs](#installing-the-sdks) and `CHANGELOG.md`'s
 versioning policy.
 

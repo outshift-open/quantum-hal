@@ -12,9 +12,9 @@
 #   Go:     go get github.com/outshift-open/quantum-hal/sdk/go@vX.Y.Z
 #   Python: pip install "git+https://github.com/outshift-open/quantum-hal.git@vX.Y.Z#subdirectory=sdk/python"
 #
-# `proto-release.yml` creates the `vX.Y.Z` tag itself (after regenerating
-# and committing both SDKs). This workflow runs after that tag lands, and
-# does two things:
+# A maintainer creates the `vX.Y.Z` tag manually once a PR with
+# up-to-date generated SDKs has merged to `main`. This workflow runs
+# after that tag lands, and does two things:
 #   1. Validates both install paths actually work from the tagged commit.
 #   2. Creates the one piece of state the repo tag alone doesn't provide:
 #      a nested `sdk/go/vX.Y.Z` tag. Go's module resolver only finds a

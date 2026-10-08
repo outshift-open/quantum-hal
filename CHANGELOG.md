@@ -32,32 +32,35 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   (see `Makefile`/`INTEGRATION.md`).
 - SDK registry workflow: `sdk/go` and `sdk/python` are now generated,
   license-headered (`scripts/add-license-headers.sh`), and committed
-  in-repo rather than left to each consumer to generate locally. Four
-  GitHub Actions workflows drive it:
+  in-repo rather than left to each consumer to generate locally.
+  Contributors run `make generate` and commit the result as part of their
+  PR; three GitHub Actions workflows guard it:
   - `proto-ci.yml` — PR checks: `buf lint`, `buf breaking`, and a
-    stale-SDK check (fails if committed `sdk/go`/`sdk/python` don't match
-    fresh codegen) whenever a PR touches `proto/**`, so proto and
-    generated code can't drift apart.
+    stale-SDK check that regenerates both SDKs and fails the pipeline if
+    the committed `sdk/go`/`sdk/python` don't match fresh codegen,
+    whenever a PR touches `proto/**`, so proto and generated code can't
+    drift apart.
   - `license-headers.yml` — on every PR and push to `main`:
     `scripts/check-license-headers.sh` fails if any `.proto`/`.go`/`.py`/
     `.yml`/`.yaml`/`.sh` file (hand-written or generated) is missing the
     copyright/SPDX header.
-  - `proto-release.yml` — on push to `main`: regenerates both SDKs,
-    commits them, and tags a release.
   - `publish.yaml` — on tag push: validates both SDKs actually install
     from GitHub source (`go get`/`pip install git+...`), and creates the
     nested `sdk/go/vX.Y.Z` tag Go's module resolver requires for `sdk/go`.
-  Both SDKs are install-from-source only — no PyPI package, no Go module
-  proxy. See `sdk/README.md` for install commands.
+  Release tags are cut manually by a maintainer
+  (`git tag vX.Y.Z && git push origin vX.Y.Z`) once a PR with up-to-date
+  generated SDKs has merged to `main` — there is no bot-driven auto-commit
+  or auto-tag. Both SDKs are install-from-source only — no PyPI package,
+  no Go module proxy. See `sdk/README.md` for install commands.
 
 ## Versioning policy
 
 - Releases are tagged with a single repo-wide `vMAJOR.MINOR.PATCH` tag,
-  auto-incremented on every proto change merged to `main` by
-  `proto-release.yml`. This supersedes the original per-package versioning
-  policy below: a release tag now covers the whole spec (all device-type
-  packages) and both generated SDKs together, not one device type at a
-  time.
+  cut manually by a maintainer once a proto change (with its regenerated
+  SDKs) has merged to `main`. This supersedes the original per-package
+  versioning policy below: a release tag now covers the whole spec (all
+  device-type packages) and both generated SDKs together, not one device
+  type at a time.
 - `sdk/go` additionally gets a matching nested-module tag,
   `sdk/go/vMAJOR.MINOR.PATCH`, pointing at the same commit — required
   because `sdk/go` is a nested Go module (own `go.mod`) and Go's module
