@@ -83,13 +83,26 @@ these, and for how `AutoRecover`/`Tune` and the async-vs-sync split on
 ## Repository layout
 
 ```
-proto/
-  buf.yaml                              # lint/breaking-change config
+proto/                                   # Proto source of truth
+  buf.yaml                               # lint/breaking-change config
   hal/adapters/
-    common/v1/common.proto              # shapes shared by every device type
-    source/v1/source.proto              # AdapterSourceService
-    switch/v1/switch.proto              # AdapterSwitchService
-    timetagger/v1/timetagger.proto      # AdapterTimeTaggerService
+    common/v1/common.proto               # shapes shared by every device type
+    source/v1/source.proto               # AdapterSourceService
+    switch/v1/switch.proto               # AdapterSwitchService
+    timetagger/v1/timetagger.proto       # AdapterTimeTaggerService
+sdk/
+  README.md                              # per-language install commands
+  go/                                     # generated Go SDK (own go.mod)
+  python/                                 # generated Python SDK (own pyproject.toml)
+buf.gen.yaml                              # Go codegen plugins (managed mode)
+Makefile                                  # lint / breaking / generate / check / check-headers
+scripts/
+  add-license-headers.sh                  # stamps the repo's license header onto generated files
+  check-license-headers.sh                # fails if any .proto/.go/.py/.yml/.yaml/.sh file lacks it
+.github/workflows/
+  proto-ci.yml                            # PR checks: lint, breaking-change detection, stale-SDK check
+  publish.yaml                            # on tag push: validate both SDKs install from source, tag sdk/go
+  license-headers.yml                     # every PR/push to main: every file above carries the header
 ```
 
 Each device-type package is versioned independently
@@ -98,6 +111,16 @@ forcing a version bump on the others. Adding a new device type means
 adding a new `proto/hal/adapters/<type>/v1/` package that follows the same
 shape as the existing three — it doesn't change how the controller or
 existing adapters work.
+
+GitHub is the schema registry here (protos + git history + tags). Pull
+requests that touch `proto/` must include the regenerated SDKs —
+`proto-ci.yml` regenerates both and fails the pipeline on any diff, so
+contributors run `make generate` and commit the result themselves. Once
+such a PR merges, a maintainer tags the release manually
+(`git tag vX.Y.Z && git push origin vX.Y.Z`); `publish.yaml` then
+validates both SDKs and tags the nested `sdk/go` module. See
+[Installing the SDKs](#installing-the-sdks) and `CHANGELOG.md`'s
+versioning policy.
 
 ## Building and validating
 
@@ -110,35 +133,32 @@ buf lint proto     # style/consistency checks (see proto/buf.yaml for the one
                     # deliberate exception and why)
 ```
 
-## Generating stubs
+## Installing the SDKs
 
-**Go** is generated via Buf (`buf.gen.yaml`, using
-[managed mode](https://buf.build/docs/generate/managed-mode/) to inject
-`go_package` at generation time, since these `.proto` files deliberately
-don't set it themselves):
+> If you wish to generate your own protobufs for a specific language, see the
+> "Generating stubs yourself" section below.
+
+Generated Go and Python clients are committed in-repo under `sdk/go` and
+`sdk/python` and kept in sync with `proto/` by CI (see
+[Repository layout](#repository-layout)). Both install directly from
+GitHub — no PyPI package, no Go module proxy setup needed:
 
 ```sh
-go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
-go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+# Go
+go get github.com/outshift-open/quantum-hal/sdk/go@latest
 
-buf generate proto   # writes to ./gen/go (gitignored -- not committed here)
+# Python
+pip install "git+https://github.com/outshift-open/quantum-hal.git#subdirectory=sdk/python"
 ```
 
-Before generating for real, update `go_package_prefix.default` in
-`buf.gen.yaml` to wherever you actually vendor/import the generated code
-from.
+See [`sdk/README.md`](./sdk/README.md) for the full table (including how to
+pin to a specific release) and `CHANGELOG.md` for how releases are tagged.
 
-**Python** is off by default (`buf generate proto` only writes `./gen/go`
-unless you opt in) — uncomment the `plugin: python` block in
-`buf.gen.yaml` to enable it; full instructions are in the comment right
-above that block.
-
-**Other languages** aren't wired into `buf.gen.yaml` — generate them
-directly with `protoc`/that language's plugin.
-
-See [`INTEGRATION.md`](./INTEGRATION.md) for the raw-`protoc` equivalent,
-a worked client example, exploring a running adapter with `grpcurl` via
-gRPC reflection, and version pinning once tags exist.
+**Generating stubs yourself**, instead of using the published SDK (e.g. for
+a language other than Go/Python, or to regenerate locally before a PR) —
+see [`INTEGRATION.md`](./INTEGRATION.md) for the `buf generate`/raw-`protoc`
+walkthrough, a worked client example, exploring a running adapter with
+`grpcurl` via gRPC reflection, and version pinning.
 
 ## Further reading
 
