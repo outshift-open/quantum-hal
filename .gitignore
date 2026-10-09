@@ -1,3 +1,2 @@
-# Generated code -- this repo is spec-only; consumers run `buf generate`
-# (or protoc, see README.md/INTEGRATION.md) in their own project.
-gen/
+.venv/
+__pycache__/
