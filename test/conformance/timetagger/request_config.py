@@ -38,6 +38,14 @@ def load_timetagger_kinds():
                     path, index
                 )
             )
+        for field in ("product_id", "resource_type"):
+            value = kind.get(field)
+            if not isinstance(value, str) or not value.strip():
+                raise ValueError(
+                    "{0}: timetagger[{1}] requires non-empty {2}".format(
+                        path, index, field
+                    )
+                )
     return kinds
 
 

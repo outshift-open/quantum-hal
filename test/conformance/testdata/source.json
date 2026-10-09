@@ -1,5 +1,6 @@
 {
-  "_comment": "request bodies for source tests. The `source` array is the matrix: one object per kind the adapter should exercise. Top-level `product_id` and `resource_type` are copied onto every RPC.",
+  "_comment": "Request bodies for source tests. The tests in `test_source.py` will run against every entry in the `source` array.",
+  "_comment_required_fields": "Each array entry requires non-empty `product_id` and `resource_type`. Top-level `product_id` and `resource_type` are copied onto every RPC except HealthCheck.",
   "source": [
     {
       "resource_type": "CISCO",

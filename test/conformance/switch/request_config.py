@@ -36,6 +36,14 @@ def load_switch_kinds():
             raise ValueError(
                 "{0}: switch[{1}] must be an object".format(path, index)
             )
+        for field in ("product_id", "resource_type"):
+            value = kind.get(field)
+            if not isinstance(value, str) or not value.strip():
+                raise ValueError(
+                    "{0}: switch[{1}] requires non-empty {2}".format(
+                        path, index, field
+                    )
+                )
     return kinds
 
 
