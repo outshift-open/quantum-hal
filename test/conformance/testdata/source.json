@@ -1,0 +1,45 @@
+{
+  "_comment": "Request bodies for source tests. The tests in `test_source.py` will run against every entry in the `source` array.",
+  "_comment_required_fields": "Each array entry requires non-empty `product_id` and `resource_type`. Top-level `product_id` and `resource_type` are copied onto every RPC except HealthCheck.",
+  "source": [
+    {
+      "resource_type": "CISCO",
+      "product_id": "cisco-source-1",
+      "rpcs": {
+        "HealthCheck": {},
+        "ResourceHealthCheck": {},
+        "GetProductInfo": {},
+        "Initialize": {
+          "config": {
+            "config_json": {"pump_power_mw": 50.0}
+          }
+        },
+        "Deinitialize": {},
+        "GetStatus": {},
+        "SetConfig": {
+          "config": {
+            "config_json": {"pump_power_mw": 50.0}
+          }
+        },
+        "AutoRecover": {},
+        "Tune": {
+          "config_json": {}
+        },
+        "StartEmission": {
+          "run_id": "mock-run-1",
+          "config": {
+            "config_json": {}
+          }
+        },
+        "StopEmission": {
+          "run_id": "mock-run-1"
+        },
+        "TriggerEvent": {
+          "run_id": "mock-run-1",
+          "event_type": "fault",
+          "payload_json": {}
+        }
+      }
+    }
+  ]
+}

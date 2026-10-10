@@ -9,18 +9,17 @@ import pytest
 
 from hal.adapters.common.v1 import common_pb2
 from hal.adapters.timetagger.v1 import timetagger_pb2, timetagger_pb2_grpc
-from utils import validate_response_field, validate_response_fields, check_optional_rpc
-
-# Import proto constants using relative import
-from ..proto_constants import (
-    VALID_HEALTH_CHECK_STATUSES,
-    VALID_RESOURCE_HEALTH_STATUSES
+from utils import (
+    validate_response_field,
+    validate_response_fields,
+    check_optional_rpc,
 )
 
-
-TEST_PRODUCT_ID = "test-timetagger-001"
-TEST_RESOURCE_TYPE = "test-timetagger-type"
-TEST_RUN_ID = "test-run-123"
+from ..proto_constants import (
+    VALID_HEALTH_CHECK_STATUSES,
+    VALID_RESOURCE_HEALTH_STATUSES,
+)
+from .request_config import rpc_request
 
 
 def get_adapter_address():
@@ -29,7 +28,8 @@ def get_adapter_address():
     if not address:
         raise ValueError(
             "TIMETAGGER_ADAPTER_ADDRESS environment variable not set. "
-            "Copy test/.env.example to test/.env and configure adapter addresses."
+            "Copy test/.env.example to test/.env and configure "
+            "adapter addresses."
         )
     return address
 
@@ -44,32 +44,34 @@ def grpc_channel():
 
 @pytest.fixture(scope="module")
 def metadata():
-    """Get gRPC metadata from environment if specified"""
-    # Get reqType header if specified
+    """Get gRPC metadata from environment if specified."""
     reqtype = os.getenv("GRPC_HEADER_METADATA_REQTYPE", "")
     if not reqtype:
         return None
-    
     return [("reqtype", reqtype.strip())]
 
 
 @pytest.fixture(scope="module")
 def client(grpc_channel, metadata):
-    """Create gRPC client stub with optional metadata interceptor"""
+    """Create gRPC client stub with optional metadata interceptor."""
     if metadata:
-        # Create interceptor that adds metadata to all calls
         class MetadataInterceptor(grpc.UnaryUnaryClientInterceptor):
             def __init__(self, metadata):
                 self._metadata = metadata
-            
-            def intercept_unary_unary(self, continuation, client_call_details, request):
-                new_details = client_call_details._replace(metadata=self._metadata)
+
+            def intercept_unary_unary(
+                self, continuation, client_call_details, request
+            ):
+                new_details = client_call_details._replace(
+                    metadata=self._metadata
+                )
                 return continuation(new_details, request)
-        
-        interceptor = MetadataInterceptor(metadata)
-        channel = grpc.intercept_channel(grpc_channel, interceptor)
+
+        channel = grpc.intercept_channel(
+            grpc_channel, MetadataInterceptor(metadata)
+        )
         return timetagger_pb2_grpc.AdapterTimeTaggerServiceStub(channel)
-    
+
     return timetagger_pb2_grpc.AdapterTimeTaggerServiceStub(grpc_channel)
 
 
@@ -78,175 +80,164 @@ def test_health_check(client):
     request = common_pb2.HealthCheckRequest()
     response = client.HealthCheck(request)
     assert response is not None
-    assert response.message in VALID_HEALTH_CHECK_STATUSES, \
-        f"HealthCheck message must be one of {VALID_HEALTH_CHECK_STATUSES}, got '{response.message}'"
-
-
-def test_resource_health_check(client):
-    """Test ResourceHealthCheck RPC"""
-    request = common_pb2.ResourceHealthCheckRequest(
-        product_id=TEST_PRODUCT_ID,
-        resource_type=TEST_RESOURCE_TYPE
+    assert response.message in VALID_HEALTH_CHECK_STATUSES, (
+        "HealthCheck message must be one of "
+        "{0}, got '{1}'".format(
+            VALID_HEALTH_CHECK_STATUSES, response.message
+        )
     )
-    response = client.ResourceHealthCheck(request)
-    assert response is not None
-    assert response.message in VALID_RESOURCE_HEALTH_STATUSES, \
-        f"ResourceHealthCheck message must be one of {VALID_RESOURCE_HEALTH_STATUSES}, got '{response.message}'"
 
 
-def test_auto_recover(client):
-    """Test AutoRecover RPC (optional)"""
-    request = common_pb2.AutoRecoverRequest(
-        product_id=TEST_PRODUCT_ID,
-        resource_type=TEST_RESOURCE_TYPE
-    )
-    implemented, response = check_optional_rpc(lambda: client.AutoRecover(request))
-    if implemented:
+class TestTimeTagger:
+    """Device-scoped RPCs; class-scoped timetagger_kind runs one kind at a time."""
+
+    def test_resource_health_check(self, client, timetagger_kind):
+        """Test ResourceHealthCheck RPC"""
+        request = common_pb2.ResourceHealthCheckRequest(
+            **rpc_request(timetagger_kind, "ResourceHealthCheck")
+        )
+        response = client.ResourceHealthCheck(request)
         assert response is not None
-        # Validate message field (must be non-empty when implemented)
-        validate_response_field(response, "message", str, allow_empty=False)
+        assert response.message in VALID_RESOURCE_HEALTH_STATUSES, (
+            "ResourceHealthCheck message must be one of "
+            "{0}, got '{1}'".format(
+                VALID_RESOURCE_HEALTH_STATUSES, response.message
+            )
+        )
 
+    def test_auto_recover(self, client, timetagger_kind):
+        """Test AutoRecover RPC (optional)"""
+        request = common_pb2.AutoRecoverRequest(
+            **rpc_request(timetagger_kind, "AutoRecover")
+        )
+        implemented, response = check_optional_rpc(
+            lambda: client.AutoRecover(request)
+        )
+        if implemented:
+            assert response is not None
+            validate_response_field(
+                response, "message", str, allow_empty=False
+            )
 
-def test_tune(client):
-    """Test Tune RPC (optional)"""
-    request = common_pb2.TuneRequest(
-        product_id=TEST_PRODUCT_ID,
-        resource_type=TEST_RESOURCE_TYPE,
-        config_json='{"test": "config"}'
-    )
-    implemented, response = check_optional_rpc(lambda: client.Tune(request))
-    if implemented:
+    def test_tune(self, client, timetagger_kind):
+        """Test Tune RPC (optional)"""
+        request = common_pb2.TuneRequest(
+            **rpc_request(timetagger_kind, "Tune")
+        )
+        implemented, response = check_optional_rpc(
+            lambda: client.Tune(request)
+        )
+        if implemented:
+            assert response is not None
+            validate_response_field(
+                response, "message", str, allow_empty=False
+            )
+
+    def test_get_product_info(self, client, timetagger_kind):
+        """Test GetProductInfo RPC"""
+        request = timetagger_pb2.GetProductInfoRequest(
+            **rpc_request(timetagger_kind, "GetProductInfo")
+        )
+        response = client.GetProductInfo(request)
         assert response is not None
-        # Validate message field (must be non-empty when implemented)
-        validate_response_field(response, "message", str, allow_empty=False)
+        validate_response_fields(response, {
+            "serial_number": (str, True),
+            "product_code": (str, True),
+            "software_version": (str, True),
+        })
 
-def test_get_product_info(client):
-    """Test GetProductInfo RPC"""
-    request = timetagger_pb2.GetProductInfoRequest(
-        product_id=TEST_PRODUCT_ID,
-        resource_type=TEST_RESOURCE_TYPE
-    )
-    response = client.GetProductInfo(request)
-    assert response is not None
-    
-    # Validate all fields (allow empty as they may not be set for all devices)
-    validate_response_fields(response, {
-        "serial_number": (str, True),
-        "product_code": (str, True),
-        "software_version": (str, True),
-    })
-
-
-def test_initialize(client):
-    """Test Initialize RPC"""
-    request = timetagger_pb2.InitializeRequest(
-        product_id=TEST_PRODUCT_ID,
-        resource_type=TEST_RESOURCE_TYPE,
-        config_json='{"test": "config"}'
-    )
-    response = client.Initialize(request)
-    assert response is not None
-    
-    # Validate message field (must be non-empty)
-    validate_response_field(response, "message", str, allow_empty=False)
-
-
-def test_deinitialize(client):
-    """Test Deinitialize RPC"""
-    request = timetagger_pb2.DeinitializeRequest(
-        product_id=TEST_PRODUCT_ID,
-        resource_type=TEST_RESOURCE_TYPE
-    )
-    response = client.Deinitialize(request)
-    assert response is not None
-    
-    # Validate message field (must be non-empty)
-    validate_response_field(response, "message", str, allow_empty=False)
-
-
-def test_get_status(client):
-    """Test GetStatus RPC"""
-    request = timetagger_pb2.GetStatusRequest(
-        product_id=TEST_PRODUCT_ID,
-        resource_type=TEST_RESOURCE_TYPE
-    )
-    response = client.GetStatus(request)
-    assert response is not None
-    
-    # Validate all fields
-    validate_response_fields(response, {
-        "run_id": (str, True),  # May be empty if not in a run
-        "uptime_seconds": (float, True),  # Numeric fields can be 0
-        "status_json": (str, True),  # May be empty
-    })
-    
-    # Validate state is a valid TimeTaggerState enum value (from proto definition)
-    valid_states = [
-        timetagger_pb2.TIME_TAGGER_STATE_UNSPECIFIED,
-        timetagger_pb2.TIME_TAGGER_STATE_IDLE,
-        timetagger_pb2.TIME_TAGGER_STATE_INITIALIZING,
-        timetagger_pb2.TIME_TAGGER_STATE_READY,
-        timetagger_pb2.TIME_TAGGER_STATE_COLLECTING,
-        timetagger_pb2.TIME_TAGGER_STATE_FAULT,
-        timetagger_pb2.TIME_TAGGER_STATE_DEINITIALIZING,
-        timetagger_pb2.TIME_TAGGER_STATE_DEGRADED,
-    ]
-    assert response.state in valid_states, \
-        f"GetStatus state must be a valid TimeTaggerState enum value, got {response.state}"
-
-
-def test_set_config(client):
-    """Test SetConfig RPC"""
-    request = timetagger_pb2.SetConfigRequest(
-        product_id=TEST_PRODUCT_ID,
-        resource_type=TEST_RESOURCE_TYPE,
-        config_json='{"test": "config"}'
-    )
-    response = client.SetConfig(request)
-    assert response is not None
-    
-    # Validate message field (must be non-empty)
-    validate_response_field(response, "message", str, allow_empty=False)
-
-
-def test_start_data_collection(client):
-    """Test StartDataCollection RPC"""
-    request = timetagger_pb2.StartDataCollectionRequest(
-        product_id=TEST_PRODUCT_ID,
-        resource_type=TEST_RESOURCE_TYPE,
-        run_id=TEST_RUN_ID,
-        config_json='{"test": "config"}'
-    )
-    response = client.StartDataCollection(request)
-    assert response is not None
-    
-    # Validate message field (must be non-empty)
-    validate_response_field(response, "message", str, allow_empty=False)
-
-def test_stop_data_collection(client):
-    """Test StopDataCollection RPC"""
-    request = timetagger_pb2.StopDataCollectionRequest(
-        product_id=TEST_PRODUCT_ID,
-        resource_type=TEST_RESOURCE_TYPE,
-        run_id=TEST_RUN_ID
-    )
-    response = client.StopDataCollection(request)
-    assert response is not None
-    
-    # Validate message field (must be non-empty)
-    validate_response_field(response, "message", str, allow_empty=False)
-
-def test_trigger_event(client):
-    """Test TriggerEvent RPC (optional)"""
-    request = timetagger_pb2.TriggerEventRequest(
-        product_id=TEST_PRODUCT_ID,
-        resource_type=TEST_RESOURCE_TYPE,
-        run_id=TEST_RUN_ID,
-        event_type="test-event",
-        payload_json='{"test": "payload"}'
-    )
-    implemented, response = check_optional_rpc(lambda: client.TriggerEvent(request))
-    if implemented:
+    def test_initialize(self, client, timetagger_kind):
+        """Test Initialize RPC"""
+        request = timetagger_pb2.InitializeRequest(
+            **rpc_request(timetagger_kind, "Initialize")
+        )
+        response = client.Initialize(request)
         assert response is not None
-        # Validate message field (must be non-empty when implemented)
-        validate_response_field(response, "message", str, allow_empty=False)
+        validate_response_field(
+            response, "message", str, allow_empty=False
+        )
+
+    def test_deinitialize(self, client, timetagger_kind):
+        """Test Deinitialize RPC"""
+        request = timetagger_pb2.DeinitializeRequest(
+            **rpc_request(timetagger_kind, "Deinitialize")
+        )
+        response = client.Deinitialize(request)
+        assert response is not None
+        validate_response_field(
+            response, "message", str, allow_empty=False
+        )
+
+    def test_get_status(self, client, timetagger_kind):
+        """Test GetStatus RPC"""
+        request = timetagger_pb2.GetStatusRequest(
+            **rpc_request(timetagger_kind, "GetStatus")
+        )
+        response = client.GetStatus(request)
+        assert response is not None
+        validate_response_fields(response, {
+            "run_id": (str, True),
+            "uptime_seconds": (float, True),
+            "status_json": (str, True),
+        })
+        valid_states = [
+            timetagger_pb2.TIME_TAGGER_STATE_UNSPECIFIED,
+            timetagger_pb2.TIME_TAGGER_STATE_IDLE,
+            timetagger_pb2.TIME_TAGGER_STATE_INITIALIZING,
+            timetagger_pb2.TIME_TAGGER_STATE_READY,
+            timetagger_pb2.TIME_TAGGER_STATE_COLLECTING,
+            timetagger_pb2.TIME_TAGGER_STATE_FAULT,
+            timetagger_pb2.TIME_TAGGER_STATE_DEINITIALIZING,
+            timetagger_pb2.TIME_TAGGER_STATE_DEGRADED,
+        ]
+        assert response.state in valid_states, (
+            "GetStatus state must be a valid TimeTaggerState enum value, "
+            "got {0}".format(response.state)
+        )
+
+    def test_set_config(self, client, timetagger_kind):
+        """Test SetConfig RPC"""
+        request = timetagger_pb2.SetConfigRequest(
+            **rpc_request(timetagger_kind, "SetConfig")
+        )
+        response = client.SetConfig(request)
+        assert response is not None
+        validate_response_field(
+            response, "message", str, allow_empty=False
+        )
+
+    def test_start_data_collection(self, client, timetagger_kind):
+        """Test StartDataCollection RPC"""
+        request = timetagger_pb2.StartDataCollectionRequest(
+            **rpc_request(timetagger_kind, "StartDataCollection")
+        )
+        response = client.StartDataCollection(request)
+        assert response is not None
+        validate_response_field(
+            response, "message", str, allow_empty=False
+        )
+
+    def test_stop_data_collection(self, client, timetagger_kind):
+        """Test StopDataCollection RPC"""
+        request = timetagger_pb2.StopDataCollectionRequest(
+            **rpc_request(timetagger_kind, "StopDataCollection")
+        )
+        response = client.StopDataCollection(request)
+        assert response is not None
+        validate_response_field(
+            response, "message", str, allow_empty=False
+        )
+
+    def test_trigger_event(self, client, timetagger_kind):
+        """Test TriggerEvent RPC (optional)"""
+        request = timetagger_pb2.TriggerEventRequest(
+            **rpc_request(timetagger_kind, "TriggerEvent")
+        )
+        implemented, response = check_optional_rpc(
+            lambda: client.TriggerEvent(request)
+        )
+        if implemented:
+            assert response is not None
+            validate_response_field(
+                response, "message", str, allow_empty=False
+            )

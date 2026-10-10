@@ -1,0 +1,167 @@
+{
+  "_comment": "Request bodies for switch tests. The tests in `test_switch.py` will run against every entry in the `switch` array.",
+  "_comment_required_fields": "Each array entry requires non-empty `product_id` and `resource_type`. Top-level `product_id` and `resource_type` are copied onto every RPC except HealthCheck.",
+  "switch": [
+    {
+      "resource_type": "POLATIS",
+      "product_id": "12345",
+      "rpcs": {
+        "HealthCheck": {},
+        "ResourceHealthCheck": {},
+        "GetProductInfo": {},
+        "Initialize": {
+          "config_json": {}
+        },
+        "Deinitialize": {},
+        "GetStatus": {},
+        "SetConfig": {
+          "config_json": {}
+        },
+        "AutoRecover": {},
+        "Tune": {
+          "config_json": {}
+        },
+        "CommitConnection": {
+          "input_port": 1,
+          "output_port": 2,
+          "routing_case": 0
+        },
+        "ClearConnections": {
+          "ports": [1, 2]
+        },
+        "ExecuteCommand": {
+          "command_json": {"command": "oxcshowconn"}
+        },
+        "TriggerEvent": {
+          "run_id": "run-1",
+          "event_type": "fault",
+          "payload_json": {}
+        }
+      }
+    },
+    {
+      "resource_type": "JW",
+      "product_id": "JW2302000",
+      "rpcs": {
+        "HealthCheck": {},
+        "ResourceHealthCheck": {},
+        "GetProductInfo": {},
+        "Initialize": {
+          "config_json": {}
+        },
+        "Deinitialize": {},
+        "GetStatus": {},
+        "SetConfig": {
+          "config_json": {}
+        },
+        "AutoRecover": {},
+        "Tune": {
+          "config_json": {}
+        },
+        "CommitConnection": {
+          "input_port": 1,
+          "output_port": 2,
+          "routing_case": 1
+        },
+        "ClearConnections": {
+          "ports": [1, 2]
+        },
+        "ExecuteCommand": {
+          "command_json": {
+            "connection_type": "serial",
+            "serial_port": "/dev/ttyUSB0",
+            "baudrate": 9600,
+            "rtscts": true,
+            "payload": [1, 18, 0, 1],
+            "timeout": 3
+          }
+        },
+        "TriggerEvent": {
+          "run_id": "run-1",
+          "event_type": "fault",
+          "payload_json": {}
+        }
+      }
+    },
+    {
+      "resource_type": "OSW",
+      "product_id": "OSW_DEVICE",
+      "rpcs": {
+        "HealthCheck": {},
+        "ResourceHealthCheck": {},
+        "GetProductInfo": {},
+        "Initialize": {
+          "config_json": {}
+        },
+        "Deinitialize": {},
+        "GetStatus": {},
+        "SetConfig": {
+          "config_json": {}
+        },
+        "AutoRecover": {},
+        "Tune": {
+          "config_json": {}
+        },
+        "CommitConnection": {
+          "input_port": 1,
+          "output_port": 2,
+          "routing_case": 1
+        },
+        "ClearConnections": {
+          "ports": [1, 2]
+        },
+        "ExecuteCommand": {
+          "command_json": {
+            "connection_type": "tcp",
+            "host": "192.168.1.100",
+            "port": 23,
+            "payload": "S 1\n",
+            "timeout": 5
+          }
+        },
+        "TriggerEvent": {
+          "run_id": "run-1",
+          "event_type": "fault",
+          "payload_json": {}
+        }
+      }
+    },
+    {
+      "resource_type": "QSWITCH",
+      "product_id": "QSWITCH_DEVICE",
+      "rpcs": {
+        "HealthCheck": {},
+        "ResourceHealthCheck": {},
+        "GetProductInfo": {},
+        "Initialize": {
+          "config_json": {}
+        },
+        "Deinitialize": {},
+        "GetStatus": {},
+        "SetConfig": {
+          "config_json": {}
+        },
+        "AutoRecover": {},
+        "Tune": {
+          "config_json": {}
+        },
+        "CommitConnection": {
+          "input_port": 1,
+          "output_port": 2,
+          "routing_case": 1
+        },
+        "ClearConnections": {
+          "ports": [1, 2]
+        },
+        "ExecuteCommand": {
+          "command_json": {}
+        },
+        "TriggerEvent": {
+          "run_id": "run-1",
+          "event_type": "fault",
+          "payload_json": {}
+        }
+      }
+    }
+  ]
+}
