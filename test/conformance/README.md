@@ -121,3 +121,22 @@ python -m pytest timetagger/test_timetagger.py -v
 ```bash
 python -m pytest source/test_source.py::test_health_check -v
 ```
+
+## Testing an adapter built for a specific HAL version
+
+If you are writing your own adapter against a released HAL version (for example `v1.2.0`), run the conformance tests **from that release's tag**. Each tag contains the `.proto` files, the stubs, the `testdata/*.json` and the tests for that version, so they all agree with the contract your adapter implements. Use the tests from the tag, not from `main`, because `main` may test newer RPCs or fields that your version does not have.
+
+```bash
+git clone https://github.com/outshift-open/quantum-hal.git
+cd quantum-hal
+git checkout v1.2.0            # the HAL version your adapter implements
+```
+
+Then follow [Setup](#setup) from the checked-out tag:
+
+1. Generate the stubs from this checkout (step 1). Re-run it after switching tags and delete any old `gen/python/`, because `conftest.py` puts `gen/python/` ahead of any installed `quantum-hal-sdk`.
+2. Copy `.env.example` to `.env` and set your adapter's address (step 2).
+3. Edit the `testdata/*.json` files at that tag so they hold values your adapter accepts.
+4. Install `requirements.txt` and run `python -m pytest -v`.
+
+To check a different version, check out its tag and repeat the steps.
