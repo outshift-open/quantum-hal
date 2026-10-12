@@ -13,7 +13,10 @@
 #   Python: pip install "git+https://github.com/outshift-open/quantum-hal.git@vX.Y.Z#subdirectory=sdk/python"
 #
 # A maintainer creates the `vX.Y.Z` tag manually once a PR with
-# up-to-date generated SDKs has merged to `main`. This workflow runs
+# up-to-date generated SDKs has merged to `main`. Before tagging,
+# sdk/python/pyproject.toml's `project.version` must already be bumped
+# to match the upcoming tag (in its own merged PR) -- validate-python
+# below fails if the versions don't match. This workflow runs
 # after that tag lands, and does two things:
 #   1. Validates both install paths actually work from the tagged commit.
 #   2. Creates the one piece of state the repo tag alone doesn't provide:

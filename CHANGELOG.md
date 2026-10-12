@@ -61,6 +61,14 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   versioning policy below: a release tag now covers the whole spec (all
   device-type packages) and both generated SDKs together, not one device
   type at a time.
+- Before cutting *any* release tag, `sdk/python/pyproject.toml`'s
+  `project.version` must first be bumped to the target version in its
+  own PR and merged to `main` — e.g. going from `v0.0.1` to `v0.0.2`
+  requires a PR bumping `project.version` from `0.0.1` to `0.0.2`,
+  merged *before* `v0.0.2` is tagged. `publish.yaml`'s `validate-python`
+  job fails the tag's CI run if `pyproject.toml`'s version doesn't match
+  the tag. The Go SDK needs no equivalent bump, since its version comes
+  from the tag itself via the derived `sdk/go/vX.Y.Z` tag below.
 - `sdk/go` additionally gets a matching nested-module tag,
   `sdk/go/vMAJOR.MINOR.PATCH`, pointing at the same commit — required
   because `sdk/go` is a nested Go module (own `go.mod`) and Go's module

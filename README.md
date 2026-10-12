@@ -115,10 +115,14 @@ existing adapters work.
 GitHub is the schema registry here (protos + git history + tags). Pull
 requests that touch `proto/` must include the regenerated SDKs —
 `proto-ci.yml` regenerates both and fails the pipeline on any diff, so
-contributors run `make generate` and commit the result themselves. Once
-such a PR merges, a maintainer tags the release manually
-(`git tag vX.Y.Z && git push origin vX.Y.Z`); `publish.yaml` then
-validates both SDKs and tags the nested `sdk/go` module. See
+contributors run `make generate` and commit the result themselves.
+Before tagging, `sdk/python/pyproject.toml`'s `project.version` must be
+bumped to match the upcoming tag in its own PR and merged to `main` —
+`publish.yaml`'s `validate-python` job fails CI if the two don't match
+(the Go SDK's version comes from the tag itself, so it needs no such
+bump). Once that version-bump PR merges, a maintainer tags the release
+manually (`git tag vX.Y.Z && git push origin vX.Y.Z`); `publish.yaml`
+then validates both SDKs and tags the nested `sdk/go` module. See
 [Installing the SDKs](#installing-the-sdks) and `CHANGELOG.md`'s
 versioning policy.
 
