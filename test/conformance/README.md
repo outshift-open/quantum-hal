@@ -47,12 +47,18 @@ TIMETAGGER_ADAPTER_ADDRESS=adapter.cloud.com:9000
 
 ## Setup
 
+Setup virtual env and run the below commands in it.
+```
+python -m venv .venv
+source .venv/bin/activate
+```
+
 ### 1. Generate Python stubs
 
 Install grpcio-tools (if not already installed):
 
 ```bash
-pip install `grpcio-tools>=1.84.0`
+pip install 'grpcio-tools>=1.84.0'
 ```
 
 Generate stubs from repository root:
@@ -76,16 +82,19 @@ python -m grpc_tools.protoc \
 ```bash
 cd test/conformance
 cp .env.example .env
-# Edit .env to set adapter addresses
 ```
 
-Adapter addresses should be set in `.env` :
+Edit these files:
 
-```bash
-SOURCE_ADAPTER_ADDRESS=localhost:50051
-SWITCH_ADAPTER_ADDRESS=localhost:50052
-TIMETAGGER_ADAPTER_ADDRESS=localhost:50053
-```
+| File | What to set |
+|---|---|
+| `.env` | Adapter host/port and optional `GRPC_HEADER_METADATA_REQTYPE` |
+| `testdata/switch.json` | Per-switch request fields. Copy and point the env `SWITCH_CONFORMANCE_CONFIG` at your file; default is this path. |
+| `testdata/source.json` | Per-source request fields. Copy and point the env `SOURCE_CONFORMANCE_CONFIG` at your file; default is this path. |
+| `testdata/timetagger.json` | Per-time-tagger request fields. Copy and point the env `TIMETAGGER_CONFORMANCE_CONFIG` at your file; default is this path. |
+
+Each JSON file supplies the gRPC request body for every adapter RPC. Top-level `product_id` and `resource_type` are copied onto every RPC except `HealthCheck`. Edit values so they match what the server the test is being run against accepts.
+
 
 ### 3. Install dependencies
 
@@ -112,3 +121,22 @@ python -m pytest timetagger/test_timetagger.py -v
 ```bash
 python -m pytest source/test_source.py::test_health_check -v
 ```
+
+## Testing an adapter built for a specific HAL version
+
+If you are writing your own adapter against a released HAL version (for example `v1.2.0`), run the conformance tests **from that release's tag**. Each tag contains the `.proto` files, the stubs, the `testdata/*.json` and the tests for that version, so they all agree with the contract your adapter implements. Use the tests from the tag, not from `main`, because `main` may test newer RPCs or fields that your version does not have.
+
+```bash
+git clone https://github.com/outshift-open/quantum-hal.git
+cd quantum-hal
+git checkout v1.2.0            # the HAL version your adapter implements
+```
+
+Then follow [Setup](#setup) from the checked-out tag:
+
+1. Generate the stubs from this checkout (step 1). Re-run it after switching tags and delete any old `gen/python/`, because `conftest.py` puts `gen/python/` ahead of any installed `quantum-hal-sdk`.
+2. Copy `.env.example` to `.env` and set your adapter's address (step 2).
+3. Edit the `testdata/*.json` files at that tag so they hold values your adapter accepts.
+4. Install `requirements.txt` and run `python -m pytest -v`.
+
+To check a different version, check out its tag and repeat the steps.
