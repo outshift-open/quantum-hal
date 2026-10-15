@@ -22,6 +22,9 @@ jobs:
           fetch-depth: 0
 
       - uses: bufbuild/buf-setup-action@v1
+        with:
+          version: "1.73.0"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: buf lint
         run: buf lint proto
@@ -36,6 +39,9 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: bufbuild/buf-setup-action@v1
+        with:
+          version: "1.73.0"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/setup-go@v5
         with:
@@ -47,12 +53,12 @@ jobs:
 
       - name: Install Go plugins
         run: |
-          go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
-          go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+          go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.36.11
+          go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.6.2
           echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
 
       - name: Install Python plugins
-        run: pip install grpcio-tools mypy-protobuf
+        run: pip install 'grpcio-tools==1.84.0' 'mypy-protobuf==5.1.0'
 
       - name: Generate Go SDK
         run: |
