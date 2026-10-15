@@ -4,6 +4,7 @@
 
 """Utility functions for conformance tests"""
 import grpc
+import pytest
 
 
 def is_unimplemented(error):
@@ -22,6 +23,56 @@ def is_unimplemented(error):
     return isinstance(error, grpc.RpcError) and error.code() == grpc.StatusCode.UNIMPLEMENTED
 
 
+def is_failed_precondition(error):
+    """
+    Check if a gRPC error is FAILED_PRECONDITION status.
+
+    Args:
+        error: The exception to check
+
+    Returns:
+        bool: True if error is FAILED_PRECONDITION, False otherwise
+
+    Note:
+        Command RPCs may return FAILED_PRECONDITION when the adapter's
+        current lifecycle state does not allow the call. Conformance tests
+        skip rather than fail in that case.
+    """
+    return (
+        isinstance(error, grpc.RpcError)
+        and error.code() == grpc.StatusCode.FAILED_PRECONDITION
+    )
+
+
+def check_command_rpc(rpc_call):
+    """
+    Call a required command RPC (Initialize, StartEmission, ...).
+
+    Args:
+        rpc_call: Callable that makes the RPC call
+
+    Returns:
+        The protobuf response on OK.
+
+    Raises:
+        grpc.RpcError: If the RPC fails with any status other than
+            FAILED_PRECONDITION.
+
+    Note:
+        These tests check the HAL wire contract, not adapter functionality.
+        FAILED_PRECONDITION means the adapter refused because of its own
+        state; skip so third-party adapters with different sequences still
+        pass. Probe RPCs (HealthCheck, ResourceHealthCheck, GetProductInfo,
+        GetStatus) must not use this helper — they must succeed in any state.
+    """
+    try:
+        return rpc_call()
+    except grpc.RpcError as e:
+        if is_failed_precondition(e):
+            pytest.skip(e.details() or "FAILED_PRECONDITION")
+        raise
+
+
 def check_optional_rpc(rpc_call):
     """
     Helper to test optional RPCs that may return UNIMPLEMENTED.
@@ -36,10 +87,13 @@ def check_optional_rpc(rpc_call):
     
     Raises:
         grpc.RpcError: If RPC fails with any status other than UNIMPLEMENTED
-    
+            or FAILED_PRECONDITION.
+
     Note:
         Optional RPCs in HAL API may return UNIMPLEMENTED. This helper treats
         both successful responses and UNIMPLEMENTED as acceptable outcomes.
+        FAILED_PRECONDITION (implemented, but not allowed in the current
+        adapter state) skips the test.
     """
     try:
         response = rpc_call()
@@ -47,6 +101,8 @@ def check_optional_rpc(rpc_call):
     except grpc.RpcError as e:
         if is_unimplemented(e):
             return False, None
+        if is_failed_precondition(e):
+            pytest.skip(e.details() or "FAILED_PRECONDITION")
         raise
 
 

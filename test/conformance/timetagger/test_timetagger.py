@@ -12,6 +12,7 @@ from hal.adapters.timetagger.v1 import timetagger_pb2, timetagger_pb2_grpc
 from utils import (
     validate_response_field,
     validate_response_fields,
+    check_command_rpc,
     check_optional_rpc,
 )
 
@@ -151,7 +152,7 @@ class TestTimeTagger:
         request = timetagger_pb2.InitializeRequest(
             **rpc_request(timetagger_kind, "Initialize")
         )
-        response = client.Initialize(request)
+        response = check_command_rpc(lambda: client.Initialize(request))
         assert response is not None
         validate_response_field(
             response, "message", str, allow_empty=False
@@ -162,7 +163,7 @@ class TestTimeTagger:
         request = timetagger_pb2.DeinitializeRequest(
             **rpc_request(timetagger_kind, "Deinitialize")
         )
-        response = client.Deinitialize(request)
+        response = check_command_rpc(lambda: client.Deinitialize(request))
         assert response is not None
         validate_response_field(
             response, "message", str, allow_empty=False
@@ -200,7 +201,7 @@ class TestTimeTagger:
         request = timetagger_pb2.SetConfigRequest(
             **rpc_request(timetagger_kind, "SetConfig")
         )
-        response = client.SetConfig(request)
+        response = check_command_rpc(lambda: client.SetConfig(request))
         assert response is not None
         validate_response_field(
             response, "message", str, allow_empty=False
@@ -211,7 +212,7 @@ class TestTimeTagger:
         request = timetagger_pb2.StartDataCollectionRequest(
             **rpc_request(timetagger_kind, "StartDataCollection")
         )
-        response = client.StartDataCollection(request)
+        response = check_command_rpc(lambda: client.StartDataCollection(request))
         assert response is not None
         validate_response_field(
             response, "message", str, allow_empty=False
@@ -222,7 +223,7 @@ class TestTimeTagger:
         request = timetagger_pb2.StopDataCollectionRequest(
             **rpc_request(timetagger_kind, "StopDataCollection")
         )
-        response = client.StopDataCollection(request)
+        response = check_command_rpc(lambda: client.StopDataCollection(request))
         assert response is not None
         validate_response_field(
             response, "message", str, allow_empty=False

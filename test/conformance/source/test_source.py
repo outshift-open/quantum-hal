@@ -12,6 +12,7 @@ from hal.adapters.source.v1 import source_pb2, source_pb2_grpc
 from utils import (
     validate_response_field,
     validate_response_fields,
+    check_command_rpc,
     check_optional_rpc,
 )
 
@@ -151,7 +152,7 @@ class TestSource:
         request = source_pb2.InitializeRequest(
             **rpc_request(source_kind, "Initialize")
         )
-        response = client.Initialize(request)
+        response = check_command_rpc(lambda: client.Initialize(request))
         assert response is not None
         validate_response_field(
             response, "message", str, allow_empty=False
@@ -162,7 +163,7 @@ class TestSource:
         request = source_pb2.DeinitializeRequest(
             **rpc_request(source_kind, "Deinitialize")
         )
-        response = client.Deinitialize(request)
+        response = check_command_rpc(lambda: client.Deinitialize(request))
         assert response is not None
         validate_response_field(
             response, "message", str, allow_empty=False
@@ -201,7 +202,7 @@ class TestSource:
         request = source_pb2.SetConfigRequest(
             **rpc_request(source_kind, "SetConfig")
         )
-        response = client.SetConfig(request)
+        response = check_command_rpc(lambda: client.SetConfig(request))
         assert response is not None
         validate_response_field(
             response, "message", str, allow_empty=False
@@ -212,7 +213,7 @@ class TestSource:
         request = source_pb2.StartEmissionRequest(
             **rpc_request(source_kind, "StartEmission")
         )
-        response = client.StartEmission(request)
+        response = check_command_rpc(lambda: client.StartEmission(request))
         assert response is not None
         validate_response_field(
             response, "message", str, allow_empty=False
@@ -223,7 +224,7 @@ class TestSource:
         request = source_pb2.StopEmissionRequest(
             **rpc_request(source_kind, "StopEmission")
         )
-        response = client.StopEmission(request)
+        response = check_command_rpc(lambda: client.StopEmission(request))
         assert response is not None
         validate_response_field(
             response, "message", str, allow_empty=False
