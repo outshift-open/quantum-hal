@@ -6,6 +6,7 @@ These tests are used to verify the basic runtime validation of an adapters imple
 - Adapters returns valid responses as per the HAL API specification
 - All required fields are present and correctly formatted as per of the response structure
 - Optional RPCs if implemented by the server are verified or skipped if unimplemented.
+- Command RPCs (`Initialize`, `StartEmission`, `StartDataCollection`, …) skip on `FAILED_PRECONDITION` when the adapter refuses because of its current lifecycle state. Probe RPCs (`HealthCheck`, `ResourceHealthCheck`, `GetProductInfo`, `GetStatus`) must still succeed in any state.
 
 These tests are designed to be run against a running adapter instance. They do not start the adapters themselves. Please see the instruction below for running the tests with a specific adapter instance.
 

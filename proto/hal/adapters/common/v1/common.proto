@@ -32,7 +32,7 @@ message HealthCheckResponse {
 // Health of the physical hardware behind the adapter, as reported by the
 // vendor's own driver/API for that device -- not just process liveness.
 // Implementations query whatever the vendor exposes and translate it into
-// an UP / DOWN / DEGRADED-style result, which may be informed by the
+// an UP / DOWN / DEGRADED / IDLE-style result, which may be informed by the
 // device's own lifecycle state enum.
 message ResourceHealthCheckRequest {
   string product_id = 1;

@@ -18,16 +18,21 @@ $(VENV_PYTHON):
 	python3 -m venv $(VENV)
 
 $(VENV_STAMP): $(VENV_PYTHON)
-	$(VENV_PYTHON) -m pip install --upgrade pip grpcio-tools mypy-protobuf
+	$(VENV_PYTHON) -m pip install --upgrade pip 'grpcio-tools==1.84.0' 'mypy-protobuf==5.1.0'
 	touch $(VENV_STAMP)
 
 .PHONY: venv
 venv: $(VENV_STAMP)
 
+# Keep in sync with .github/workflows/proto-ci.yml. Unpinned @latest on
+# CI vs an older local plugin rewrites the SDK and fails generate-check.
+PROTOC_GEN_GO := google.golang.org/protobuf/cmd/protoc-gen-go@v1.36.11
+PROTOC_GEN_GO_GRPC := google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.6.2
+
 .PHONY: tools
 tools: $(VENV_STAMP)
-	go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
-	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+	go install $(PROTOC_GEN_GO)
+	go install $(PROTOC_GEN_GO_GRPC)
 
 .PHONY: lint
 lint:
@@ -42,6 +47,8 @@ generate: generate-go generate-python
 
 .PHONY: generate-go
 generate-go:
+	go install $(PROTOC_GEN_GO)
+	go install $(PROTOC_GEN_GO_GRPC)
 	PATH="$(GOBIN):$$PATH" buf generate proto
 	./scripts/add-license-headers.sh sdk/go
 

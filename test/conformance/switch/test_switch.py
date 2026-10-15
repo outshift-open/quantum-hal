@@ -12,6 +12,7 @@ from hal.adapters.switch.v1 import switch_pb2, switch_pb2_grpc
 from utils import (
     validate_response_field,
     validate_response_fields,
+    check_command_rpc,
     check_optional_rpc,
 )
 
@@ -152,7 +153,7 @@ class TestSwitch:
         request = switch_pb2.InitializeRequest(
             **rpc_request(switch_kind, "Initialize")
         )
-        response = client.Initialize(request)
+        response = check_command_rpc(lambda: client.Initialize(request))
         assert response is not None
         validate_response_field(
             response, "message", str, allow_empty=False
@@ -163,7 +164,7 @@ class TestSwitch:
         request = switch_pb2.DeinitializeRequest(
             **rpc_request(switch_kind, "Deinitialize")
         )
-        response = client.Deinitialize(request)
+        response = check_command_rpc(lambda: client.Deinitialize(request))
         assert response is not None
         validate_response_field(
             response, "message", str, allow_empty=False
@@ -201,7 +202,7 @@ class TestSwitch:
         request = switch_pb2.SetConfigRequest(
             **rpc_request(switch_kind, "SetConfig")
         )
-        response = client.SetConfig(request)
+        response = check_command_rpc(lambda: client.SetConfig(request))
         assert response is not None
         validate_response_field(
             response, "message", str, allow_empty=False
@@ -212,7 +213,7 @@ class TestSwitch:
         request = switch_pb2.CommitConnectionRequest(
             **rpc_request(switch_kind, "CommitConnection")
         )
-        response = client.CommitConnection(request)
+        response = check_command_rpc(lambda: client.CommitConnection(request))
         assert response is not None
         validate_response_field(
             response, "message", str, allow_empty=False
@@ -223,7 +224,7 @@ class TestSwitch:
         request = switch_pb2.ClearConnectionsRequest(
             **rpc_request(switch_kind, "ClearConnections")
         )
-        response = client.ClearConnections(request)
+        response = check_command_rpc(lambda: client.ClearConnections(request))
         assert response is not None
         validate_response_field(
             response, "message", str, allow_empty=False
