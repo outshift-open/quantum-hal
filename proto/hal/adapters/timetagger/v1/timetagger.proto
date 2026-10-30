@@ -23,6 +23,11 @@ service AdapterTimeTaggerService {
   // vendor, firmware/software version.
   rpc GetProductInfo(GetProductInfoRequest) returns (GetProductInfoResponse);
 
+  // List of supported measurement types per device type. 
+  // Also marks each measurement type if it is mockSupported or hardwareSupported  
+  rpc ListMeasurementTypes (ListMeasurementTypesRequest) returns (ListMeasurementTypesResponse) {}
+
+
   // --- Lifecycle ---
 
   // Brings the time tagger from a freshly power-cycled state to
@@ -114,9 +119,14 @@ enum TimeTaggerState {
   TIME_TAGGER_STATE_DEGRADED = 7;
 }
 
+enum ResourceType {
+   RESOURCE_TYPE_UNSPECIFIED = 0;
+   SWABIAN = 1;
+}
+
 message GetProductInfoRequest {
   string product_id = 1;
-  string resource_type = 2;
+  ResourceType resource_type = 2;
 }
 
 message GetProductInfoResponse {
@@ -124,6 +134,23 @@ message GetProductInfoResponse {
   string product_code = 2;
   string software_version = 3;
   string vendor = 4;
+}
+
+message ListMeasurementTypesRequest {
+   ResourceType resource_type = 1;
+}
+
+message MeasurementTypeInfo {
+   string id = 1;
+   string description = 2;
+   bool mockSupported = 3;
+   bool hardwareSupported = 4;
+   optional string usecase = 5;
+   optional string name = 6;
+}
+
+message ListMeasurementTypesResponse {
+   repeated MeasurementTypeInfo measurementTypes = 1;
 }
 
 // Vendor-specific bring-up parameters, if a given product needs any (e.g.
@@ -134,7 +161,7 @@ message GetProductInfoResponse {
 message InitializeRequest {
   string product_id = 1;
   string config_json = 2;
-  string resource_type = 3;
+  ResourceType resource_type = 3;
 }
 
 message InitializeResponse {
@@ -143,7 +170,7 @@ message InitializeResponse {
 
 message DeinitializeRequest {
   string product_id = 1;
-  string resource_type = 2;
+  ResourceType resource_type = 2;
 }
 
 message DeinitializeResponse {
@@ -152,7 +179,7 @@ message DeinitializeResponse {
 
 message GetStatusRequest {
   string product_id = 1;
-  string resource_type = 2;
+  ResourceType resource_type = 2;
 }
 
 message GetStatusResponse {
@@ -170,7 +197,7 @@ message GetStatusResponse {
 message SetConfigRequest {
   string product_id = 1;
   string config_json = 2;
-  string resource_type = 3;
+  ResourceType resource_type = 3;
 }
 
 message SetConfigResponse {
@@ -186,7 +213,10 @@ message StartDataCollectionRequest {
   string product_id = 1;
   string run_id = 2;
   string config_json = 3;
-  string resource_type = 4;
+  ResourceType resource_type = 4;
+
+  // Temp solution until we figure out device registry 
+  optional string device_host = 5;
 }
 
 message StartDataCollectionResponse {
@@ -196,7 +226,10 @@ message StartDataCollectionResponse {
 message StopDataCollectionRequest {
   string product_id = 1;
   string run_id = 2;
-  string resource_type = 3;
+  ResourceType resource_type = 3;
+
+  // Temp solution until we figure out device registry 
+  optional string device_host = 4;
 }
 
 message StopDataCollectionResponse {
@@ -213,7 +246,10 @@ message TriggerEventRequest {
   string run_id = 2;
   string event_type = 3;
   string payload_json = 4;
-  string resource_type = 5;
+  ResourceType resource_type = 5;
+  
+  // Temp solution until we figure out device registry 
+  optional string device_host = 6;
 }
 
 message TriggerEventResponse {
