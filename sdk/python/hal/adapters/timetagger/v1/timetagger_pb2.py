@@ -29,47 +29,55 @@ _sym_db = _symbol_database.Default()
 from hal.adapters.common.v1 import common_pb2 as hal_dot_adapters_dot_common_dot_v1_dot_common__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n+hal/adapters/timetagger/v1/timetagger.proto\x12\x1ahal.adapters.timetagger.v1\x1a#hal/adapters/common/v1/common.proto\"B\n\x15GetProductInfoRequest\x12\x12\n\nproduct_id\x18\x01 \x01(\t\x12\x15\n\rresource_type\x18\x02 \x01(\t\"o\n\x16GetProductInfoResponse\x12\x15\n\rserial_number\x18\x01 \x01(\t\x12\x14\n\x0cproduct_code\x18\x02 \x01(\t\x12\x18\n\x10software_version\x18\x03 \x01(\t\x12\x0e\n\x06vendor\x18\x04 \x01(\t\"S\n\x11InitializeRequest\x12\x12\n\nproduct_id\x18\x01 \x01(\t\x12\x13\n\x0b\x63onfig_json\x18\x02 \x01(\t\x12\x15\n\rresource_type\x18\x03 \x01(\t\"%\n\x12InitializeResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"@\n\x13\x44\x65initializeRequest\x12\x12\n\nproduct_id\x18\x01 \x01(\t\x12\x15\n\rresource_type\x18\x02 \x01(\t\"\'\n\x14\x44\x65initializeResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"=\n\x10GetStatusRequest\x12\x12\n\nproduct_id\x18\x01 \x01(\t\x12\x15\n\rresource_type\x18\x02 \x01(\t\"\x8c\x01\n\x11GetStatusResponse\x12:\n\x05state\x18\x01 \x01(\x0e\x32+.hal.adapters.timetagger.v1.TimeTaggerState\x12\x0e\n\x06run_id\x18\x02 \x01(\t\x12\x16\n\x0euptime_seconds\x18\x03 \x01(\x02\x12\x13\n\x0bstatus_json\x18\x04 \x01(\t\"R\n\x10SetConfigRequest\x12\x12\n\nproduct_id\x18\x01 \x01(\t\x12\x13\n\x0b\x63onfig_json\x18\x02 \x01(\t\x12\x15\n\rresource_type\x18\x03 \x01(\t\"$\n\x11SetConfigResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"l\n\x1aStartDataCollectionRequest\x12\x12\n\nproduct_id\x18\x01 \x01(\t\x12\x0e\n\x06run_id\x18\x02 \x01(\t\x12\x13\n\x0b\x63onfig_json\x18\x03 \x01(\t\x12\x15\n\rresource_type\x18\x04 \x01(\t\".\n\x1bStartDataCollectionResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"V\n\x19StopDataCollectionRequest\x12\x12\n\nproduct_id\x18\x01 \x01(\t\x12\x0e\n\x06run_id\x18\x02 \x01(\t\x12\x15\n\rresource_type\x18\x03 \x01(\t\"-\n\x1aStopDataCollectionResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"z\n\x13TriggerEventRequest\x12\x12\n\nproduct_id\x18\x01 \x01(\t\x12\x0e\n\x06run_id\x18\x02 \x01(\t\x12\x12\n\nevent_type\x18\x03 \x01(\t\x12\x14\n\x0cpayload_json\x18\x04 \x01(\t\x12\x15\n\rresource_type\x18\x05 \x01(\t\"\'\n\x14TriggerEventResponse\x12\x0f\n\x07message\x18\x01 \x01(\t*\x96\x02\n\x0fTimeTaggerState\x12!\n\x1dTIME_TAGGER_STATE_UNSPECIFIED\x10\x00\x12\x1a\n\x16TIME_TAGGER_STATE_IDLE\x10\x01\x12\"\n\x1eTIME_TAGGER_STATE_INITIALIZING\x10\x02\x12\x1b\n\x17TIME_TAGGER_STATE_READY\x10\x03\x12 \n\x1cTIME_TAGGER_STATE_COLLECTING\x10\x04\x12\x1b\n\x17TIME_TAGGER_STATE_FAULT\x10\x05\x12$\n TIME_TAGGER_STATE_DEINITIALIZING\x10\x06\x12\x1e\n\x1aTIME_TAGGER_STATE_DEGRADED\x10\x07\x32\xec\n\n\x18\x41\x64\x61pterTimeTaggerService\x12\x66\n\x0bHealthCheck\x12*.hal.adapters.common.v1.HealthCheckRequest\x1a+.hal.adapters.common.v1.HealthCheckResponse\x12~\n\x13ResourceHealthCheck\x12\x32.hal.adapters.common.v1.ResourceHealthCheckRequest\x1a\x33.hal.adapters.common.v1.ResourceHealthCheckResponse\x12w\n\x0eGetProductInfo\x12\x31.hal.adapters.timetagger.v1.GetProductInfoRequest\x1a\x32.hal.adapters.timetagger.v1.GetProductInfoResponse\x12k\n\nInitialize\x12-.hal.adapters.timetagger.v1.InitializeRequest\x1a..hal.adapters.timetagger.v1.InitializeResponse\x12q\n\x0c\x44\x65initialize\x12/.hal.adapters.timetagger.v1.DeinitializeRequest\x1a\x30.hal.adapters.timetagger.v1.DeinitializeResponse\x12h\n\tGetStatus\x12,.hal.adapters.timetagger.v1.GetStatusRequest\x1a-.hal.adapters.timetagger.v1.GetStatusResponse\x12h\n\tSetConfig\x12,.hal.adapters.timetagger.v1.SetConfigRequest\x1a-.hal.adapters.timetagger.v1.SetConfigResponse\x12\x66\n\x0b\x41utoRecover\x12*.hal.adapters.common.v1.AutoRecoverRequest\x1a+.hal.adapters.common.v1.AutoRecoverResponse\x12Q\n\x04Tune\x12#.hal.adapters.common.v1.TuneRequest\x1a$.hal.adapters.common.v1.TuneResponse\x12\x86\x01\n\x13StartDataCollection\x12\x36.hal.adapters.timetagger.v1.StartDataCollectionRequest\x1a\x37.hal.adapters.timetagger.v1.StartDataCollectionResponse\x12\x83\x01\n\x12StopDataCollection\x12\x35.hal.adapters.timetagger.v1.StopDataCollectionRequest\x1a\x36.hal.adapters.timetagger.v1.StopDataCollectionResponse\x12q\n\x0cTriggerEvent\x12/.hal.adapters.timetagger.v1.TriggerEventRequest\x1a\x30.hal.adapters.timetagger.v1.TriggerEventResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n+hal/adapters/timetagger/v1/timetagger.proto\x12\x1ahal.adapters.timetagger.v1\x1a#hal/adapters/common/v1/common.proto\"l\n\x15GetProductInfoRequest\x12\x12\n\nproduct_id\x18\x01 \x01(\t\x12?\n\rresource_type\x18\x02 \x01(\x0e\x32(.hal.adapters.timetagger.v1.ResourceType\"o\n\x16GetProductInfoResponse\x12\x15\n\rserial_number\x18\x01 \x01(\t\x12\x14\n\x0cproduct_code\x18\x02 \x01(\t\x12\x18\n\x10software_version\x18\x03 \x01(\t\x12\x0e\n\x06vendor\x18\x04 \x01(\t\"^\n\x1bListMeasurementTypesRequest\x12?\n\rresource_type\x18\x01 \x01(\x0e\x32(.hal.adapters.timetagger.v1.ResourceType\"\xa8\x01\n\x13MeasurementTypeInfo\x12\n\n\x02id\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x02 \x01(\t\x12\x16\n\x0emock_supported\x18\x03 \x01(\x08\x12\x1a\n\x12hardware_supported\x18\x04 \x01(\x08\x12\x14\n\x07usecase\x18\x05 \x01(\tH\x00\x88\x01\x01\x12\x11\n\x04name\x18\x06 \x01(\tH\x01\x88\x01\x01\x42\n\n\x08_usecaseB\x07\n\x05_name\"j\n\x1cListMeasurementTypesResponse\x12J\n\x11measurement_types\x18\x01 \x03(\x0b\x32/.hal.adapters.timetagger.v1.MeasurementTypeInfo\"}\n\x11InitializeRequest\x12\x12\n\nproduct_id\x18\x01 \x01(\t\x12\x13\n\x0b\x63onfig_json\x18\x02 \x01(\t\x12?\n\rresource_type\x18\x03 \x01(\x0e\x32(.hal.adapters.timetagger.v1.ResourceType\"%\n\x12InitializeResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"j\n\x13\x44\x65initializeRequest\x12\x12\n\nproduct_id\x18\x01 \x01(\t\x12?\n\rresource_type\x18\x02 \x01(\x0e\x32(.hal.adapters.timetagger.v1.ResourceType\"\'\n\x14\x44\x65initializeResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"g\n\x10GetStatusRequest\x12\x12\n\nproduct_id\x18\x01 \x01(\t\x12?\n\rresource_type\x18\x02 \x01(\x0e\x32(.hal.adapters.timetagger.v1.ResourceType\"\x8c\x01\n\x11GetStatusResponse\x12:\n\x05state\x18\x01 \x01(\x0e\x32+.hal.adapters.timetagger.v1.TimeTaggerState\x12\x0e\n\x06run_id\x18\x02 \x01(\t\x12\x16\n\x0euptime_seconds\x18\x03 \x01(\x02\x12\x13\n\x0bstatus_json\x18\x04 \x01(\t\"|\n\x10SetConfigRequest\x12\x12\n\nproduct_id\x18\x01 \x01(\t\x12\x13\n\x0b\x63onfig_json\x18\x02 \x01(\t\x12?\n\rresource_type\x18\x03 \x01(\x0e\x32(.hal.adapters.timetagger.v1.ResourceType\"$\n\x11SetConfigResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"\xc0\x01\n\x1aStartDataCollectionRequest\x12\x12\n\nproduct_id\x18\x01 \x01(\t\x12\x0e\n\x06run_id\x18\x02 \x01(\t\x12\x13\n\x0b\x63onfig_json\x18\x03 \x01(\t\x12?\n\rresource_type\x18\x04 \x01(\x0e\x32(.hal.adapters.timetagger.v1.ResourceType\x12\x18\n\x0b\x64\x65vice_host\x18\x05 \x01(\tH\x00\x88\x01\x01\x42\x0e\n\x0c_device_host\".\n\x1bStartDataCollectionResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"\xaa\x01\n\x19StopDataCollectionRequest\x12\x12\n\nproduct_id\x18\x01 \x01(\t\x12\x0e\n\x06run_id\x18\x02 \x01(\t\x12?\n\rresource_type\x18\x03 \x01(\x0e\x32(.hal.adapters.timetagger.v1.ResourceType\x12\x18\n\x0b\x64\x65vice_host\x18\x04 \x01(\tH\x00\x88\x01\x01\x42\x0e\n\x0c_device_host\"-\n\x1aStopDataCollectionResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"\xce\x01\n\x13TriggerEventRequest\x12\x12\n\nproduct_id\x18\x01 \x01(\t\x12\x0e\n\x06run_id\x18\x02 \x01(\t\x12\x12\n\nevent_type\x18\x03 \x01(\t\x12\x14\n\x0cpayload_json\x18\x04 \x01(\t\x12?\n\rresource_type\x18\x05 \x01(\x0e\x32(.hal.adapters.timetagger.v1.ResourceType\x12\x18\n\x0b\x64\x65vice_host\x18\x06 \x01(\tH\x00\x88\x01\x01\x42\x0e\n\x0c_device_host\"\'\n\x14TriggerEventResponse\x12\x0f\n\x07message\x18\x01 \x01(\t*\x96\x02\n\x0fTimeTaggerState\x12!\n\x1dTIME_TAGGER_STATE_UNSPECIFIED\x10\x00\x12\x1a\n\x16TIME_TAGGER_STATE_IDLE\x10\x01\x12\"\n\x1eTIME_TAGGER_STATE_INITIALIZING\x10\x02\x12\x1b\n\x17TIME_TAGGER_STATE_READY\x10\x03\x12 \n\x1cTIME_TAGGER_STATE_COLLECTING\x10\x04\x12\x1b\n\x17TIME_TAGGER_STATE_FAULT\x10\x05\x12$\n TIME_TAGGER_STATE_DEINITIALIZING\x10\x06\x12\x1e\n\x1aTIME_TAGGER_STATE_DEGRADED\x10\x07*H\n\x0cResourceType\x12\x1d\n\x19RESOURCE_TYPE_UNSPECIFIED\x10\x00\x12\x19\n\x15RESOURCE_TYPE_SWABIAN\x10\x01\x32\xfa\x0b\n\x18\x41\x64\x61pterTimeTaggerService\x12\x66\n\x0bHealthCheck\x12*.hal.adapters.common.v1.HealthCheckRequest\x1a+.hal.adapters.common.v1.HealthCheckResponse\x12~\n\x13ResourceHealthCheck\x12\x32.hal.adapters.common.v1.ResourceHealthCheckRequest\x1a\x33.hal.adapters.common.v1.ResourceHealthCheckResponse\x12w\n\x0eGetProductInfo\x12\x31.hal.adapters.timetagger.v1.GetProductInfoRequest\x1a\x32.hal.adapters.timetagger.v1.GetProductInfoResponse\x12\x8b\x01\n\x14ListMeasurementTypes\x12\x37.hal.adapters.timetagger.v1.ListMeasurementTypesRequest\x1a\x38.hal.adapters.timetagger.v1.ListMeasurementTypesResponse\"\x00\x12k\n\nInitialize\x12-.hal.adapters.timetagger.v1.InitializeRequest\x1a..hal.adapters.timetagger.v1.InitializeResponse\x12q\n\x0c\x44\x65initialize\x12/.hal.adapters.timetagger.v1.DeinitializeRequest\x1a\x30.hal.adapters.timetagger.v1.DeinitializeResponse\x12h\n\tGetStatus\x12,.hal.adapters.timetagger.v1.GetStatusRequest\x1a-.hal.adapters.timetagger.v1.GetStatusResponse\x12h\n\tSetConfig\x12,.hal.adapters.timetagger.v1.SetConfigRequest\x1a-.hal.adapters.timetagger.v1.SetConfigResponse\x12\x66\n\x0b\x41utoRecover\x12*.hal.adapters.common.v1.AutoRecoverRequest\x1a+.hal.adapters.common.v1.AutoRecoverResponse\x12Q\n\x04Tune\x12#.hal.adapters.common.v1.TuneRequest\x1a$.hal.adapters.common.v1.TuneResponse\x12\x86\x01\n\x13StartDataCollection\x12\x36.hal.adapters.timetagger.v1.StartDataCollectionRequest\x1a\x37.hal.adapters.timetagger.v1.StartDataCollectionResponse\x12\x83\x01\n\x12StopDataCollection\x12\x35.hal.adapters.timetagger.v1.StopDataCollectionRequest\x1a\x36.hal.adapters.timetagger.v1.StopDataCollectionResponse\x12q\n\x0cTriggerEvent\x12/.hal.adapters.timetagger.v1.TriggerEventRequest\x1a\x30.hal.adapters.timetagger.v1.TriggerEventResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'hal.adapters.timetagger.v1.timetagger_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
-  _globals['_TIMETAGGERSTATE']._serialized_start=1311
-  _globals['_TIMETAGGERSTATE']._serialized_end=1589
+  _globals['_TIMETAGGERSTATE']._serialized_start=2151
+  _globals['_TIMETAGGERSTATE']._serialized_end=2429
+  _globals['_RESOURCETYPE']._serialized_start=2431
+  _globals['_RESOURCETYPE']._serialized_end=2503
   _globals['_GETPRODUCTINFOREQUEST']._serialized_start=112
-  _globals['_GETPRODUCTINFOREQUEST']._serialized_end=178
-  _globals['_GETPRODUCTINFORESPONSE']._serialized_start=180
-  _globals['_GETPRODUCTINFORESPONSE']._serialized_end=291
-  _globals['_INITIALIZEREQUEST']._serialized_start=293
-  _globals['_INITIALIZEREQUEST']._serialized_end=376
-  _globals['_INITIALIZERESPONSE']._serialized_start=378
-  _globals['_INITIALIZERESPONSE']._serialized_end=415
-  _globals['_DEINITIALIZEREQUEST']._serialized_start=417
-  _globals['_DEINITIALIZEREQUEST']._serialized_end=481
-  _globals['_DEINITIALIZERESPONSE']._serialized_start=483
-  _globals['_DEINITIALIZERESPONSE']._serialized_end=522
-  _globals['_GETSTATUSREQUEST']._serialized_start=524
-  _globals['_GETSTATUSREQUEST']._serialized_end=585
-  _globals['_GETSTATUSRESPONSE']._serialized_start=588
-  _globals['_GETSTATUSRESPONSE']._serialized_end=728
-  _globals['_SETCONFIGREQUEST']._serialized_start=730
-  _globals['_SETCONFIGREQUEST']._serialized_end=812
-  _globals['_SETCONFIGRESPONSE']._serialized_start=814
-  _globals['_SETCONFIGRESPONSE']._serialized_end=850
-  _globals['_STARTDATACOLLECTIONREQUEST']._serialized_start=852
-  _globals['_STARTDATACOLLECTIONREQUEST']._serialized_end=960
-  _globals['_STARTDATACOLLECTIONRESPONSE']._serialized_start=962
-  _globals['_STARTDATACOLLECTIONRESPONSE']._serialized_end=1008
-  _globals['_STOPDATACOLLECTIONREQUEST']._serialized_start=1010
-  _globals['_STOPDATACOLLECTIONREQUEST']._serialized_end=1096
-  _globals['_STOPDATACOLLECTIONRESPONSE']._serialized_start=1098
-  _globals['_STOPDATACOLLECTIONRESPONSE']._serialized_end=1143
-  _globals['_TRIGGEREVENTREQUEST']._serialized_start=1145
-  _globals['_TRIGGEREVENTREQUEST']._serialized_end=1267
-  _globals['_TRIGGEREVENTRESPONSE']._serialized_start=1269
-  _globals['_TRIGGEREVENTRESPONSE']._serialized_end=1308
-  _globals['_ADAPTERTIMETAGGERSERVICE']._serialized_start=1592
-  _globals['_ADAPTERTIMETAGGERSERVICE']._serialized_end=2980
+  _globals['_GETPRODUCTINFOREQUEST']._serialized_end=220
+  _globals['_GETPRODUCTINFORESPONSE']._serialized_start=222
+  _globals['_GETPRODUCTINFORESPONSE']._serialized_end=333
+  _globals['_LISTMEASUREMENTTYPESREQUEST']._serialized_start=335
+  _globals['_LISTMEASUREMENTTYPESREQUEST']._serialized_end=429
+  _globals['_MEASUREMENTTYPEINFO']._serialized_start=432
+  _globals['_MEASUREMENTTYPEINFO']._serialized_end=600
+  _globals['_LISTMEASUREMENTTYPESRESPONSE']._serialized_start=602
+  _globals['_LISTMEASUREMENTTYPESRESPONSE']._serialized_end=708
+  _globals['_INITIALIZEREQUEST']._serialized_start=710
+  _globals['_INITIALIZEREQUEST']._serialized_end=835
+  _globals['_INITIALIZERESPONSE']._serialized_start=837
+  _globals['_INITIALIZERESPONSE']._serialized_end=874
+  _globals['_DEINITIALIZEREQUEST']._serialized_start=876
+  _globals['_DEINITIALIZEREQUEST']._serialized_end=982
+  _globals['_DEINITIALIZERESPONSE']._serialized_start=984
+  _globals['_DEINITIALIZERESPONSE']._serialized_end=1023
+  _globals['_GETSTATUSREQUEST']._serialized_start=1025
+  _globals['_GETSTATUSREQUEST']._serialized_end=1128
+  _globals['_GETSTATUSRESPONSE']._serialized_start=1131
+  _globals['_GETSTATUSRESPONSE']._serialized_end=1271
+  _globals['_SETCONFIGREQUEST']._serialized_start=1273
+  _globals['_SETCONFIGREQUEST']._serialized_end=1397
+  _globals['_SETCONFIGRESPONSE']._serialized_start=1399
+  _globals['_SETCONFIGRESPONSE']._serialized_end=1435
+  _globals['_STARTDATACOLLECTIONREQUEST']._serialized_start=1438
+  _globals['_STARTDATACOLLECTIONREQUEST']._serialized_end=1630
+  _globals['_STARTDATACOLLECTIONRESPONSE']._serialized_start=1632
+  _globals['_STARTDATACOLLECTIONRESPONSE']._serialized_end=1678
+  _globals['_STOPDATACOLLECTIONREQUEST']._serialized_start=1681
+  _globals['_STOPDATACOLLECTIONREQUEST']._serialized_end=1851
+  _globals['_STOPDATACOLLECTIONRESPONSE']._serialized_start=1853
+  _globals['_STOPDATACOLLECTIONRESPONSE']._serialized_end=1898
+  _globals['_TRIGGEREVENTREQUEST']._serialized_start=1901
+  _globals['_TRIGGEREVENTREQUEST']._serialized_end=2107
+  _globals['_TRIGGEREVENTRESPONSE']._serialized_start=2109
+  _globals['_TRIGGEREVENTRESPONSE']._serialized_end=2148
+  _globals['_ADAPTERTIMETAGGERSERVICE']._serialized_start=2506
+  _globals['_ADAPTERTIMETAGGERSERVICE']._serialized_end=4036
 # @@protoc_insertion_point(module_scope)

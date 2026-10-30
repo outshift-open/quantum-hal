@@ -28,7 +28,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n#hal/adapters/common/v1/common.proto\x12\x16hal.adapters.common.v1\"\x14\n\x12HealthCheckRequest\"&\n\x13HealthCheckResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"G\n\x1aResourceHealthCheckRequest\x12\x12\n\nproduct_id\x18\x01 \x01(\t\x12\x15\n\rresource_type\x18\x02 \x01(\t\".\n\x1bResourceHealthCheckResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"?\n\x12\x41utoRecoverRequest\x12\x12\n\nproduct_id\x18\x01 \x01(\t\x12\x15\n\rresource_type\x18\x02 \x01(\t\"&\n\x13\x41utoRecoverResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"M\n\x0bTuneRequest\x12\x12\n\nproduct_id\x18\x01 \x01(\t\x12\x13\n\x0b\x63onfig_json\x18\x02 \x01(\t\x12\x15\n\rresource_type\x18\x03 \x01(\t\"\x1f\n\x0cTuneResponse\x12\x0f\n\x07message\x18\x01 \x01(\tb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n#hal/adapters/common/v1/common.proto\x12\x16hal.adapters.common.v1\"\x14\n\x12HealthCheckRequest\"&\n\x13HealthCheckResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"q\n\x1aResourceHealthCheckRequest\x12\x12\n\nproduct_id\x18\x01 \x01(\t\x12\x15\n\rresource_type\x18\x02 \x01(\t\x12\x18\n\x0b\x64\x65vice_host\x18\x03 \x01(\tH\x00\x88\x01\x01\x42\x0e\n\x0c_device_host\".\n\x1bResourceHealthCheckResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"?\n\x12\x41utoRecoverRequest\x12\x12\n\nproduct_id\x18\x01 \x01(\t\x12\x15\n\rresource_type\x18\x02 \x01(\t\"&\n\x13\x41utoRecoverResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"M\n\x0bTuneRequest\x12\x12\n\nproduct_id\x18\x01 \x01(\t\x12\x13\n\x0b\x63onfig_json\x18\x02 \x01(\t\x12\x15\n\rresource_type\x18\x03 \x01(\t\"\x1f\n\x0cTuneResponse\x12\x0f\n\x07message\x18\x01 \x01(\tb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -40,15 +40,15 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_HEALTHCHECKRESPONSE']._serialized_start=85
   _globals['_HEALTHCHECKRESPONSE']._serialized_end=123
   _globals['_RESOURCEHEALTHCHECKREQUEST']._serialized_start=125
-  _globals['_RESOURCEHEALTHCHECKREQUEST']._serialized_end=196
-  _globals['_RESOURCEHEALTHCHECKRESPONSE']._serialized_start=198
-  _globals['_RESOURCEHEALTHCHECKRESPONSE']._serialized_end=244
-  _globals['_AUTORECOVERREQUEST']._serialized_start=246
-  _globals['_AUTORECOVERREQUEST']._serialized_end=309
-  _globals['_AUTORECOVERRESPONSE']._serialized_start=311
-  _globals['_AUTORECOVERRESPONSE']._serialized_end=349
-  _globals['_TUNEREQUEST']._serialized_start=351
-  _globals['_TUNEREQUEST']._serialized_end=428
-  _globals['_TUNERESPONSE']._serialized_start=430
-  _globals['_TUNERESPONSE']._serialized_end=461
+  _globals['_RESOURCEHEALTHCHECKREQUEST']._serialized_end=238
+  _globals['_RESOURCEHEALTHCHECKRESPONSE']._serialized_start=240
+  _globals['_RESOURCEHEALTHCHECKRESPONSE']._serialized_end=286
+  _globals['_AUTORECOVERREQUEST']._serialized_start=288
+  _globals['_AUTORECOVERREQUEST']._serialized_end=351
+  _globals['_AUTORECOVERRESPONSE']._serialized_start=353
+  _globals['_AUTORECOVERRESPONSE']._serialized_end=391
+  _globals['_TUNEREQUEST']._serialized_start=393
+  _globals['_TUNEREQUEST']._serialized_end=470
+  _globals['_TUNERESPONSE']._serialized_start=472
+  _globals['_TUNERESPONSE']._serialized_end=503
 # @@protoc_insertion_point(module_scope)
