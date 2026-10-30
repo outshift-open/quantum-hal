@@ -24,7 +24,7 @@ service AdapterTimeTaggerService {
   rpc GetProductInfo(GetProductInfoRequest) returns (GetProductInfoResponse);
 
   // List of supported measurement types per device type. 
-  // Also marks each measurement type if it is mockSupported or hardwareSupported  
+  // Also marks each measurement type if it is mock_supported or hardware_supported  
   rpc ListMeasurementTypes (ListMeasurementTypesRequest) returns (ListMeasurementTypesResponse) {}
 
 
@@ -121,7 +121,7 @@ enum TimeTaggerState {
 
 enum ResourceType {
    RESOURCE_TYPE_UNSPECIFIED = 0;
-   SWABIAN = 1;
+   RESOURCE_TYPE_SWABIAN = 1;
 }
 
 message GetProductInfoRequest {
@@ -143,14 +143,14 @@ message ListMeasurementTypesRequest {
 message MeasurementTypeInfo {
    string id = 1;
    string description = 2;
-   bool mockSupported = 3;
-   bool hardwareSupported = 4;
+   bool mock_supported = 3;
+   bool hardware_supported = 4;
    optional string usecase = 5;
    optional string name = 6;
 }
 
 message ListMeasurementTypesResponse {
-   repeated MeasurementTypeInfo measurementTypes = 1;
+   repeated MeasurementTypeInfo measurement_types = 1;
 }
 
 // Vendor-specific bring-up parameters, if a given product needs any (e.g.

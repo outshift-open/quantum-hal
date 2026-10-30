@@ -42,7 +42,7 @@ message ResourceHealthCheckRequest {
   // Timetagger adapter is capable of reaching multiple devices while other adapters do not.
   // Network address (host:port) of the specific Swabian device to target.
   // Only meaningful for checking Swabian hardware devices health
-  optional device_host = 3;
+  optional string device_host = 3;
 }
 
 message ResourceHealthCheckResponse {
