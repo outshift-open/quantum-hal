@@ -806,13 +806,11 @@ func (x *SetConfigResponse) GetMessage() string {
 // those fields: each product's adapter implementation defines and documents
 // its own JSON schema for config_json and is responsible for parsing it.
 type StartDataCollectionRequest struct {
-	state        protoimpl.MessageState `protogen:"open.v1"`
-	ProductId    string                 `protobuf:"bytes,1,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
-	RunId        string                 `protobuf:"bytes,2,opt,name=run_id,json=runId,proto3" json:"run_id,omitempty"`
-	ConfigJson   string                 `protobuf:"bytes,3,opt,name=config_json,json=configJson,proto3" json:"config_json,omitempty"`
-	ResourceType string                 `protobuf:"bytes,4,opt,name=resource_type,json=resourceType,proto3" json:"resource_type,omitempty"`
-	// Temp solution until we figure out device registry
-	DeviceHost    *string `protobuf:"bytes,5,opt,name=device_host,json=deviceHost,proto3,oneof" json:"device_host,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ProductId     string                 `protobuf:"bytes,1,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
+	RunId         string                 `protobuf:"bytes,2,opt,name=run_id,json=runId,proto3" json:"run_id,omitempty"`
+	ConfigJson    string                 `protobuf:"bytes,3,opt,name=config_json,json=configJson,proto3" json:"config_json,omitempty"`
+	ResourceType  string                 `protobuf:"bytes,4,opt,name=resource_type,json=resourceType,proto3" json:"resource_type,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -875,13 +873,6 @@ func (x *StartDataCollectionRequest) GetResourceType() string {
 	return ""
 }
 
-func (x *StartDataCollectionRequest) GetDeviceHost() string {
-	if x != nil && x.DeviceHost != nil {
-		return *x.DeviceHost
-	}
-	return ""
-}
-
 type StartDataCollectionResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
@@ -927,12 +918,10 @@ func (x *StartDataCollectionResponse) GetMessage() string {
 }
 
 type StopDataCollectionRequest struct {
-	state        protoimpl.MessageState `protogen:"open.v1"`
-	ProductId    string                 `protobuf:"bytes,1,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
-	RunId        string                 `protobuf:"bytes,2,opt,name=run_id,json=runId,proto3" json:"run_id,omitempty"`
-	ResourceType string                 `protobuf:"bytes,3,opt,name=resource_type,json=resourceType,proto3" json:"resource_type,omitempty"`
-	// Temp solution until we figure out device registry
-	DeviceHost    *string `protobuf:"bytes,4,opt,name=device_host,json=deviceHost,proto3,oneof" json:"device_host,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ProductId     string                 `protobuf:"bytes,1,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
+	RunId         string                 `protobuf:"bytes,2,opt,name=run_id,json=runId,proto3" json:"run_id,omitempty"`
+	ResourceType  string                 `protobuf:"bytes,3,opt,name=resource_type,json=resourceType,proto3" json:"resource_type,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -988,13 +977,6 @@ func (x *StopDataCollectionRequest) GetResourceType() string {
 	return ""
 }
 
-func (x *StopDataCollectionRequest) GetDeviceHost() string {
-	if x != nil && x.DeviceHost != nil {
-		return *x.DeviceHost
-	}
-	return ""
-}
-
 type StopDataCollectionResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
@@ -1045,14 +1027,12 @@ func (x *StopDataCollectionResponse) GetMessage() string {
 // needs, encoded as a JSON object, per a schema the adapter implementation
 // defines and documents for that event_type.
 type TriggerEventRequest struct {
-	state        protoimpl.MessageState `protogen:"open.v1"`
-	ProductId    string                 `protobuf:"bytes,1,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
-	RunId        string                 `protobuf:"bytes,2,opt,name=run_id,json=runId,proto3" json:"run_id,omitempty"`
-	EventType    string                 `protobuf:"bytes,3,opt,name=event_type,json=eventType,proto3" json:"event_type,omitempty"`
-	PayloadJson  string                 `protobuf:"bytes,4,opt,name=payload_json,json=payloadJson,proto3" json:"payload_json,omitempty"`
-	ResourceType string                 `protobuf:"bytes,5,opt,name=resource_type,json=resourceType,proto3" json:"resource_type,omitempty"`
-	// Temp solution until we figure out device registry
-	DeviceHost    *string `protobuf:"bytes,6,opt,name=device_host,json=deviceHost,proto3,oneof" json:"device_host,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ProductId     string                 `protobuf:"bytes,1,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
+	RunId         string                 `protobuf:"bytes,2,opt,name=run_id,json=runId,proto3" json:"run_id,omitempty"`
+	EventType     string                 `protobuf:"bytes,3,opt,name=event_type,json=eventType,proto3" json:"event_type,omitempty"`
+	PayloadJson   string                 `protobuf:"bytes,4,opt,name=payload_json,json=payloadJson,proto3" json:"payload_json,omitempty"`
+	ResourceType  string                 `protobuf:"bytes,5,opt,name=resource_type,json=resourceType,proto3" json:"resource_type,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1118,13 +1098,6 @@ func (x *TriggerEventRequest) GetPayloadJson() string {
 func (x *TriggerEventRequest) GetResourceType() string {
 	if x != nil {
 		return x.ResourceType
-	}
-	return ""
-}
-
-func (x *TriggerEventRequest) GetDeviceHost() string {
-	if x != nil && x.DeviceHost != nil {
-		return *x.DeviceHost
 	}
 	return ""
 }
@@ -1226,29 +1199,23 @@ const file_hal_adapters_timetagger_v1_timetagger_proto_rawDesc = "" +
 	"configJson\x12#\n" +
 	"\rresource_type\x18\x03 \x01(\tR\fresourceType\"-\n" +
 	"\x11SetConfigResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage\"\xce\x01\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\"\x98\x01\n" +
 	"\x1aStartDataCollectionRequest\x12\x1d\n" +
 	"\n" +
 	"product_id\x18\x01 \x01(\tR\tproductId\x12\x15\n" +
 	"\x06run_id\x18\x02 \x01(\tR\x05runId\x12\x1f\n" +
 	"\vconfig_json\x18\x03 \x01(\tR\n" +
 	"configJson\x12#\n" +
-	"\rresource_type\x18\x04 \x01(\tR\fresourceType\x12$\n" +
-	"\vdevice_host\x18\x05 \x01(\tH\x00R\n" +
-	"deviceHost\x88\x01\x01B\x0e\n" +
-	"\f_device_host\"7\n" +
+	"\rresource_type\x18\x04 \x01(\tR\fresourceType\"7\n" +
 	"\x1bStartDataCollectionResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage\"\xac\x01\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\"v\n" +
 	"\x19StopDataCollectionRequest\x12\x1d\n" +
 	"\n" +
 	"product_id\x18\x01 \x01(\tR\tproductId\x12\x15\n" +
 	"\x06run_id\x18\x02 \x01(\tR\x05runId\x12#\n" +
-	"\rresource_type\x18\x03 \x01(\tR\fresourceType\x12$\n" +
-	"\vdevice_host\x18\x04 \x01(\tH\x00R\n" +
-	"deviceHost\x88\x01\x01B\x0e\n" +
-	"\f_device_host\"6\n" +
+	"\rresource_type\x18\x03 \x01(\tR\fresourceType\"6\n" +
 	"\x1aStopDataCollectionResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage\"\xe8\x01\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\"\xb2\x01\n" +
 	"\x13TriggerEventRequest\x12\x1d\n" +
 	"\n" +
 	"product_id\x18\x01 \x01(\tR\tproductId\x12\x15\n" +
@@ -1256,10 +1223,7 @@ const file_hal_adapters_timetagger_v1_timetagger_proto_rawDesc = "" +
 	"\n" +
 	"event_type\x18\x03 \x01(\tR\teventType\x12!\n" +
 	"\fpayload_json\x18\x04 \x01(\tR\vpayloadJson\x12#\n" +
-	"\rresource_type\x18\x05 \x01(\tR\fresourceType\x12$\n" +
-	"\vdevice_host\x18\x06 \x01(\tH\x00R\n" +
-	"deviceHost\x88\x01\x01B\x0e\n" +
-	"\f_device_host\"0\n" +
+	"\rresource_type\x18\x05 \x01(\tR\fresourceType\"0\n" +
 	"\x14TriggerEventResponse\x12\x18\n" +
 	"\amessage\x18\x01 \x01(\tR\amessage*\x96\x02\n" +
 	"\x0fTimeTaggerState\x12!\n" +
@@ -1373,9 +1337,6 @@ func file_hal_adapters_timetagger_v1_timetagger_proto_init() {
 	if File_hal_adapters_timetagger_v1_timetagger_proto != nil {
 		return
 	}
-	file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[13].OneofWrappers = []any{}
-	file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[15].OneofWrappers = []any{}
-	file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[17].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

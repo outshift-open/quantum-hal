@@ -37,12 +37,6 @@ message HealthCheckResponse {
 message ResourceHealthCheckRequest {
   string product_id = 1;
   string resource_type = 2;
-
-  // Temporary solution until we figure out device registry
-  // Timetagger adapter is capable of reaching multiple devices while other adapters do not.
-  // Network address (host:port) of the specific Swabian device to target.
-  // Only meaningful for checking Swabian hardware devices health
-  optional string device_host = 3;
 }
 
 message ResourceHealthCheckResponse {

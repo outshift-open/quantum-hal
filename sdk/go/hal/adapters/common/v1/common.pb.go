@@ -113,14 +113,9 @@ func (x *HealthCheckResponse) GetMessage() string {
 // an UP / DOWN / DEGRADED / IDLE-style result, which may be informed by the
 // device's own lifecycle state enum.
 type ResourceHealthCheckRequest struct {
-	state        protoimpl.MessageState `protogen:"open.v1"`
-	ProductId    string                 `protobuf:"bytes,1,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
-	ResourceType string                 `protobuf:"bytes,2,opt,name=resource_type,json=resourceType,proto3" json:"resource_type,omitempty"`
-	// Temporary solution until we figure out device registry
-	// Timetagger adapter is capable of reaching multiple devices while other adapters do not.
-	// Network address (host:port) of the specific Swabian device to target.
-	// Only meaningful for checking Swabian hardware devices health
-	DeviceHost    *string `protobuf:"bytes,3,opt,name=device_host,json=deviceHost,proto3,oneof" json:"device_host,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ProductId     string                 `protobuf:"bytes,1,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
+	ResourceType  string                 `protobuf:"bytes,2,opt,name=resource_type,json=resourceType,proto3" json:"resource_type,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -165,13 +160,6 @@ func (x *ResourceHealthCheckRequest) GetProductId() string {
 func (x *ResourceHealthCheckRequest) GetResourceType() string {
 	if x != nil {
 		return x.ResourceType
-	}
-	return ""
-}
-
-func (x *ResourceHealthCheckRequest) GetDeviceHost() string {
-	if x != nil && x.DeviceHost != nil {
-		return *x.DeviceHost
 	}
 	return ""
 }
@@ -436,14 +424,11 @@ const file_hal_adapters_common_v1_common_proto_rawDesc = "" +
 	"#hal/adapters/common/v1/common.proto\x12\x16hal.adapters.common.v1\"\x14\n" +
 	"\x12HealthCheckRequest\"/\n" +
 	"\x13HealthCheckResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage\"\x96\x01\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\"`\n" +
 	"\x1aResourceHealthCheckRequest\x12\x1d\n" +
 	"\n" +
 	"product_id\x18\x01 \x01(\tR\tproductId\x12#\n" +
-	"\rresource_type\x18\x02 \x01(\tR\fresourceType\x12$\n" +
-	"\vdevice_host\x18\x03 \x01(\tH\x00R\n" +
-	"deviceHost\x88\x01\x01B\x0e\n" +
-	"\f_device_host\"7\n" +
+	"\rresource_type\x18\x02 \x01(\tR\fresourceType\"7\n" +
 	"\x1bResourceHealthCheckResponse\x12\x18\n" +
 	"\amessage\x18\x01 \x01(\tR\amessage\"X\n" +
 	"\x12AutoRecoverRequest\x12\x1d\n" +
@@ -498,7 +483,6 @@ func file_hal_adapters_common_v1_common_proto_init() {
 	if File_hal_adapters_common_v1_common_proto != nil {
 		return
 	}
-	file_hal_adapters_common_v1_common_proto_msgTypes[2].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

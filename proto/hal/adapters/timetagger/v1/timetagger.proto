@@ -205,9 +205,6 @@ message StartDataCollectionRequest {
   string run_id = 2;
   string config_json = 3;
   string resource_type = 4;
-
-  // Temp solution until we figure out device registry 
-  optional string device_host = 5;
 }
 
 message StartDataCollectionResponse {
@@ -218,9 +215,6 @@ message StopDataCollectionRequest {
   string product_id = 1;
   string run_id = 2;
   string resource_type = 3;
-
-  // Temp solution until we figure out device registry 
-  optional string device_host = 4;
 }
 
 message StopDataCollectionResponse {
@@ -238,9 +232,6 @@ message TriggerEventRequest {
   string event_type = 3;
   string payload_json = 4;
   string resource_type = 5;
-  
-  // Temp solution until we figure out device registry 
-  optional string device_host = 6;
 }
 
 message TriggerEventResponse {

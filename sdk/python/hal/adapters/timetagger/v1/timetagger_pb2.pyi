@@ -140,18 +140,16 @@ class SetConfigResponse(_message.Message):
     def __init__(self, message: _Optional[str] = ...) -> None: ...
 
 class StartDataCollectionRequest(_message.Message):
-    __slots__ = ("product_id", "run_id", "config_json", "resource_type", "device_host")
+    __slots__ = ("product_id", "run_id", "config_json", "resource_type")
     PRODUCT_ID_FIELD_NUMBER: _ClassVar[int]
     RUN_ID_FIELD_NUMBER: _ClassVar[int]
     CONFIG_JSON_FIELD_NUMBER: _ClassVar[int]
     RESOURCE_TYPE_FIELD_NUMBER: _ClassVar[int]
-    DEVICE_HOST_FIELD_NUMBER: _ClassVar[int]
     product_id: str
     run_id: str
     config_json: str
     resource_type: str
-    device_host: str
-    def __init__(self, product_id: _Optional[str] = ..., run_id: _Optional[str] = ..., config_json: _Optional[str] = ..., resource_type: _Optional[str] = ..., device_host: _Optional[str] = ...) -> None: ...
+    def __init__(self, product_id: _Optional[str] = ..., run_id: _Optional[str] = ..., config_json: _Optional[str] = ..., resource_type: _Optional[str] = ...) -> None: ...
 
 class StartDataCollectionResponse(_message.Message):
     __slots__ = ("message",)
@@ -160,16 +158,14 @@ class StartDataCollectionResponse(_message.Message):
     def __init__(self, message: _Optional[str] = ...) -> None: ...
 
 class StopDataCollectionRequest(_message.Message):
-    __slots__ = ("product_id", "run_id", "resource_type", "device_host")
+    __slots__ = ("product_id", "run_id", "resource_type")
     PRODUCT_ID_FIELD_NUMBER: _ClassVar[int]
     RUN_ID_FIELD_NUMBER: _ClassVar[int]
     RESOURCE_TYPE_FIELD_NUMBER: _ClassVar[int]
-    DEVICE_HOST_FIELD_NUMBER: _ClassVar[int]
     product_id: str
     run_id: str
     resource_type: str
-    device_host: str
-    def __init__(self, product_id: _Optional[str] = ..., run_id: _Optional[str] = ..., resource_type: _Optional[str] = ..., device_host: _Optional[str] = ...) -> None: ...
+    def __init__(self, product_id: _Optional[str] = ..., run_id: _Optional[str] = ..., resource_type: _Optional[str] = ...) -> None: ...
 
 class StopDataCollectionResponse(_message.Message):
     __slots__ = ("message",)
@@ -178,20 +174,18 @@ class StopDataCollectionResponse(_message.Message):
     def __init__(self, message: _Optional[str] = ...) -> None: ...
 
 class TriggerEventRequest(_message.Message):
-    __slots__ = ("product_id", "run_id", "event_type", "payload_json", "resource_type", "device_host")
+    __slots__ = ("product_id", "run_id", "event_type", "payload_json", "resource_type")
     PRODUCT_ID_FIELD_NUMBER: _ClassVar[int]
     RUN_ID_FIELD_NUMBER: _ClassVar[int]
     EVENT_TYPE_FIELD_NUMBER: _ClassVar[int]
     PAYLOAD_JSON_FIELD_NUMBER: _ClassVar[int]
     RESOURCE_TYPE_FIELD_NUMBER: _ClassVar[int]
-    DEVICE_HOST_FIELD_NUMBER: _ClassVar[int]
     product_id: str
     run_id: str
     event_type: str
     payload_json: str
     resource_type: str
-    device_host: str
-    def __init__(self, product_id: _Optional[str] = ..., run_id: _Optional[str] = ..., event_type: _Optional[str] = ..., payload_json: _Optional[str] = ..., resource_type: _Optional[str] = ..., device_host: _Optional[str] = ...) -> None: ...
+    def __init__(self, product_id: _Optional[str] = ..., run_id: _Optional[str] = ..., event_type: _Optional[str] = ..., payload_json: _Optional[str] = ..., resource_type: _Optional[str] = ...) -> None: ...
 
 class TriggerEventResponse(_message.Message):
     __slots__ = ("message",)

@@ -19,14 +19,12 @@ class HealthCheckResponse(_message.Message):
     def __init__(self, message: _Optional[str] = ...) -> None: ...
 
 class ResourceHealthCheckRequest(_message.Message):
-    __slots__ = ("product_id", "resource_type", "device_host")
+    __slots__ = ("product_id", "resource_type")
     PRODUCT_ID_FIELD_NUMBER: _ClassVar[int]
     RESOURCE_TYPE_FIELD_NUMBER: _ClassVar[int]
-    DEVICE_HOST_FIELD_NUMBER: _ClassVar[int]
     product_id: str
     resource_type: str
-    device_host: str
-    def __init__(self, product_id: _Optional[str] = ..., resource_type: _Optional[str] = ..., device_host: _Optional[str] = ...) -> None: ...
+    def __init__(self, product_id: _Optional[str] = ..., resource_type: _Optional[str] = ...) -> None: ...
 
 class ResourceHealthCheckResponse(_message.Message):
     __slots__ = ("message",)
