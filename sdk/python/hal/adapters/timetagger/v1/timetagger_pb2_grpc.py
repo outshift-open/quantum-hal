@@ -136,8 +136,7 @@ class AdapterTimeTaggerServiceServicer:
         raise NotImplementedError('Method not implemented!')
 
     def ListMeasurementTypes(self, request, context):
-        """List of supported measurement types per device type. 
-        Also marks each measurement type if it is mock_supported or hardware_supported  
+        """List of supported measurement types per device type.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')

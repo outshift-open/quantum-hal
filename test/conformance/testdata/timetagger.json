@@ -3,12 +3,13 @@
   "_comment_required_fields": "Each array entry requires non-empty `product_id` and `resource_type`. Top-level `product_id` and `resource_type` are copied onto every RPC except HealthCheck.",
   "timetagger": [
     {
-      "resource_type": "RESOURCE_TYPE_SWABIAN",
+      "resource_type": "SWABIAN",
       "product_id": "swabian-timetagger-x",
       "rpcs": {
         "HealthCheck": {},
         "ResourceHealthCheck": {},
         "GetProductInfo": {},
+        "ListMeasurementTypes": {},
         "Initialize": {
           "config_json": {}
         },

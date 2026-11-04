@@ -145,7 +145,47 @@ class TestTimeTagger:
             "serial_number": (str, True),
             "product_code": (str, True),
             "software_version": (str, True),
+            "vendor": (str, True),
         })
+
+    def test_get_product_info_missing_resource_type(self, client):
+        """GetProductInfo with empty resource_type is INVALID_ARGUMENT"""
+        request = timetagger_pb2.GetProductInfoRequest(product_id="any")
+        with pytest.raises(grpc.RpcError) as exc_info:
+            client.GetProductInfo(request)
+        assert exc_info.value.code() == grpc.StatusCode.INVALID_ARGUMENT
+
+    def test_list_measurement_types(self, client, timetagger_kind):
+        """Test ListMeasurementTypes RPC"""
+        request = timetagger_pb2.ListMeasurementTypesRequest(
+            **rpc_request(timetagger_kind, "ListMeasurementTypes")
+        )
+        response = client.ListMeasurementTypes(request)
+        assert response is not None
+        assert len(response.measurement_types) > 0, (
+            "ListMeasurementTypes must return at least one measurement type"
+        )
+        ids = set()
+        for info in response.measurement_types:
+            validate_response_field(info, "id", str, allow_empty=False)
+            validate_response_field(info, "description", str, allow_empty=True)
+            assert info.id not in ids, (
+                "Duplicate measurement type id '{0}'".format(info.id)
+            )
+            ids.add(info.id)
+            # usecase and name are optional: when set they must be non-empty.
+            for optional_field in ("usecase", "name"):
+                if info.HasField(optional_field):
+                    validate_response_field(
+                        info, optional_field, str, allow_empty=False
+                    )
+
+    def test_list_measurement_types_missing_resource_type(self, client):
+        """ListMeasurementTypes with empty resource_type is INVALID_ARGUMENT"""
+        request = timetagger_pb2.ListMeasurementTypesRequest()
+        with pytest.raises(grpc.RpcError) as exc_info:
+            client.ListMeasurementTypes(request)
+        assert exc_info.value.code() == grpc.StatusCode.INVALID_ARGUMENT
 
     def test_initialize(self, client, timetagger_kind):
         """Test Initialize RPC"""

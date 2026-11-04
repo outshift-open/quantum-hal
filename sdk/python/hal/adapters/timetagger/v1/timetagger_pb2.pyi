@@ -22,11 +22,6 @@ class TimeTaggerState(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     TIME_TAGGER_STATE_FAULT: _ClassVar[TimeTaggerState]
     TIME_TAGGER_STATE_DEINITIALIZING: _ClassVar[TimeTaggerState]
     TIME_TAGGER_STATE_DEGRADED: _ClassVar[TimeTaggerState]
-
-class ResourceType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-    __slots__ = ()
-    RESOURCE_TYPE_UNSPECIFIED: _ClassVar[ResourceType]
-    RESOURCE_TYPE_SWABIAN: _ClassVar[ResourceType]
 TIME_TAGGER_STATE_UNSPECIFIED: TimeTaggerState
 TIME_TAGGER_STATE_IDLE: TimeTaggerState
 TIME_TAGGER_STATE_INITIALIZING: TimeTaggerState
@@ -35,16 +30,14 @@ TIME_TAGGER_STATE_COLLECTING: TimeTaggerState
 TIME_TAGGER_STATE_FAULT: TimeTaggerState
 TIME_TAGGER_STATE_DEINITIALIZING: TimeTaggerState
 TIME_TAGGER_STATE_DEGRADED: TimeTaggerState
-RESOURCE_TYPE_UNSPECIFIED: ResourceType
-RESOURCE_TYPE_SWABIAN: ResourceType
 
 class GetProductInfoRequest(_message.Message):
     __slots__ = ("product_id", "resource_type")
     PRODUCT_ID_FIELD_NUMBER: _ClassVar[int]
     RESOURCE_TYPE_FIELD_NUMBER: _ClassVar[int]
     product_id: str
-    resource_type: ResourceType
-    def __init__(self, product_id: _Optional[str] = ..., resource_type: _Optional[_Union[ResourceType, str]] = ...) -> None: ...
+    resource_type: str
+    def __init__(self, product_id: _Optional[str] = ..., resource_type: _Optional[str] = ...) -> None: ...
 
 class GetProductInfoResponse(_message.Message):
     __slots__ = ("serial_number", "product_code", "software_version", "vendor")
@@ -61,24 +54,18 @@ class GetProductInfoResponse(_message.Message):
 class ListMeasurementTypesRequest(_message.Message):
     __slots__ = ("resource_type",)
     RESOURCE_TYPE_FIELD_NUMBER: _ClassVar[int]
-    resource_type: ResourceType
-    def __init__(self, resource_type: _Optional[_Union[ResourceType, str]] = ...) -> None: ...
+    resource_type: str
+    def __init__(self, resource_type: _Optional[str] = ...) -> None: ...
 
 class MeasurementTypeInfo(_message.Message):
-    __slots__ = ("id", "description", "mock_supported", "hardware_supported", "usecase", "name")
+    __slots__ = ("id", "description", "name")
     ID_FIELD_NUMBER: _ClassVar[int]
     DESCRIPTION_FIELD_NUMBER: _ClassVar[int]
-    MOCK_SUPPORTED_FIELD_NUMBER: _ClassVar[int]
-    HARDWARE_SUPPORTED_FIELD_NUMBER: _ClassVar[int]
-    USECASE_FIELD_NUMBER: _ClassVar[int]
     NAME_FIELD_NUMBER: _ClassVar[int]
     id: str
     description: str
-    mock_supported: bool
-    hardware_supported: bool
-    usecase: str
     name: str
-    def __init__(self, id: _Optional[str] = ..., description: _Optional[str] = ..., mock_supported: _Optional[bool] = ..., hardware_supported: _Optional[bool] = ..., usecase: _Optional[str] = ..., name: _Optional[str] = ...) -> None: ...
+    def __init__(self, id: _Optional[str] = ..., description: _Optional[str] = ..., name: _Optional[str] = ...) -> None: ...
 
 class ListMeasurementTypesResponse(_message.Message):
     __slots__ = ("measurement_types",)
@@ -93,8 +80,8 @@ class InitializeRequest(_message.Message):
     RESOURCE_TYPE_FIELD_NUMBER: _ClassVar[int]
     product_id: str
     config_json: str
-    resource_type: ResourceType
-    def __init__(self, product_id: _Optional[str] = ..., config_json: _Optional[str] = ..., resource_type: _Optional[_Union[ResourceType, str]] = ...) -> None: ...
+    resource_type: str
+    def __init__(self, product_id: _Optional[str] = ..., config_json: _Optional[str] = ..., resource_type: _Optional[str] = ...) -> None: ...
 
 class InitializeResponse(_message.Message):
     __slots__ = ("message",)
@@ -107,8 +94,8 @@ class DeinitializeRequest(_message.Message):
     PRODUCT_ID_FIELD_NUMBER: _ClassVar[int]
     RESOURCE_TYPE_FIELD_NUMBER: _ClassVar[int]
     product_id: str
-    resource_type: ResourceType
-    def __init__(self, product_id: _Optional[str] = ..., resource_type: _Optional[_Union[ResourceType, str]] = ...) -> None: ...
+    resource_type: str
+    def __init__(self, product_id: _Optional[str] = ..., resource_type: _Optional[str] = ...) -> None: ...
 
 class DeinitializeResponse(_message.Message):
     __slots__ = ("message",)
@@ -121,8 +108,8 @@ class GetStatusRequest(_message.Message):
     PRODUCT_ID_FIELD_NUMBER: _ClassVar[int]
     RESOURCE_TYPE_FIELD_NUMBER: _ClassVar[int]
     product_id: str
-    resource_type: ResourceType
-    def __init__(self, product_id: _Optional[str] = ..., resource_type: _Optional[_Union[ResourceType, str]] = ...) -> None: ...
+    resource_type: str
+    def __init__(self, product_id: _Optional[str] = ..., resource_type: _Optional[str] = ...) -> None: ...
 
 class GetStatusResponse(_message.Message):
     __slots__ = ("state", "run_id", "uptime_seconds", "status_json")
@@ -143,8 +130,8 @@ class SetConfigRequest(_message.Message):
     RESOURCE_TYPE_FIELD_NUMBER: _ClassVar[int]
     product_id: str
     config_json: str
-    resource_type: ResourceType
-    def __init__(self, product_id: _Optional[str] = ..., config_json: _Optional[str] = ..., resource_type: _Optional[_Union[ResourceType, str]] = ...) -> None: ...
+    resource_type: str
+    def __init__(self, product_id: _Optional[str] = ..., config_json: _Optional[str] = ..., resource_type: _Optional[str] = ...) -> None: ...
 
 class SetConfigResponse(_message.Message):
     __slots__ = ("message",)
@@ -162,9 +149,9 @@ class StartDataCollectionRequest(_message.Message):
     product_id: str
     run_id: str
     config_json: str
-    resource_type: ResourceType
+    resource_type: str
     device_host: str
-    def __init__(self, product_id: _Optional[str] = ..., run_id: _Optional[str] = ..., config_json: _Optional[str] = ..., resource_type: _Optional[_Union[ResourceType, str]] = ..., device_host: _Optional[str] = ...) -> None: ...
+    def __init__(self, product_id: _Optional[str] = ..., run_id: _Optional[str] = ..., config_json: _Optional[str] = ..., resource_type: _Optional[str] = ..., device_host: _Optional[str] = ...) -> None: ...
 
 class StartDataCollectionResponse(_message.Message):
     __slots__ = ("message",)
@@ -180,9 +167,9 @@ class StopDataCollectionRequest(_message.Message):
     DEVICE_HOST_FIELD_NUMBER: _ClassVar[int]
     product_id: str
     run_id: str
-    resource_type: ResourceType
+    resource_type: str
     device_host: str
-    def __init__(self, product_id: _Optional[str] = ..., run_id: _Optional[str] = ..., resource_type: _Optional[_Union[ResourceType, str]] = ..., device_host: _Optional[str] = ...) -> None: ...
+    def __init__(self, product_id: _Optional[str] = ..., run_id: _Optional[str] = ..., resource_type: _Optional[str] = ..., device_host: _Optional[str] = ...) -> None: ...
 
 class StopDataCollectionResponse(_message.Message):
     __slots__ = ("message",)
@@ -202,9 +189,9 @@ class TriggerEventRequest(_message.Message):
     run_id: str
     event_type: str
     payload_json: str
-    resource_type: ResourceType
+    resource_type: str
     device_host: str
-    def __init__(self, product_id: _Optional[str] = ..., run_id: _Optional[str] = ..., event_type: _Optional[str] = ..., payload_json: _Optional[str] = ..., resource_type: _Optional[_Union[ResourceType, str]] = ..., device_host: _Optional[str] = ...) -> None: ...
+    def __init__(self, product_id: _Optional[str] = ..., run_id: _Optional[str] = ..., event_type: _Optional[str] = ..., payload_json: _Optional[str] = ..., resource_type: _Optional[str] = ..., device_host: _Optional[str] = ...) -> None: ...
 
 class TriggerEventResponse(_message.Message):
     __slots__ = ("message",)

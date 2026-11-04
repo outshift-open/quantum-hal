@@ -99,56 +99,10 @@ func (TimeTaggerState) EnumDescriptor() ([]byte, []int) {
 	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{0}
 }
 
-type ResourceType int32
-
-const (
-	ResourceType_RESOURCE_TYPE_UNSPECIFIED ResourceType = 0
-	ResourceType_RESOURCE_TYPE_SWABIAN     ResourceType = 1
-)
-
-// Enum value maps for ResourceType.
-var (
-	ResourceType_name = map[int32]string{
-		0: "RESOURCE_TYPE_UNSPECIFIED",
-		1: "RESOURCE_TYPE_SWABIAN",
-	}
-	ResourceType_value = map[string]int32{
-		"RESOURCE_TYPE_UNSPECIFIED": 0,
-		"RESOURCE_TYPE_SWABIAN":     1,
-	}
-)
-
-func (x ResourceType) Enum() *ResourceType {
-	p := new(ResourceType)
-	*p = x
-	return p
-}
-
-func (x ResourceType) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (ResourceType) Descriptor() protoreflect.EnumDescriptor {
-	return file_hal_adapters_timetagger_v1_timetagger_proto_enumTypes[1].Descriptor()
-}
-
-func (ResourceType) Type() protoreflect.EnumType {
-	return &file_hal_adapters_timetagger_v1_timetagger_proto_enumTypes[1]
-}
-
-func (x ResourceType) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use ResourceType.Descriptor instead.
-func (ResourceType) EnumDescriptor() ([]byte, []int) {
-	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{1}
-}
-
 type GetProductInfoRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	ProductId     string                 `protobuf:"bytes,1,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
-	ResourceType  ResourceType           `protobuf:"varint,2,opt,name=resource_type,json=resourceType,proto3,enum=hal.adapters.timetagger.v1.ResourceType" json:"resource_type,omitempty"`
+	ResourceType  string                 `protobuf:"bytes,2,opt,name=resource_type,json=resourceType,proto3" json:"resource_type,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -190,11 +144,11 @@ func (x *GetProductInfoRequest) GetProductId() string {
 	return ""
 }
 
-func (x *GetProductInfoRequest) GetResourceType() ResourceType {
+func (x *GetProductInfoRequest) GetResourceType() string {
 	if x != nil {
 		return x.ResourceType
 	}
-	return ResourceType_RESOURCE_TYPE_UNSPECIFIED
+	return ""
 }
 
 type GetProductInfoResponse struct {
@@ -267,7 +221,7 @@ func (x *GetProductInfoResponse) GetVendor() string {
 
 type ListMeasurementTypesRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	ResourceType  ResourceType           `protobuf:"varint,1,opt,name=resource_type,json=resourceType,proto3,enum=hal.adapters.timetagger.v1.ResourceType" json:"resource_type,omitempty"`
+	ResourceType  string                 `protobuf:"bytes,1,opt,name=resource_type,json=resourceType,proto3" json:"resource_type,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -302,23 +256,20 @@ func (*ListMeasurementTypesRequest) Descriptor() ([]byte, []int) {
 	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *ListMeasurementTypesRequest) GetResourceType() ResourceType {
+func (x *ListMeasurementTypesRequest) GetResourceType() string {
 	if x != nil {
 		return x.ResourceType
 	}
-	return ResourceType_RESOURCE_TYPE_UNSPECIFIED
+	return ""
 }
 
 type MeasurementTypeInfo struct {
-	state             protoimpl.MessageState `protogen:"open.v1"`
-	Id                string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Description       string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
-	MockSupported     bool                   `protobuf:"varint,3,opt,name=mock_supported,json=mockSupported,proto3" json:"mock_supported,omitempty"`
-	HardwareSupported bool                   `protobuf:"varint,4,opt,name=hardware_supported,json=hardwareSupported,proto3" json:"hardware_supported,omitempty"`
-	Usecase           *string                `protobuf:"bytes,5,opt,name=usecase,proto3,oneof" json:"usecase,omitempty"`
-	Name              *string                `protobuf:"bytes,6,opt,name=name,proto3,oneof" json:"name,omitempty"`
-	unknownFields     protoimpl.UnknownFields
-	sizeCache         protoimpl.SizeCache
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Description   string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	Name          string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *MeasurementTypeInfo) Reset() {
@@ -365,30 +316,9 @@ func (x *MeasurementTypeInfo) GetDescription() string {
 	return ""
 }
 
-func (x *MeasurementTypeInfo) GetMockSupported() bool {
-	if x != nil {
-		return x.MockSupported
-	}
-	return false
-}
-
-func (x *MeasurementTypeInfo) GetHardwareSupported() bool {
-	if x != nil {
-		return x.HardwareSupported
-	}
-	return false
-}
-
-func (x *MeasurementTypeInfo) GetUsecase() string {
-	if x != nil && x.Usecase != nil {
-		return *x.Usecase
-	}
-	return ""
-}
-
 func (x *MeasurementTypeInfo) GetName() string {
-	if x != nil && x.Name != nil {
-		return *x.Name
+	if x != nil {
+		return x.Name
 	}
 	return ""
 }
@@ -446,7 +376,7 @@ type InitializeRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	ProductId     string                 `protobuf:"bytes,1,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
 	ConfigJson    string                 `protobuf:"bytes,2,opt,name=config_json,json=configJson,proto3" json:"config_json,omitempty"`
-	ResourceType  ResourceType           `protobuf:"varint,3,opt,name=resource_type,json=resourceType,proto3,enum=hal.adapters.timetagger.v1.ResourceType" json:"resource_type,omitempty"`
+	ResourceType  string                 `protobuf:"bytes,3,opt,name=resource_type,json=resourceType,proto3" json:"resource_type,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -495,11 +425,11 @@ func (x *InitializeRequest) GetConfigJson() string {
 	return ""
 }
 
-func (x *InitializeRequest) GetResourceType() ResourceType {
+func (x *InitializeRequest) GetResourceType() string {
 	if x != nil {
 		return x.ResourceType
 	}
-	return ResourceType_RESOURCE_TYPE_UNSPECIFIED
+	return ""
 }
 
 type InitializeResponse struct {
@@ -549,7 +479,7 @@ func (x *InitializeResponse) GetMessage() string {
 type DeinitializeRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	ProductId     string                 `protobuf:"bytes,1,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
-	ResourceType  ResourceType           `protobuf:"varint,2,opt,name=resource_type,json=resourceType,proto3,enum=hal.adapters.timetagger.v1.ResourceType" json:"resource_type,omitempty"`
+	ResourceType  string                 `protobuf:"bytes,2,opt,name=resource_type,json=resourceType,proto3" json:"resource_type,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -591,11 +521,11 @@ func (x *DeinitializeRequest) GetProductId() string {
 	return ""
 }
 
-func (x *DeinitializeRequest) GetResourceType() ResourceType {
+func (x *DeinitializeRequest) GetResourceType() string {
 	if x != nil {
 		return x.ResourceType
 	}
-	return ResourceType_RESOURCE_TYPE_UNSPECIFIED
+	return ""
 }
 
 type DeinitializeResponse struct {
@@ -645,7 +575,7 @@ func (x *DeinitializeResponse) GetMessage() string {
 type GetStatusRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	ProductId     string                 `protobuf:"bytes,1,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
-	ResourceType  ResourceType           `protobuf:"varint,2,opt,name=resource_type,json=resourceType,proto3,enum=hal.adapters.timetagger.v1.ResourceType" json:"resource_type,omitempty"`
+	ResourceType  string                 `protobuf:"bytes,2,opt,name=resource_type,json=resourceType,proto3" json:"resource_type,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -687,11 +617,11 @@ func (x *GetStatusRequest) GetProductId() string {
 	return ""
 }
 
-func (x *GetStatusRequest) GetResourceType() ResourceType {
+func (x *GetStatusRequest) GetResourceType() string {
 	if x != nil {
 		return x.ResourceType
 	}
-	return ResourceType_RESOURCE_TYPE_UNSPECIFIED
+	return ""
 }
 
 type GetStatusResponse struct {
@@ -770,7 +700,7 @@ type SetConfigRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	ProductId     string                 `protobuf:"bytes,1,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
 	ConfigJson    string                 `protobuf:"bytes,2,opt,name=config_json,json=configJson,proto3" json:"config_json,omitempty"`
-	ResourceType  ResourceType           `protobuf:"varint,3,opt,name=resource_type,json=resourceType,proto3,enum=hal.adapters.timetagger.v1.ResourceType" json:"resource_type,omitempty"`
+	ResourceType  string                 `protobuf:"bytes,3,opt,name=resource_type,json=resourceType,proto3" json:"resource_type,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -819,11 +749,11 @@ func (x *SetConfigRequest) GetConfigJson() string {
 	return ""
 }
 
-func (x *SetConfigRequest) GetResourceType() ResourceType {
+func (x *SetConfigRequest) GetResourceType() string {
 	if x != nil {
 		return x.ResourceType
 	}
-	return ResourceType_RESOURCE_TYPE_UNSPECIFIED
+	return ""
 }
 
 type SetConfigResponse struct {
@@ -880,7 +810,7 @@ type StartDataCollectionRequest struct {
 	ProductId    string                 `protobuf:"bytes,1,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
 	RunId        string                 `protobuf:"bytes,2,opt,name=run_id,json=runId,proto3" json:"run_id,omitempty"`
 	ConfigJson   string                 `protobuf:"bytes,3,opt,name=config_json,json=configJson,proto3" json:"config_json,omitempty"`
-	ResourceType ResourceType           `protobuf:"varint,4,opt,name=resource_type,json=resourceType,proto3,enum=hal.adapters.timetagger.v1.ResourceType" json:"resource_type,omitempty"`
+	ResourceType string                 `protobuf:"bytes,4,opt,name=resource_type,json=resourceType,proto3" json:"resource_type,omitempty"`
 	// Temp solution until we figure out device registry
 	DeviceHost    *string `protobuf:"bytes,5,opt,name=device_host,json=deviceHost,proto3,oneof" json:"device_host,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -938,11 +868,11 @@ func (x *StartDataCollectionRequest) GetConfigJson() string {
 	return ""
 }
 
-func (x *StartDataCollectionRequest) GetResourceType() ResourceType {
+func (x *StartDataCollectionRequest) GetResourceType() string {
 	if x != nil {
 		return x.ResourceType
 	}
-	return ResourceType_RESOURCE_TYPE_UNSPECIFIED
+	return ""
 }
 
 func (x *StartDataCollectionRequest) GetDeviceHost() string {
@@ -1000,7 +930,7 @@ type StopDataCollectionRequest struct {
 	state        protoimpl.MessageState `protogen:"open.v1"`
 	ProductId    string                 `protobuf:"bytes,1,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
 	RunId        string                 `protobuf:"bytes,2,opt,name=run_id,json=runId,proto3" json:"run_id,omitempty"`
-	ResourceType ResourceType           `protobuf:"varint,3,opt,name=resource_type,json=resourceType,proto3,enum=hal.adapters.timetagger.v1.ResourceType" json:"resource_type,omitempty"`
+	ResourceType string                 `protobuf:"bytes,3,opt,name=resource_type,json=resourceType,proto3" json:"resource_type,omitempty"`
 	// Temp solution until we figure out device registry
 	DeviceHost    *string `protobuf:"bytes,4,opt,name=device_host,json=deviceHost,proto3,oneof" json:"device_host,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -1051,11 +981,11 @@ func (x *StopDataCollectionRequest) GetRunId() string {
 	return ""
 }
 
-func (x *StopDataCollectionRequest) GetResourceType() ResourceType {
+func (x *StopDataCollectionRequest) GetResourceType() string {
 	if x != nil {
 		return x.ResourceType
 	}
-	return ResourceType_RESOURCE_TYPE_UNSPECIFIED
+	return ""
 }
 
 func (x *StopDataCollectionRequest) GetDeviceHost() string {
@@ -1120,7 +1050,7 @@ type TriggerEventRequest struct {
 	RunId        string                 `protobuf:"bytes,2,opt,name=run_id,json=runId,proto3" json:"run_id,omitempty"`
 	EventType    string                 `protobuf:"bytes,3,opt,name=event_type,json=eventType,proto3" json:"event_type,omitempty"`
 	PayloadJson  string                 `protobuf:"bytes,4,opt,name=payload_json,json=payloadJson,proto3" json:"payload_json,omitempty"`
-	ResourceType ResourceType           `protobuf:"varint,5,opt,name=resource_type,json=resourceType,proto3,enum=hal.adapters.timetagger.v1.ResourceType" json:"resource_type,omitempty"`
+	ResourceType string                 `protobuf:"bytes,5,opt,name=resource_type,json=resourceType,proto3" json:"resource_type,omitempty"`
 	// Temp solution until we figure out device registry
 	DeviceHost    *string `protobuf:"bytes,6,opt,name=device_host,json=deviceHost,proto3,oneof" json:"device_host,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -1185,11 +1115,11 @@ func (x *TriggerEventRequest) GetPayloadJson() string {
 	return ""
 }
 
-func (x *TriggerEventRequest) GetResourceType() ResourceType {
+func (x *TriggerEventRequest) GetResourceType() string {
 	if x != nil {
 		return x.ResourceType
 	}
-	return ResourceType_RESOURCE_TYPE_UNSPECIFIED
+	return ""
 }
 
 func (x *TriggerEventRequest) GetDeviceHost() string {
@@ -1247,92 +1177,86 @@ var File_hal_adapters_timetagger_v1_timetagger_proto protoreflect.FileDescriptor
 
 const file_hal_adapters_timetagger_v1_timetagger_proto_rawDesc = "" +
 	"\n" +
-	"+hal/adapters/timetagger/v1/timetagger.proto\x12\x1ahal.adapters.timetagger.v1\x1a#hal/adapters/common/v1/common.proto\"\x85\x01\n" +
+	"+hal/adapters/timetagger/v1/timetagger.proto\x12\x1ahal.adapters.timetagger.v1\x1a#hal/adapters/common/v1/common.proto\"[\n" +
 	"\x15GetProductInfoRequest\x12\x1d\n" +
 	"\n" +
-	"product_id\x18\x01 \x01(\tR\tproductId\x12M\n" +
-	"\rresource_type\x18\x02 \x01(\x0e2(.hal.adapters.timetagger.v1.ResourceTypeR\fresourceType\"\xa3\x01\n" +
+	"product_id\x18\x01 \x01(\tR\tproductId\x12#\n" +
+	"\rresource_type\x18\x02 \x01(\tR\fresourceType\"\xa3\x01\n" +
 	"\x16GetProductInfoResponse\x12#\n" +
 	"\rserial_number\x18\x01 \x01(\tR\fserialNumber\x12!\n" +
 	"\fproduct_code\x18\x02 \x01(\tR\vproductCode\x12)\n" +
 	"\x10software_version\x18\x03 \x01(\tR\x0fsoftwareVersion\x12\x16\n" +
-	"\x06vendor\x18\x04 \x01(\tR\x06vendor\"l\n" +
-	"\x1bListMeasurementTypesRequest\x12M\n" +
-	"\rresource_type\x18\x01 \x01(\x0e2(.hal.adapters.timetagger.v1.ResourceTypeR\fresourceType\"\xea\x01\n" +
+	"\x06vendor\x18\x04 \x01(\tR\x06vendor\"B\n" +
+	"\x1bListMeasurementTypesRequest\x12#\n" +
+	"\rresource_type\x18\x01 \x01(\tR\fresourceType\"[\n" +
 	"\x13MeasurementTypeInfo\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12 \n" +
-	"\vdescription\x18\x02 \x01(\tR\vdescription\x12%\n" +
-	"\x0emock_supported\x18\x03 \x01(\bR\rmockSupported\x12-\n" +
-	"\x12hardware_supported\x18\x04 \x01(\bR\x11hardwareSupported\x12\x1d\n" +
-	"\ausecase\x18\x05 \x01(\tH\x00R\ausecase\x88\x01\x01\x12\x17\n" +
-	"\x04name\x18\x06 \x01(\tH\x01R\x04name\x88\x01\x01B\n" +
-	"\n" +
-	"\b_usecaseB\a\n" +
-	"\x05_name\"|\n" +
+	"\vdescription\x18\x02 \x01(\tR\vdescription\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\"|\n" +
 	"\x1cListMeasurementTypesResponse\x12\\\n" +
-	"\x11measurement_types\x18\x01 \x03(\v2/.hal.adapters.timetagger.v1.MeasurementTypeInfoR\x10measurementTypes\"\xa2\x01\n" +
+	"\x11measurement_types\x18\x01 \x03(\v2/.hal.adapters.timetagger.v1.MeasurementTypeInfoR\x10measurementTypes\"x\n" +
 	"\x11InitializeRequest\x12\x1d\n" +
 	"\n" +
 	"product_id\x18\x01 \x01(\tR\tproductId\x12\x1f\n" +
 	"\vconfig_json\x18\x02 \x01(\tR\n" +
-	"configJson\x12M\n" +
-	"\rresource_type\x18\x03 \x01(\x0e2(.hal.adapters.timetagger.v1.ResourceTypeR\fresourceType\".\n" +
+	"configJson\x12#\n" +
+	"\rresource_type\x18\x03 \x01(\tR\fresourceType\".\n" +
 	"\x12InitializeResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage\"\x83\x01\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\"Y\n" +
 	"\x13DeinitializeRequest\x12\x1d\n" +
 	"\n" +
-	"product_id\x18\x01 \x01(\tR\tproductId\x12M\n" +
-	"\rresource_type\x18\x02 \x01(\x0e2(.hal.adapters.timetagger.v1.ResourceTypeR\fresourceType\"0\n" +
+	"product_id\x18\x01 \x01(\tR\tproductId\x12#\n" +
+	"\rresource_type\x18\x02 \x01(\tR\fresourceType\"0\n" +
 	"\x14DeinitializeResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage\"\x80\x01\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\"V\n" +
 	"\x10GetStatusRequest\x12\x1d\n" +
 	"\n" +
-	"product_id\x18\x01 \x01(\tR\tproductId\x12M\n" +
-	"\rresource_type\x18\x02 \x01(\x0e2(.hal.adapters.timetagger.v1.ResourceTypeR\fresourceType\"\xb5\x01\n" +
+	"product_id\x18\x01 \x01(\tR\tproductId\x12#\n" +
+	"\rresource_type\x18\x02 \x01(\tR\fresourceType\"\xb5\x01\n" +
 	"\x11GetStatusResponse\x12A\n" +
 	"\x05state\x18\x01 \x01(\x0e2+.hal.adapters.timetagger.v1.TimeTaggerStateR\x05state\x12\x15\n" +
 	"\x06run_id\x18\x02 \x01(\tR\x05runId\x12%\n" +
 	"\x0euptime_seconds\x18\x03 \x01(\x02R\ruptimeSeconds\x12\x1f\n" +
 	"\vstatus_json\x18\x04 \x01(\tR\n" +
-	"statusJson\"\xa1\x01\n" +
+	"statusJson\"w\n" +
 	"\x10SetConfigRequest\x12\x1d\n" +
 	"\n" +
 	"product_id\x18\x01 \x01(\tR\tproductId\x12\x1f\n" +
 	"\vconfig_json\x18\x02 \x01(\tR\n" +
-	"configJson\x12M\n" +
-	"\rresource_type\x18\x03 \x01(\x0e2(.hal.adapters.timetagger.v1.ResourceTypeR\fresourceType\"-\n" +
+	"configJson\x12#\n" +
+	"\rresource_type\x18\x03 \x01(\tR\fresourceType\"-\n" +
 	"\x11SetConfigResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage\"\xf8\x01\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\"\xce\x01\n" +
 	"\x1aStartDataCollectionRequest\x12\x1d\n" +
 	"\n" +
 	"product_id\x18\x01 \x01(\tR\tproductId\x12\x15\n" +
 	"\x06run_id\x18\x02 \x01(\tR\x05runId\x12\x1f\n" +
 	"\vconfig_json\x18\x03 \x01(\tR\n" +
-	"configJson\x12M\n" +
-	"\rresource_type\x18\x04 \x01(\x0e2(.hal.adapters.timetagger.v1.ResourceTypeR\fresourceType\x12$\n" +
+	"configJson\x12#\n" +
+	"\rresource_type\x18\x04 \x01(\tR\fresourceType\x12$\n" +
 	"\vdevice_host\x18\x05 \x01(\tH\x00R\n" +
 	"deviceHost\x88\x01\x01B\x0e\n" +
 	"\f_device_host\"7\n" +
 	"\x1bStartDataCollectionResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage\"\xd6\x01\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\"\xac\x01\n" +
 	"\x19StopDataCollectionRequest\x12\x1d\n" +
 	"\n" +
 	"product_id\x18\x01 \x01(\tR\tproductId\x12\x15\n" +
-	"\x06run_id\x18\x02 \x01(\tR\x05runId\x12M\n" +
-	"\rresource_type\x18\x03 \x01(\x0e2(.hal.adapters.timetagger.v1.ResourceTypeR\fresourceType\x12$\n" +
+	"\x06run_id\x18\x02 \x01(\tR\x05runId\x12#\n" +
+	"\rresource_type\x18\x03 \x01(\tR\fresourceType\x12$\n" +
 	"\vdevice_host\x18\x04 \x01(\tH\x00R\n" +
 	"deviceHost\x88\x01\x01B\x0e\n" +
 	"\f_device_host\"6\n" +
 	"\x1aStopDataCollectionResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage\"\x92\x02\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\"\xe8\x01\n" +
 	"\x13TriggerEventRequest\x12\x1d\n" +
 	"\n" +
 	"product_id\x18\x01 \x01(\tR\tproductId\x12\x15\n" +
 	"\x06run_id\x18\x02 \x01(\tR\x05runId\x12\x1d\n" +
 	"\n" +
 	"event_type\x18\x03 \x01(\tR\teventType\x12!\n" +
-	"\fpayload_json\x18\x04 \x01(\tR\vpayloadJson\x12M\n" +
-	"\rresource_type\x18\x05 \x01(\x0e2(.hal.adapters.timetagger.v1.ResourceTypeR\fresourceType\x12$\n" +
+	"\fpayload_json\x18\x04 \x01(\tR\vpayloadJson\x12#\n" +
+	"\rresource_type\x18\x05 \x01(\tR\fresourceType\x12$\n" +
 	"\vdevice_host\x18\x06 \x01(\tH\x00R\n" +
 	"deviceHost\x88\x01\x01B\x0e\n" +
 	"\f_device_host\"0\n" +
@@ -1346,10 +1270,7 @@ const file_hal_adapters_timetagger_v1_timetagger_proto_rawDesc = "" +
 	"\x1cTIME_TAGGER_STATE_COLLECTING\x10\x04\x12\x1b\n" +
 	"\x17TIME_TAGGER_STATE_FAULT\x10\x05\x12$\n" +
 	" TIME_TAGGER_STATE_DEINITIALIZING\x10\x06\x12\x1e\n" +
-	"\x1aTIME_TAGGER_STATE_DEGRADED\x10\a*H\n" +
-	"\fResourceType\x12\x1d\n" +
-	"\x19RESOURCE_TYPE_UNSPECIFIED\x10\x00\x12\x19\n" +
-	"\x15RESOURCE_TYPE_SWABIAN\x10\x012\xfa\v\n" +
+	"\x1aTIME_TAGGER_STATE_DEGRADED\x10\a2\xfa\v\n" +
 	"\x18AdapterTimeTaggerService\x12f\n" +
 	"\vHealthCheck\x12*.hal.adapters.common.v1.HealthCheckRequest\x1a+.hal.adapters.common.v1.HealthCheckResponse\x12~\n" +
 	"\x13ResourceHealthCheck\x122.hal.adapters.common.v1.ResourceHealthCheckRequest\x1a3.hal.adapters.common.v1.ResourceHealthCheckResponse\x12w\n" +
@@ -1379,82 +1300,72 @@ func file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP() []byte {
 	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescData
 }
 
-var file_hal_adapters_timetagger_v1_timetagger_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_hal_adapters_timetagger_v1_timetagger_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes = make([]protoimpl.MessageInfo, 19)
 var file_hal_adapters_timetagger_v1_timetagger_proto_goTypes = []any{
 	(TimeTaggerState)(0),                   // 0: hal.adapters.timetagger.v1.TimeTaggerState
-	(ResourceType)(0),                      // 1: hal.adapters.timetagger.v1.ResourceType
-	(*GetProductInfoRequest)(nil),          // 2: hal.adapters.timetagger.v1.GetProductInfoRequest
-	(*GetProductInfoResponse)(nil),         // 3: hal.adapters.timetagger.v1.GetProductInfoResponse
-	(*ListMeasurementTypesRequest)(nil),    // 4: hal.adapters.timetagger.v1.ListMeasurementTypesRequest
-	(*MeasurementTypeInfo)(nil),            // 5: hal.adapters.timetagger.v1.MeasurementTypeInfo
-	(*ListMeasurementTypesResponse)(nil),   // 6: hal.adapters.timetagger.v1.ListMeasurementTypesResponse
-	(*InitializeRequest)(nil),              // 7: hal.adapters.timetagger.v1.InitializeRequest
-	(*InitializeResponse)(nil),             // 8: hal.adapters.timetagger.v1.InitializeResponse
-	(*DeinitializeRequest)(nil),            // 9: hal.adapters.timetagger.v1.DeinitializeRequest
-	(*DeinitializeResponse)(nil),           // 10: hal.adapters.timetagger.v1.DeinitializeResponse
-	(*GetStatusRequest)(nil),               // 11: hal.adapters.timetagger.v1.GetStatusRequest
-	(*GetStatusResponse)(nil),              // 12: hal.adapters.timetagger.v1.GetStatusResponse
-	(*SetConfigRequest)(nil),               // 13: hal.adapters.timetagger.v1.SetConfigRequest
-	(*SetConfigResponse)(nil),              // 14: hal.adapters.timetagger.v1.SetConfigResponse
-	(*StartDataCollectionRequest)(nil),     // 15: hal.adapters.timetagger.v1.StartDataCollectionRequest
-	(*StartDataCollectionResponse)(nil),    // 16: hal.adapters.timetagger.v1.StartDataCollectionResponse
-	(*StopDataCollectionRequest)(nil),      // 17: hal.adapters.timetagger.v1.StopDataCollectionRequest
-	(*StopDataCollectionResponse)(nil),     // 18: hal.adapters.timetagger.v1.StopDataCollectionResponse
-	(*TriggerEventRequest)(nil),            // 19: hal.adapters.timetagger.v1.TriggerEventRequest
-	(*TriggerEventResponse)(nil),           // 20: hal.adapters.timetagger.v1.TriggerEventResponse
-	(*v1.HealthCheckRequest)(nil),          // 21: hal.adapters.common.v1.HealthCheckRequest
-	(*v1.ResourceHealthCheckRequest)(nil),  // 22: hal.adapters.common.v1.ResourceHealthCheckRequest
-	(*v1.AutoRecoverRequest)(nil),          // 23: hal.adapters.common.v1.AutoRecoverRequest
-	(*v1.TuneRequest)(nil),                 // 24: hal.adapters.common.v1.TuneRequest
-	(*v1.HealthCheckResponse)(nil),         // 25: hal.adapters.common.v1.HealthCheckResponse
-	(*v1.ResourceHealthCheckResponse)(nil), // 26: hal.adapters.common.v1.ResourceHealthCheckResponse
-	(*v1.AutoRecoverResponse)(nil),         // 27: hal.adapters.common.v1.AutoRecoverResponse
-	(*v1.TuneResponse)(nil),                // 28: hal.adapters.common.v1.TuneResponse
+	(*GetProductInfoRequest)(nil),          // 1: hal.adapters.timetagger.v1.GetProductInfoRequest
+	(*GetProductInfoResponse)(nil),         // 2: hal.adapters.timetagger.v1.GetProductInfoResponse
+	(*ListMeasurementTypesRequest)(nil),    // 3: hal.adapters.timetagger.v1.ListMeasurementTypesRequest
+	(*MeasurementTypeInfo)(nil),            // 4: hal.adapters.timetagger.v1.MeasurementTypeInfo
+	(*ListMeasurementTypesResponse)(nil),   // 5: hal.adapters.timetagger.v1.ListMeasurementTypesResponse
+	(*InitializeRequest)(nil),              // 6: hal.adapters.timetagger.v1.InitializeRequest
+	(*InitializeResponse)(nil),             // 7: hal.adapters.timetagger.v1.InitializeResponse
+	(*DeinitializeRequest)(nil),            // 8: hal.adapters.timetagger.v1.DeinitializeRequest
+	(*DeinitializeResponse)(nil),           // 9: hal.adapters.timetagger.v1.DeinitializeResponse
+	(*GetStatusRequest)(nil),               // 10: hal.adapters.timetagger.v1.GetStatusRequest
+	(*GetStatusResponse)(nil),              // 11: hal.adapters.timetagger.v1.GetStatusResponse
+	(*SetConfigRequest)(nil),               // 12: hal.adapters.timetagger.v1.SetConfigRequest
+	(*SetConfigResponse)(nil),              // 13: hal.adapters.timetagger.v1.SetConfigResponse
+	(*StartDataCollectionRequest)(nil),     // 14: hal.adapters.timetagger.v1.StartDataCollectionRequest
+	(*StartDataCollectionResponse)(nil),    // 15: hal.adapters.timetagger.v1.StartDataCollectionResponse
+	(*StopDataCollectionRequest)(nil),      // 16: hal.adapters.timetagger.v1.StopDataCollectionRequest
+	(*StopDataCollectionResponse)(nil),     // 17: hal.adapters.timetagger.v1.StopDataCollectionResponse
+	(*TriggerEventRequest)(nil),            // 18: hal.adapters.timetagger.v1.TriggerEventRequest
+	(*TriggerEventResponse)(nil),           // 19: hal.adapters.timetagger.v1.TriggerEventResponse
+	(*v1.HealthCheckRequest)(nil),          // 20: hal.adapters.common.v1.HealthCheckRequest
+	(*v1.ResourceHealthCheckRequest)(nil),  // 21: hal.adapters.common.v1.ResourceHealthCheckRequest
+	(*v1.AutoRecoverRequest)(nil),          // 22: hal.adapters.common.v1.AutoRecoverRequest
+	(*v1.TuneRequest)(nil),                 // 23: hal.adapters.common.v1.TuneRequest
+	(*v1.HealthCheckResponse)(nil),         // 24: hal.adapters.common.v1.HealthCheckResponse
+	(*v1.ResourceHealthCheckResponse)(nil), // 25: hal.adapters.common.v1.ResourceHealthCheckResponse
+	(*v1.AutoRecoverResponse)(nil),         // 26: hal.adapters.common.v1.AutoRecoverResponse
+	(*v1.TuneResponse)(nil),                // 27: hal.adapters.common.v1.TuneResponse
 }
 var file_hal_adapters_timetagger_v1_timetagger_proto_depIdxs = []int32{
-	1,  // 0: hal.adapters.timetagger.v1.GetProductInfoRequest.resource_type:type_name -> hal.adapters.timetagger.v1.ResourceType
-	1,  // 1: hal.adapters.timetagger.v1.ListMeasurementTypesRequest.resource_type:type_name -> hal.adapters.timetagger.v1.ResourceType
-	5,  // 2: hal.adapters.timetagger.v1.ListMeasurementTypesResponse.measurement_types:type_name -> hal.adapters.timetagger.v1.MeasurementTypeInfo
-	1,  // 3: hal.adapters.timetagger.v1.InitializeRequest.resource_type:type_name -> hal.adapters.timetagger.v1.ResourceType
-	1,  // 4: hal.adapters.timetagger.v1.DeinitializeRequest.resource_type:type_name -> hal.adapters.timetagger.v1.ResourceType
-	1,  // 5: hal.adapters.timetagger.v1.GetStatusRequest.resource_type:type_name -> hal.adapters.timetagger.v1.ResourceType
-	0,  // 6: hal.adapters.timetagger.v1.GetStatusResponse.state:type_name -> hal.adapters.timetagger.v1.TimeTaggerState
-	1,  // 7: hal.adapters.timetagger.v1.SetConfigRequest.resource_type:type_name -> hal.adapters.timetagger.v1.ResourceType
-	1,  // 8: hal.adapters.timetagger.v1.StartDataCollectionRequest.resource_type:type_name -> hal.adapters.timetagger.v1.ResourceType
-	1,  // 9: hal.adapters.timetagger.v1.StopDataCollectionRequest.resource_type:type_name -> hal.adapters.timetagger.v1.ResourceType
-	1,  // 10: hal.adapters.timetagger.v1.TriggerEventRequest.resource_type:type_name -> hal.adapters.timetagger.v1.ResourceType
-	21, // 11: hal.adapters.timetagger.v1.AdapterTimeTaggerService.HealthCheck:input_type -> hal.adapters.common.v1.HealthCheckRequest
-	22, // 12: hal.adapters.timetagger.v1.AdapterTimeTaggerService.ResourceHealthCheck:input_type -> hal.adapters.common.v1.ResourceHealthCheckRequest
-	2,  // 13: hal.adapters.timetagger.v1.AdapterTimeTaggerService.GetProductInfo:input_type -> hal.adapters.timetagger.v1.GetProductInfoRequest
-	4,  // 14: hal.adapters.timetagger.v1.AdapterTimeTaggerService.ListMeasurementTypes:input_type -> hal.adapters.timetagger.v1.ListMeasurementTypesRequest
-	7,  // 15: hal.adapters.timetagger.v1.AdapterTimeTaggerService.Initialize:input_type -> hal.adapters.timetagger.v1.InitializeRequest
-	9,  // 16: hal.adapters.timetagger.v1.AdapterTimeTaggerService.Deinitialize:input_type -> hal.adapters.timetagger.v1.DeinitializeRequest
-	11, // 17: hal.adapters.timetagger.v1.AdapterTimeTaggerService.GetStatus:input_type -> hal.adapters.timetagger.v1.GetStatusRequest
-	13, // 18: hal.adapters.timetagger.v1.AdapterTimeTaggerService.SetConfig:input_type -> hal.adapters.timetagger.v1.SetConfigRequest
-	23, // 19: hal.adapters.timetagger.v1.AdapterTimeTaggerService.AutoRecover:input_type -> hal.adapters.common.v1.AutoRecoverRequest
-	24, // 20: hal.adapters.timetagger.v1.AdapterTimeTaggerService.Tune:input_type -> hal.adapters.common.v1.TuneRequest
-	15, // 21: hal.adapters.timetagger.v1.AdapterTimeTaggerService.StartDataCollection:input_type -> hal.adapters.timetagger.v1.StartDataCollectionRequest
-	17, // 22: hal.adapters.timetagger.v1.AdapterTimeTaggerService.StopDataCollection:input_type -> hal.adapters.timetagger.v1.StopDataCollectionRequest
-	19, // 23: hal.adapters.timetagger.v1.AdapterTimeTaggerService.TriggerEvent:input_type -> hal.adapters.timetagger.v1.TriggerEventRequest
-	25, // 24: hal.adapters.timetagger.v1.AdapterTimeTaggerService.HealthCheck:output_type -> hal.adapters.common.v1.HealthCheckResponse
-	26, // 25: hal.adapters.timetagger.v1.AdapterTimeTaggerService.ResourceHealthCheck:output_type -> hal.adapters.common.v1.ResourceHealthCheckResponse
-	3,  // 26: hal.adapters.timetagger.v1.AdapterTimeTaggerService.GetProductInfo:output_type -> hal.adapters.timetagger.v1.GetProductInfoResponse
-	6,  // 27: hal.adapters.timetagger.v1.AdapterTimeTaggerService.ListMeasurementTypes:output_type -> hal.adapters.timetagger.v1.ListMeasurementTypesResponse
-	8,  // 28: hal.adapters.timetagger.v1.AdapterTimeTaggerService.Initialize:output_type -> hal.adapters.timetagger.v1.InitializeResponse
-	10, // 29: hal.adapters.timetagger.v1.AdapterTimeTaggerService.Deinitialize:output_type -> hal.adapters.timetagger.v1.DeinitializeResponse
-	12, // 30: hal.adapters.timetagger.v1.AdapterTimeTaggerService.GetStatus:output_type -> hal.adapters.timetagger.v1.GetStatusResponse
-	14, // 31: hal.adapters.timetagger.v1.AdapterTimeTaggerService.SetConfig:output_type -> hal.adapters.timetagger.v1.SetConfigResponse
-	27, // 32: hal.adapters.timetagger.v1.AdapterTimeTaggerService.AutoRecover:output_type -> hal.adapters.common.v1.AutoRecoverResponse
-	28, // 33: hal.adapters.timetagger.v1.AdapterTimeTaggerService.Tune:output_type -> hal.adapters.common.v1.TuneResponse
-	16, // 34: hal.adapters.timetagger.v1.AdapterTimeTaggerService.StartDataCollection:output_type -> hal.adapters.timetagger.v1.StartDataCollectionResponse
-	18, // 35: hal.adapters.timetagger.v1.AdapterTimeTaggerService.StopDataCollection:output_type -> hal.adapters.timetagger.v1.StopDataCollectionResponse
-	20, // 36: hal.adapters.timetagger.v1.AdapterTimeTaggerService.TriggerEvent:output_type -> hal.adapters.timetagger.v1.TriggerEventResponse
-	24, // [24:37] is the sub-list for method output_type
-	11, // [11:24] is the sub-list for method input_type
-	11, // [11:11] is the sub-list for extension type_name
-	11, // [11:11] is the sub-list for extension extendee
-	0,  // [0:11] is the sub-list for field type_name
+	4,  // 0: hal.adapters.timetagger.v1.ListMeasurementTypesResponse.measurement_types:type_name -> hal.adapters.timetagger.v1.MeasurementTypeInfo
+	0,  // 1: hal.adapters.timetagger.v1.GetStatusResponse.state:type_name -> hal.adapters.timetagger.v1.TimeTaggerState
+	20, // 2: hal.adapters.timetagger.v1.AdapterTimeTaggerService.HealthCheck:input_type -> hal.adapters.common.v1.HealthCheckRequest
+	21, // 3: hal.adapters.timetagger.v1.AdapterTimeTaggerService.ResourceHealthCheck:input_type -> hal.adapters.common.v1.ResourceHealthCheckRequest
+	1,  // 4: hal.adapters.timetagger.v1.AdapterTimeTaggerService.GetProductInfo:input_type -> hal.adapters.timetagger.v1.GetProductInfoRequest
+	3,  // 5: hal.adapters.timetagger.v1.AdapterTimeTaggerService.ListMeasurementTypes:input_type -> hal.adapters.timetagger.v1.ListMeasurementTypesRequest
+	6,  // 6: hal.adapters.timetagger.v1.AdapterTimeTaggerService.Initialize:input_type -> hal.adapters.timetagger.v1.InitializeRequest
+	8,  // 7: hal.adapters.timetagger.v1.AdapterTimeTaggerService.Deinitialize:input_type -> hal.adapters.timetagger.v1.DeinitializeRequest
+	10, // 8: hal.adapters.timetagger.v1.AdapterTimeTaggerService.GetStatus:input_type -> hal.adapters.timetagger.v1.GetStatusRequest
+	12, // 9: hal.adapters.timetagger.v1.AdapterTimeTaggerService.SetConfig:input_type -> hal.adapters.timetagger.v1.SetConfigRequest
+	22, // 10: hal.adapters.timetagger.v1.AdapterTimeTaggerService.AutoRecover:input_type -> hal.adapters.common.v1.AutoRecoverRequest
+	23, // 11: hal.adapters.timetagger.v1.AdapterTimeTaggerService.Tune:input_type -> hal.adapters.common.v1.TuneRequest
+	14, // 12: hal.adapters.timetagger.v1.AdapterTimeTaggerService.StartDataCollection:input_type -> hal.adapters.timetagger.v1.StartDataCollectionRequest
+	16, // 13: hal.adapters.timetagger.v1.AdapterTimeTaggerService.StopDataCollection:input_type -> hal.adapters.timetagger.v1.StopDataCollectionRequest
+	18, // 14: hal.adapters.timetagger.v1.AdapterTimeTaggerService.TriggerEvent:input_type -> hal.adapters.timetagger.v1.TriggerEventRequest
+	24, // 15: hal.adapters.timetagger.v1.AdapterTimeTaggerService.HealthCheck:output_type -> hal.adapters.common.v1.HealthCheckResponse
+	25, // 16: hal.adapters.timetagger.v1.AdapterTimeTaggerService.ResourceHealthCheck:output_type -> hal.adapters.common.v1.ResourceHealthCheckResponse
+	2,  // 17: hal.adapters.timetagger.v1.AdapterTimeTaggerService.GetProductInfo:output_type -> hal.adapters.timetagger.v1.GetProductInfoResponse
+	5,  // 18: hal.adapters.timetagger.v1.AdapterTimeTaggerService.ListMeasurementTypes:output_type -> hal.adapters.timetagger.v1.ListMeasurementTypesResponse
+	7,  // 19: hal.adapters.timetagger.v1.AdapterTimeTaggerService.Initialize:output_type -> hal.adapters.timetagger.v1.InitializeResponse
+	9,  // 20: hal.adapters.timetagger.v1.AdapterTimeTaggerService.Deinitialize:output_type -> hal.adapters.timetagger.v1.DeinitializeResponse
+	11, // 21: hal.adapters.timetagger.v1.AdapterTimeTaggerService.GetStatus:output_type -> hal.adapters.timetagger.v1.GetStatusResponse
+	13, // 22: hal.adapters.timetagger.v1.AdapterTimeTaggerService.SetConfig:output_type -> hal.adapters.timetagger.v1.SetConfigResponse
+	26, // 23: hal.adapters.timetagger.v1.AdapterTimeTaggerService.AutoRecover:output_type -> hal.adapters.common.v1.AutoRecoverResponse
+	27, // 24: hal.adapters.timetagger.v1.AdapterTimeTaggerService.Tune:output_type -> hal.adapters.common.v1.TuneResponse
+	15, // 25: hal.adapters.timetagger.v1.AdapterTimeTaggerService.StartDataCollection:output_type -> hal.adapters.timetagger.v1.StartDataCollectionResponse
+	17, // 26: hal.adapters.timetagger.v1.AdapterTimeTaggerService.StopDataCollection:output_type -> hal.adapters.timetagger.v1.StopDataCollectionResponse
+	19, // 27: hal.adapters.timetagger.v1.AdapterTimeTaggerService.TriggerEvent:output_type -> hal.adapters.timetagger.v1.TriggerEventResponse
+	15, // [15:28] is the sub-list for method output_type
+	2,  // [2:15] is the sub-list for method input_type
+	2,  // [2:2] is the sub-list for extension type_name
+	2,  // [2:2] is the sub-list for extension extendee
+	0,  // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_hal_adapters_timetagger_v1_timetagger_proto_init() }
@@ -1462,7 +1373,6 @@ func file_hal_adapters_timetagger_v1_timetagger_proto_init() {
 	if File_hal_adapters_timetagger_v1_timetagger_proto != nil {
 		return
 	}
-	file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[3].OneofWrappers = []any{}
 	file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[13].OneofWrappers = []any{}
 	file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[15].OneofWrappers = []any{}
 	file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[17].OneofWrappers = []any{}
@@ -1471,7 +1381,7 @@ func file_hal_adapters_timetagger_v1_timetagger_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_hal_adapters_timetagger_v1_timetagger_proto_rawDesc), len(file_hal_adapters_timetagger_v1_timetagger_proto_rawDesc)),
-			NumEnums:      2,
+			NumEnums:      1,
 			NumMessages:   19,
 			NumExtensions: 0,
 			NumServices:   1,

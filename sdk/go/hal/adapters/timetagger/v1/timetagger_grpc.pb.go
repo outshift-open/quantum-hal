@@ -53,7 +53,6 @@ type AdapterTimeTaggerServiceClient interface {
 	// vendor, firmware/software version.
 	GetProductInfo(ctx context.Context, in *GetProductInfoRequest, opts ...grpc.CallOption) (*GetProductInfoResponse, error)
 	// List of supported measurement types per device type.
-	// Also marks each measurement type if it is mock_supported or hardware_supported
 	ListMeasurementTypes(ctx context.Context, in *ListMeasurementTypesRequest, opts ...grpc.CallOption) (*ListMeasurementTypesResponse, error)
 	// Brings the time tagger from a freshly power-cycled state to
 	// ready-to-collect: connects to the device, loads calibration, and runs
@@ -253,7 +252,6 @@ type AdapterTimeTaggerServiceServer interface {
 	// vendor, firmware/software version.
 	GetProductInfo(context.Context, *GetProductInfoRequest) (*GetProductInfoResponse, error)
 	// List of supported measurement types per device type.
-	// Also marks each measurement type if it is mock_supported or hardware_supported
 	ListMeasurementTypes(context.Context, *ListMeasurementTypesRequest) (*ListMeasurementTypesResponse, error)
 	// Brings the time tagger from a freshly power-cycled state to
 	// ready-to-collect: connects to the device, loads calibration, and runs
