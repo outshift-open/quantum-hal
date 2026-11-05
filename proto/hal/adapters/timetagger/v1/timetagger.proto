@@ -23,6 +23,10 @@ service AdapterTimeTaggerService {
   // vendor, firmware/software version.
   rpc GetProductInfo(GetProductInfoRequest) returns (GetProductInfoResponse);
 
+  // List of supported measurement types per device type.
+  rpc ListMeasurementTypes (ListMeasurementTypesRequest) returns (ListMeasurementTypesResponse) {}
+
+
   // --- Lifecycle ---
 
   // Brings the time tagger from a freshly power-cycled state to
@@ -124,6 +128,20 @@ message GetProductInfoResponse {
   string product_code = 2;
   string software_version = 3;
   string vendor = 4;
+}
+
+message ListMeasurementTypesRequest {
+   string resource_type = 1;
+}
+
+message MeasurementTypeInfo {
+   string id = 1;
+   string description = 2;
+   string name = 3;
+}
+
+message ListMeasurementTypesResponse {
+   repeated MeasurementTypeInfo measurement_types = 1;
 }
 
 // Vendor-specific bring-up parameters, if a given product needs any (e.g.

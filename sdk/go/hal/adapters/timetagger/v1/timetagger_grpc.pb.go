@@ -24,18 +24,19 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	AdapterTimeTaggerService_HealthCheck_FullMethodName         = "/hal.adapters.timetagger.v1.AdapterTimeTaggerService/HealthCheck"
-	AdapterTimeTaggerService_ResourceHealthCheck_FullMethodName = "/hal.adapters.timetagger.v1.AdapterTimeTaggerService/ResourceHealthCheck"
-	AdapterTimeTaggerService_GetProductInfo_FullMethodName      = "/hal.adapters.timetagger.v1.AdapterTimeTaggerService/GetProductInfo"
-	AdapterTimeTaggerService_Initialize_FullMethodName          = "/hal.adapters.timetagger.v1.AdapterTimeTaggerService/Initialize"
-	AdapterTimeTaggerService_Deinitialize_FullMethodName        = "/hal.adapters.timetagger.v1.AdapterTimeTaggerService/Deinitialize"
-	AdapterTimeTaggerService_GetStatus_FullMethodName           = "/hal.adapters.timetagger.v1.AdapterTimeTaggerService/GetStatus"
-	AdapterTimeTaggerService_SetConfig_FullMethodName           = "/hal.adapters.timetagger.v1.AdapterTimeTaggerService/SetConfig"
-	AdapterTimeTaggerService_AutoRecover_FullMethodName         = "/hal.adapters.timetagger.v1.AdapterTimeTaggerService/AutoRecover"
-	AdapterTimeTaggerService_Tune_FullMethodName                = "/hal.adapters.timetagger.v1.AdapterTimeTaggerService/Tune"
-	AdapterTimeTaggerService_StartDataCollection_FullMethodName = "/hal.adapters.timetagger.v1.AdapterTimeTaggerService/StartDataCollection"
-	AdapterTimeTaggerService_StopDataCollection_FullMethodName  = "/hal.adapters.timetagger.v1.AdapterTimeTaggerService/StopDataCollection"
-	AdapterTimeTaggerService_TriggerEvent_FullMethodName        = "/hal.adapters.timetagger.v1.AdapterTimeTaggerService/TriggerEvent"
+	AdapterTimeTaggerService_HealthCheck_FullMethodName          = "/hal.adapters.timetagger.v1.AdapterTimeTaggerService/HealthCheck"
+	AdapterTimeTaggerService_ResourceHealthCheck_FullMethodName  = "/hal.adapters.timetagger.v1.AdapterTimeTaggerService/ResourceHealthCheck"
+	AdapterTimeTaggerService_GetProductInfo_FullMethodName       = "/hal.adapters.timetagger.v1.AdapterTimeTaggerService/GetProductInfo"
+	AdapterTimeTaggerService_ListMeasurementTypes_FullMethodName = "/hal.adapters.timetagger.v1.AdapterTimeTaggerService/ListMeasurementTypes"
+	AdapterTimeTaggerService_Initialize_FullMethodName           = "/hal.adapters.timetagger.v1.AdapterTimeTaggerService/Initialize"
+	AdapterTimeTaggerService_Deinitialize_FullMethodName         = "/hal.adapters.timetagger.v1.AdapterTimeTaggerService/Deinitialize"
+	AdapterTimeTaggerService_GetStatus_FullMethodName            = "/hal.adapters.timetagger.v1.AdapterTimeTaggerService/GetStatus"
+	AdapterTimeTaggerService_SetConfig_FullMethodName            = "/hal.adapters.timetagger.v1.AdapterTimeTaggerService/SetConfig"
+	AdapterTimeTaggerService_AutoRecover_FullMethodName          = "/hal.adapters.timetagger.v1.AdapterTimeTaggerService/AutoRecover"
+	AdapterTimeTaggerService_Tune_FullMethodName                 = "/hal.adapters.timetagger.v1.AdapterTimeTaggerService/Tune"
+	AdapterTimeTaggerService_StartDataCollection_FullMethodName  = "/hal.adapters.timetagger.v1.AdapterTimeTaggerService/StartDataCollection"
+	AdapterTimeTaggerService_StopDataCollection_FullMethodName   = "/hal.adapters.timetagger.v1.AdapterTimeTaggerService/StopDataCollection"
+	AdapterTimeTaggerService_TriggerEvent_FullMethodName         = "/hal.adapters.timetagger.v1.AdapterTimeTaggerService/TriggerEvent"
 )
 
 // AdapterTimeTaggerServiceClient is the client API for AdapterTimeTaggerService service.
@@ -51,6 +52,8 @@ type AdapterTimeTaggerServiceClient interface {
 	// Static identity of the hardware behind the adapter: serial number,
 	// vendor, firmware/software version.
 	GetProductInfo(ctx context.Context, in *GetProductInfoRequest, opts ...grpc.CallOption) (*GetProductInfoResponse, error)
+	// List of supported measurement types per device type.
+	ListMeasurementTypes(ctx context.Context, in *ListMeasurementTypesRequest, opts ...grpc.CallOption) (*ListMeasurementTypesResponse, error)
 	// Brings the time tagger from a freshly power-cycled state to
 	// ready-to-collect: connects to the device, loads calibration, and runs
 	// whatever bring-up sequence the hardware needs. Not every product needs
@@ -129,6 +132,16 @@ func (c *adapterTimeTaggerServiceClient) GetProductInfo(ctx context.Context, in 
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetProductInfoResponse)
 	err := c.cc.Invoke(ctx, AdapterTimeTaggerService_GetProductInfo_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adapterTimeTaggerServiceClient) ListMeasurementTypes(ctx context.Context, in *ListMeasurementTypesRequest, opts ...grpc.CallOption) (*ListMeasurementTypesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListMeasurementTypesResponse)
+	err := c.cc.Invoke(ctx, AdapterTimeTaggerService_ListMeasurementTypes_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -238,6 +251,8 @@ type AdapterTimeTaggerServiceServer interface {
 	// Static identity of the hardware behind the adapter: serial number,
 	// vendor, firmware/software version.
 	GetProductInfo(context.Context, *GetProductInfoRequest) (*GetProductInfoResponse, error)
+	// List of supported measurement types per device type.
+	ListMeasurementTypes(context.Context, *ListMeasurementTypesRequest) (*ListMeasurementTypesResponse, error)
 	// Brings the time tagger from a freshly power-cycled state to
 	// ready-to-collect: connects to the device, loads calibration, and runs
 	// whatever bring-up sequence the hardware needs. Not every product needs
@@ -300,6 +315,9 @@ func (UnimplementedAdapterTimeTaggerServiceServer) ResourceHealthCheck(context.C
 }
 func (UnimplementedAdapterTimeTaggerServiceServer) GetProductInfo(context.Context, *GetProductInfoRequest) (*GetProductInfoResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetProductInfo not implemented")
+}
+func (UnimplementedAdapterTimeTaggerServiceServer) ListMeasurementTypes(context.Context, *ListMeasurementTypesRequest) (*ListMeasurementTypesResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListMeasurementTypes not implemented")
 }
 func (UnimplementedAdapterTimeTaggerServiceServer) Initialize(context.Context, *InitializeRequest) (*InitializeResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Initialize not implemented")
@@ -400,6 +418,24 @@ func _AdapterTimeTaggerService_GetProductInfo_Handler(srv interface{}, ctx conte
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AdapterTimeTaggerServiceServer).GetProductInfo(ctx, req.(*GetProductInfoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdapterTimeTaggerService_ListMeasurementTypes_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListMeasurementTypesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdapterTimeTaggerServiceServer).ListMeasurementTypes(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdapterTimeTaggerService_ListMeasurementTypes_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdapterTimeTaggerServiceServer).ListMeasurementTypes(ctx, req.(*ListMeasurementTypesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -584,6 +620,10 @@ var AdapterTimeTaggerService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetProductInfo",
 			Handler:    _AdapterTimeTaggerService_GetProductInfo_Handler,
+		},
+		{
+			MethodName: "ListMeasurementTypes",
+			Handler:    _AdapterTimeTaggerService_ListMeasurementTypes_Handler,
 		},
 		{
 			MethodName: "Initialize",

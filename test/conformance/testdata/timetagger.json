@@ -9,6 +9,7 @@
         "HealthCheck": {},
         "ResourceHealthCheck": {},
         "GetProductInfo": {},
+        "ListMeasurementTypes": {},
         "Initialize": {
           "config_json": {}
         },

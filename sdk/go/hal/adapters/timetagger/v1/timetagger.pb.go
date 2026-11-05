@@ -219,6 +219,154 @@ func (x *GetProductInfoResponse) GetVendor() string {
 	return ""
 }
 
+type ListMeasurementTypesRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ResourceType  string                 `protobuf:"bytes,1,opt,name=resource_type,json=resourceType,proto3" json:"resource_type,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListMeasurementTypesRequest) Reset() {
+	*x = ListMeasurementTypesRequest{}
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListMeasurementTypesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListMeasurementTypesRequest) ProtoMessage() {}
+
+func (x *ListMeasurementTypesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListMeasurementTypesRequest.ProtoReflect.Descriptor instead.
+func (*ListMeasurementTypesRequest) Descriptor() ([]byte, []int) {
+	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *ListMeasurementTypesRequest) GetResourceType() string {
+	if x != nil {
+		return x.ResourceType
+	}
+	return ""
+}
+
+type MeasurementTypeInfo struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Description   string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	Name          string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *MeasurementTypeInfo) Reset() {
+	*x = MeasurementTypeInfo{}
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *MeasurementTypeInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MeasurementTypeInfo) ProtoMessage() {}
+
+func (x *MeasurementTypeInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MeasurementTypeInfo.ProtoReflect.Descriptor instead.
+func (*MeasurementTypeInfo) Descriptor() ([]byte, []int) {
+	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *MeasurementTypeInfo) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *MeasurementTypeInfo) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *MeasurementTypeInfo) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+type ListMeasurementTypesResponse struct {
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	MeasurementTypes []*MeasurementTypeInfo `protobuf:"bytes,1,rep,name=measurement_types,json=measurementTypes,proto3" json:"measurement_types,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *ListMeasurementTypesResponse) Reset() {
+	*x = ListMeasurementTypesResponse{}
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListMeasurementTypesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListMeasurementTypesResponse) ProtoMessage() {}
+
+func (x *ListMeasurementTypesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListMeasurementTypesResponse.ProtoReflect.Descriptor instead.
+func (*ListMeasurementTypesResponse) Descriptor() ([]byte, []int) {
+	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *ListMeasurementTypesResponse) GetMeasurementTypes() []*MeasurementTypeInfo {
+	if x != nil {
+		return x.MeasurementTypes
+	}
+	return nil
+}
+
 // Vendor-specific bring-up parameters, if a given product needs any (e.g.
 // calibration data, a device connection string). Encoded as a JSON object;
 // each product's adapter implementation defines and documents its own
@@ -235,7 +383,7 @@ type InitializeRequest struct {
 
 func (x *InitializeRequest) Reset() {
 	*x = InitializeRequest{}
-	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[2]
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -247,7 +395,7 @@ func (x *InitializeRequest) String() string {
 func (*InitializeRequest) ProtoMessage() {}
 
 func (x *InitializeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[2]
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -260,7 +408,7 @@ func (x *InitializeRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use InitializeRequest.ProtoReflect.Descriptor instead.
 func (*InitializeRequest) Descriptor() ([]byte, []int) {
-	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{2}
+	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *InitializeRequest) GetProductId() string {
@@ -293,7 +441,7 @@ type InitializeResponse struct {
 
 func (x *InitializeResponse) Reset() {
 	*x = InitializeResponse{}
-	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[3]
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -305,7 +453,7 @@ func (x *InitializeResponse) String() string {
 func (*InitializeResponse) ProtoMessage() {}
 
 func (x *InitializeResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[3]
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -318,7 +466,7 @@ func (x *InitializeResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use InitializeResponse.ProtoReflect.Descriptor instead.
 func (*InitializeResponse) Descriptor() ([]byte, []int) {
-	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{3}
+	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *InitializeResponse) GetMessage() string {
@@ -338,7 +486,7 @@ type DeinitializeRequest struct {
 
 func (x *DeinitializeRequest) Reset() {
 	*x = DeinitializeRequest{}
-	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[4]
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -350,7 +498,7 @@ func (x *DeinitializeRequest) String() string {
 func (*DeinitializeRequest) ProtoMessage() {}
 
 func (x *DeinitializeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[4]
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -363,7 +511,7 @@ func (x *DeinitializeRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeinitializeRequest.ProtoReflect.Descriptor instead.
 func (*DeinitializeRequest) Descriptor() ([]byte, []int) {
-	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{4}
+	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *DeinitializeRequest) GetProductId() string {
@@ -389,7 +537,7 @@ type DeinitializeResponse struct {
 
 func (x *DeinitializeResponse) Reset() {
 	*x = DeinitializeResponse{}
-	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[5]
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -401,7 +549,7 @@ func (x *DeinitializeResponse) String() string {
 func (*DeinitializeResponse) ProtoMessage() {}
 
 func (x *DeinitializeResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[5]
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -414,7 +562,7 @@ func (x *DeinitializeResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeinitializeResponse.ProtoReflect.Descriptor instead.
 func (*DeinitializeResponse) Descriptor() ([]byte, []int) {
-	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{5}
+	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *DeinitializeResponse) GetMessage() string {
@@ -434,7 +582,7 @@ type GetStatusRequest struct {
 
 func (x *GetStatusRequest) Reset() {
 	*x = GetStatusRequest{}
-	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[6]
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -446,7 +594,7 @@ func (x *GetStatusRequest) String() string {
 func (*GetStatusRequest) ProtoMessage() {}
 
 func (x *GetStatusRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[6]
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -459,7 +607,7 @@ func (x *GetStatusRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetStatusRequest.ProtoReflect.Descriptor instead.
 func (*GetStatusRequest) Descriptor() ([]byte, []int) {
-	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{6}
+	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *GetStatusRequest) GetProductId() string {
@@ -492,7 +640,7 @@ type GetStatusResponse struct {
 
 func (x *GetStatusResponse) Reset() {
 	*x = GetStatusResponse{}
-	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[7]
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -504,7 +652,7 @@ func (x *GetStatusResponse) String() string {
 func (*GetStatusResponse) ProtoMessage() {}
 
 func (x *GetStatusResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[7]
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -517,7 +665,7 @@ func (x *GetStatusResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetStatusResponse.ProtoReflect.Descriptor instead.
 func (*GetStatusResponse) Descriptor() ([]byte, []int) {
-	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{7}
+	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *GetStatusResponse) GetState() TimeTaggerState {
@@ -559,7 +707,7 @@ type SetConfigRequest struct {
 
 func (x *SetConfigRequest) Reset() {
 	*x = SetConfigRequest{}
-	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[8]
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -571,7 +719,7 @@ func (x *SetConfigRequest) String() string {
 func (*SetConfigRequest) ProtoMessage() {}
 
 func (x *SetConfigRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[8]
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -584,7 +732,7 @@ func (x *SetConfigRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SetConfigRequest.ProtoReflect.Descriptor instead.
 func (*SetConfigRequest) Descriptor() ([]byte, []int) {
-	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{8}
+	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *SetConfigRequest) GetProductId() string {
@@ -617,7 +765,7 @@ type SetConfigResponse struct {
 
 func (x *SetConfigResponse) Reset() {
 	*x = SetConfigResponse{}
-	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[9]
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -629,7 +777,7 @@ func (x *SetConfigResponse) String() string {
 func (*SetConfigResponse) ProtoMessage() {}
 
 func (x *SetConfigResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[9]
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -642,7 +790,7 @@ func (x *SetConfigResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SetConfigResponse.ProtoReflect.Descriptor instead.
 func (*SetConfigResponse) Descriptor() ([]byte, []int) {
-	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{9}
+	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *SetConfigResponse) GetMessage() string {
@@ -669,7 +817,7 @@ type StartDataCollectionRequest struct {
 
 func (x *StartDataCollectionRequest) Reset() {
 	*x = StartDataCollectionRequest{}
-	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[10]
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -681,7 +829,7 @@ func (x *StartDataCollectionRequest) String() string {
 func (*StartDataCollectionRequest) ProtoMessage() {}
 
 func (x *StartDataCollectionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[10]
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -694,7 +842,7 @@ func (x *StartDataCollectionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StartDataCollectionRequest.ProtoReflect.Descriptor instead.
 func (*StartDataCollectionRequest) Descriptor() ([]byte, []int) {
-	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{10}
+	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *StartDataCollectionRequest) GetProductId() string {
@@ -734,7 +882,7 @@ type StartDataCollectionResponse struct {
 
 func (x *StartDataCollectionResponse) Reset() {
 	*x = StartDataCollectionResponse{}
-	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[11]
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -746,7 +894,7 @@ func (x *StartDataCollectionResponse) String() string {
 func (*StartDataCollectionResponse) ProtoMessage() {}
 
 func (x *StartDataCollectionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[11]
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -759,7 +907,7 @@ func (x *StartDataCollectionResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StartDataCollectionResponse.ProtoReflect.Descriptor instead.
 func (*StartDataCollectionResponse) Descriptor() ([]byte, []int) {
-	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{11}
+	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *StartDataCollectionResponse) GetMessage() string {
@@ -780,7 +928,7 @@ type StopDataCollectionRequest struct {
 
 func (x *StopDataCollectionRequest) Reset() {
 	*x = StopDataCollectionRequest{}
-	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[12]
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -792,7 +940,7 @@ func (x *StopDataCollectionRequest) String() string {
 func (*StopDataCollectionRequest) ProtoMessage() {}
 
 func (x *StopDataCollectionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[12]
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -805,7 +953,7 @@ func (x *StopDataCollectionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StopDataCollectionRequest.ProtoReflect.Descriptor instead.
 func (*StopDataCollectionRequest) Descriptor() ([]byte, []int) {
-	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{12}
+	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *StopDataCollectionRequest) GetProductId() string {
@@ -838,7 +986,7 @@ type StopDataCollectionResponse struct {
 
 func (x *StopDataCollectionResponse) Reset() {
 	*x = StopDataCollectionResponse{}
-	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[13]
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -850,7 +998,7 @@ func (x *StopDataCollectionResponse) String() string {
 func (*StopDataCollectionResponse) ProtoMessage() {}
 
 func (x *StopDataCollectionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[13]
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -863,7 +1011,7 @@ func (x *StopDataCollectionResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StopDataCollectionResponse.ProtoReflect.Descriptor instead.
 func (*StopDataCollectionResponse) Descriptor() ([]byte, []int) {
-	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{13}
+	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *StopDataCollectionResponse) GetMessage() string {
@@ -891,7 +1039,7 @@ type TriggerEventRequest struct {
 
 func (x *TriggerEventRequest) Reset() {
 	*x = TriggerEventRequest{}
-	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[14]
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -903,7 +1051,7 @@ func (x *TriggerEventRequest) String() string {
 func (*TriggerEventRequest) ProtoMessage() {}
 
 func (x *TriggerEventRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[14]
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -916,7 +1064,7 @@ func (x *TriggerEventRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TriggerEventRequest.ProtoReflect.Descriptor instead.
 func (*TriggerEventRequest) Descriptor() ([]byte, []int) {
-	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{14}
+	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *TriggerEventRequest) GetProductId() string {
@@ -963,7 +1111,7 @@ type TriggerEventResponse struct {
 
 func (x *TriggerEventResponse) Reset() {
 	*x = TriggerEventResponse{}
-	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[15]
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -975,7 +1123,7 @@ func (x *TriggerEventResponse) String() string {
 func (*TriggerEventResponse) ProtoMessage() {}
 
 func (x *TriggerEventResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[15]
+	mi := &file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -988,7 +1136,7 @@ func (x *TriggerEventResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TriggerEventResponse.ProtoReflect.Descriptor instead.
 func (*TriggerEventResponse) Descriptor() ([]byte, []int) {
-	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{15}
+	return file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *TriggerEventResponse) GetMessage() string {
@@ -1011,7 +1159,15 @@ const file_hal_adapters_timetagger_v1_timetagger_proto_rawDesc = "" +
 	"\rserial_number\x18\x01 \x01(\tR\fserialNumber\x12!\n" +
 	"\fproduct_code\x18\x02 \x01(\tR\vproductCode\x12)\n" +
 	"\x10software_version\x18\x03 \x01(\tR\x0fsoftwareVersion\x12\x16\n" +
-	"\x06vendor\x18\x04 \x01(\tR\x06vendor\"x\n" +
+	"\x06vendor\x18\x04 \x01(\tR\x06vendor\"B\n" +
+	"\x1bListMeasurementTypesRequest\x12#\n" +
+	"\rresource_type\x18\x01 \x01(\tR\fresourceType\"[\n" +
+	"\x13MeasurementTypeInfo\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12 \n" +
+	"\vdescription\x18\x02 \x01(\tR\vdescription\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\"|\n" +
+	"\x1cListMeasurementTypesResponse\x12\\\n" +
+	"\x11measurement_types\x18\x01 \x03(\v2/.hal.adapters.timetagger.v1.MeasurementTypeInfoR\x10measurementTypes\"x\n" +
 	"\x11InitializeRequest\x12\x1d\n" +
 	"\n" +
 	"product_id\x18\x01 \x01(\tR\tproductId\x12\x1f\n" +
@@ -1078,12 +1234,12 @@ const file_hal_adapters_timetagger_v1_timetagger_proto_rawDesc = "" +
 	"\x1cTIME_TAGGER_STATE_COLLECTING\x10\x04\x12\x1b\n" +
 	"\x17TIME_TAGGER_STATE_FAULT\x10\x05\x12$\n" +
 	" TIME_TAGGER_STATE_DEINITIALIZING\x10\x06\x12\x1e\n" +
-	"\x1aTIME_TAGGER_STATE_DEGRADED\x10\a2\xec\n" +
-	"\n" +
+	"\x1aTIME_TAGGER_STATE_DEGRADED\x10\a2\xfa\v\n" +
 	"\x18AdapterTimeTaggerService\x12f\n" +
 	"\vHealthCheck\x12*.hal.adapters.common.v1.HealthCheckRequest\x1a+.hal.adapters.common.v1.HealthCheckResponse\x12~\n" +
 	"\x13ResourceHealthCheck\x122.hal.adapters.common.v1.ResourceHealthCheckRequest\x1a3.hal.adapters.common.v1.ResourceHealthCheckResponse\x12w\n" +
-	"\x0eGetProductInfo\x121.hal.adapters.timetagger.v1.GetProductInfoRequest\x1a2.hal.adapters.timetagger.v1.GetProductInfoResponse\x12k\n" +
+	"\x0eGetProductInfo\x121.hal.adapters.timetagger.v1.GetProductInfoRequest\x1a2.hal.adapters.timetagger.v1.GetProductInfoResponse\x12\x8b\x01\n" +
+	"\x14ListMeasurementTypes\x127.hal.adapters.timetagger.v1.ListMeasurementTypesRequest\x1a8.hal.adapters.timetagger.v1.ListMeasurementTypesResponse\"\x00\x12k\n" +
 	"\n" +
 	"Initialize\x12-.hal.adapters.timetagger.v1.InitializeRequest\x1a..hal.adapters.timetagger.v1.InitializeResponse\x12q\n" +
 	"\fDeinitialize\x12/.hal.adapters.timetagger.v1.DeinitializeRequest\x1a0.hal.adapters.timetagger.v1.DeinitializeResponse\x12h\n" +
@@ -1109,65 +1265,71 @@ func file_hal_adapters_timetagger_v1_timetagger_proto_rawDescGZIP() []byte {
 }
 
 var file_hal_adapters_timetagger_v1_timetagger_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
+var file_hal_adapters_timetagger_v1_timetagger_proto_msgTypes = make([]protoimpl.MessageInfo, 19)
 var file_hal_adapters_timetagger_v1_timetagger_proto_goTypes = []any{
 	(TimeTaggerState)(0),                   // 0: hal.adapters.timetagger.v1.TimeTaggerState
 	(*GetProductInfoRequest)(nil),          // 1: hal.adapters.timetagger.v1.GetProductInfoRequest
 	(*GetProductInfoResponse)(nil),         // 2: hal.adapters.timetagger.v1.GetProductInfoResponse
-	(*InitializeRequest)(nil),              // 3: hal.adapters.timetagger.v1.InitializeRequest
-	(*InitializeResponse)(nil),             // 4: hal.adapters.timetagger.v1.InitializeResponse
-	(*DeinitializeRequest)(nil),            // 5: hal.adapters.timetagger.v1.DeinitializeRequest
-	(*DeinitializeResponse)(nil),           // 6: hal.adapters.timetagger.v1.DeinitializeResponse
-	(*GetStatusRequest)(nil),               // 7: hal.adapters.timetagger.v1.GetStatusRequest
-	(*GetStatusResponse)(nil),              // 8: hal.adapters.timetagger.v1.GetStatusResponse
-	(*SetConfigRequest)(nil),               // 9: hal.adapters.timetagger.v1.SetConfigRequest
-	(*SetConfigResponse)(nil),              // 10: hal.adapters.timetagger.v1.SetConfigResponse
-	(*StartDataCollectionRequest)(nil),     // 11: hal.adapters.timetagger.v1.StartDataCollectionRequest
-	(*StartDataCollectionResponse)(nil),    // 12: hal.adapters.timetagger.v1.StartDataCollectionResponse
-	(*StopDataCollectionRequest)(nil),      // 13: hal.adapters.timetagger.v1.StopDataCollectionRequest
-	(*StopDataCollectionResponse)(nil),     // 14: hal.adapters.timetagger.v1.StopDataCollectionResponse
-	(*TriggerEventRequest)(nil),            // 15: hal.adapters.timetagger.v1.TriggerEventRequest
-	(*TriggerEventResponse)(nil),           // 16: hal.adapters.timetagger.v1.TriggerEventResponse
-	(*v1.HealthCheckRequest)(nil),          // 17: hal.adapters.common.v1.HealthCheckRequest
-	(*v1.ResourceHealthCheckRequest)(nil),  // 18: hal.adapters.common.v1.ResourceHealthCheckRequest
-	(*v1.AutoRecoverRequest)(nil),          // 19: hal.adapters.common.v1.AutoRecoverRequest
-	(*v1.TuneRequest)(nil),                 // 20: hal.adapters.common.v1.TuneRequest
-	(*v1.HealthCheckResponse)(nil),         // 21: hal.adapters.common.v1.HealthCheckResponse
-	(*v1.ResourceHealthCheckResponse)(nil), // 22: hal.adapters.common.v1.ResourceHealthCheckResponse
-	(*v1.AutoRecoverResponse)(nil),         // 23: hal.adapters.common.v1.AutoRecoverResponse
-	(*v1.TuneResponse)(nil),                // 24: hal.adapters.common.v1.TuneResponse
+	(*ListMeasurementTypesRequest)(nil),    // 3: hal.adapters.timetagger.v1.ListMeasurementTypesRequest
+	(*MeasurementTypeInfo)(nil),            // 4: hal.adapters.timetagger.v1.MeasurementTypeInfo
+	(*ListMeasurementTypesResponse)(nil),   // 5: hal.adapters.timetagger.v1.ListMeasurementTypesResponse
+	(*InitializeRequest)(nil),              // 6: hal.adapters.timetagger.v1.InitializeRequest
+	(*InitializeResponse)(nil),             // 7: hal.adapters.timetagger.v1.InitializeResponse
+	(*DeinitializeRequest)(nil),            // 8: hal.adapters.timetagger.v1.DeinitializeRequest
+	(*DeinitializeResponse)(nil),           // 9: hal.adapters.timetagger.v1.DeinitializeResponse
+	(*GetStatusRequest)(nil),               // 10: hal.adapters.timetagger.v1.GetStatusRequest
+	(*GetStatusResponse)(nil),              // 11: hal.adapters.timetagger.v1.GetStatusResponse
+	(*SetConfigRequest)(nil),               // 12: hal.adapters.timetagger.v1.SetConfigRequest
+	(*SetConfigResponse)(nil),              // 13: hal.adapters.timetagger.v1.SetConfigResponse
+	(*StartDataCollectionRequest)(nil),     // 14: hal.adapters.timetagger.v1.StartDataCollectionRequest
+	(*StartDataCollectionResponse)(nil),    // 15: hal.adapters.timetagger.v1.StartDataCollectionResponse
+	(*StopDataCollectionRequest)(nil),      // 16: hal.adapters.timetagger.v1.StopDataCollectionRequest
+	(*StopDataCollectionResponse)(nil),     // 17: hal.adapters.timetagger.v1.StopDataCollectionResponse
+	(*TriggerEventRequest)(nil),            // 18: hal.adapters.timetagger.v1.TriggerEventRequest
+	(*TriggerEventResponse)(nil),           // 19: hal.adapters.timetagger.v1.TriggerEventResponse
+	(*v1.HealthCheckRequest)(nil),          // 20: hal.adapters.common.v1.HealthCheckRequest
+	(*v1.ResourceHealthCheckRequest)(nil),  // 21: hal.adapters.common.v1.ResourceHealthCheckRequest
+	(*v1.AutoRecoverRequest)(nil),          // 22: hal.adapters.common.v1.AutoRecoverRequest
+	(*v1.TuneRequest)(nil),                 // 23: hal.adapters.common.v1.TuneRequest
+	(*v1.HealthCheckResponse)(nil),         // 24: hal.adapters.common.v1.HealthCheckResponse
+	(*v1.ResourceHealthCheckResponse)(nil), // 25: hal.adapters.common.v1.ResourceHealthCheckResponse
+	(*v1.AutoRecoverResponse)(nil),         // 26: hal.adapters.common.v1.AutoRecoverResponse
+	(*v1.TuneResponse)(nil),                // 27: hal.adapters.common.v1.TuneResponse
 }
 var file_hal_adapters_timetagger_v1_timetagger_proto_depIdxs = []int32{
-	0,  // 0: hal.adapters.timetagger.v1.GetStatusResponse.state:type_name -> hal.adapters.timetagger.v1.TimeTaggerState
-	17, // 1: hal.adapters.timetagger.v1.AdapterTimeTaggerService.HealthCheck:input_type -> hal.adapters.common.v1.HealthCheckRequest
-	18, // 2: hal.adapters.timetagger.v1.AdapterTimeTaggerService.ResourceHealthCheck:input_type -> hal.adapters.common.v1.ResourceHealthCheckRequest
-	1,  // 3: hal.adapters.timetagger.v1.AdapterTimeTaggerService.GetProductInfo:input_type -> hal.adapters.timetagger.v1.GetProductInfoRequest
-	3,  // 4: hal.adapters.timetagger.v1.AdapterTimeTaggerService.Initialize:input_type -> hal.adapters.timetagger.v1.InitializeRequest
-	5,  // 5: hal.adapters.timetagger.v1.AdapterTimeTaggerService.Deinitialize:input_type -> hal.adapters.timetagger.v1.DeinitializeRequest
-	7,  // 6: hal.adapters.timetagger.v1.AdapterTimeTaggerService.GetStatus:input_type -> hal.adapters.timetagger.v1.GetStatusRequest
-	9,  // 7: hal.adapters.timetagger.v1.AdapterTimeTaggerService.SetConfig:input_type -> hal.adapters.timetagger.v1.SetConfigRequest
-	19, // 8: hal.adapters.timetagger.v1.AdapterTimeTaggerService.AutoRecover:input_type -> hal.adapters.common.v1.AutoRecoverRequest
-	20, // 9: hal.adapters.timetagger.v1.AdapterTimeTaggerService.Tune:input_type -> hal.adapters.common.v1.TuneRequest
-	11, // 10: hal.adapters.timetagger.v1.AdapterTimeTaggerService.StartDataCollection:input_type -> hal.adapters.timetagger.v1.StartDataCollectionRequest
-	13, // 11: hal.adapters.timetagger.v1.AdapterTimeTaggerService.StopDataCollection:input_type -> hal.adapters.timetagger.v1.StopDataCollectionRequest
-	15, // 12: hal.adapters.timetagger.v1.AdapterTimeTaggerService.TriggerEvent:input_type -> hal.adapters.timetagger.v1.TriggerEventRequest
-	21, // 13: hal.adapters.timetagger.v1.AdapterTimeTaggerService.HealthCheck:output_type -> hal.adapters.common.v1.HealthCheckResponse
-	22, // 14: hal.adapters.timetagger.v1.AdapterTimeTaggerService.ResourceHealthCheck:output_type -> hal.adapters.common.v1.ResourceHealthCheckResponse
-	2,  // 15: hal.adapters.timetagger.v1.AdapterTimeTaggerService.GetProductInfo:output_type -> hal.adapters.timetagger.v1.GetProductInfoResponse
-	4,  // 16: hal.adapters.timetagger.v1.AdapterTimeTaggerService.Initialize:output_type -> hal.adapters.timetagger.v1.InitializeResponse
-	6,  // 17: hal.adapters.timetagger.v1.AdapterTimeTaggerService.Deinitialize:output_type -> hal.adapters.timetagger.v1.DeinitializeResponse
-	8,  // 18: hal.adapters.timetagger.v1.AdapterTimeTaggerService.GetStatus:output_type -> hal.adapters.timetagger.v1.GetStatusResponse
-	10, // 19: hal.adapters.timetagger.v1.AdapterTimeTaggerService.SetConfig:output_type -> hal.adapters.timetagger.v1.SetConfigResponse
-	23, // 20: hal.adapters.timetagger.v1.AdapterTimeTaggerService.AutoRecover:output_type -> hal.adapters.common.v1.AutoRecoverResponse
-	24, // 21: hal.adapters.timetagger.v1.AdapterTimeTaggerService.Tune:output_type -> hal.adapters.common.v1.TuneResponse
-	12, // 22: hal.adapters.timetagger.v1.AdapterTimeTaggerService.StartDataCollection:output_type -> hal.adapters.timetagger.v1.StartDataCollectionResponse
-	14, // 23: hal.adapters.timetagger.v1.AdapterTimeTaggerService.StopDataCollection:output_type -> hal.adapters.timetagger.v1.StopDataCollectionResponse
-	16, // 24: hal.adapters.timetagger.v1.AdapterTimeTaggerService.TriggerEvent:output_type -> hal.adapters.timetagger.v1.TriggerEventResponse
-	13, // [13:25] is the sub-list for method output_type
-	1,  // [1:13] is the sub-list for method input_type
-	1,  // [1:1] is the sub-list for extension type_name
-	1,  // [1:1] is the sub-list for extension extendee
-	0,  // [0:1] is the sub-list for field type_name
+	4,  // 0: hal.adapters.timetagger.v1.ListMeasurementTypesResponse.measurement_types:type_name -> hal.adapters.timetagger.v1.MeasurementTypeInfo
+	0,  // 1: hal.adapters.timetagger.v1.GetStatusResponse.state:type_name -> hal.adapters.timetagger.v1.TimeTaggerState
+	20, // 2: hal.adapters.timetagger.v1.AdapterTimeTaggerService.HealthCheck:input_type -> hal.adapters.common.v1.HealthCheckRequest
+	21, // 3: hal.adapters.timetagger.v1.AdapterTimeTaggerService.ResourceHealthCheck:input_type -> hal.adapters.common.v1.ResourceHealthCheckRequest
+	1,  // 4: hal.adapters.timetagger.v1.AdapterTimeTaggerService.GetProductInfo:input_type -> hal.adapters.timetagger.v1.GetProductInfoRequest
+	3,  // 5: hal.adapters.timetagger.v1.AdapterTimeTaggerService.ListMeasurementTypes:input_type -> hal.adapters.timetagger.v1.ListMeasurementTypesRequest
+	6,  // 6: hal.adapters.timetagger.v1.AdapterTimeTaggerService.Initialize:input_type -> hal.adapters.timetagger.v1.InitializeRequest
+	8,  // 7: hal.adapters.timetagger.v1.AdapterTimeTaggerService.Deinitialize:input_type -> hal.adapters.timetagger.v1.DeinitializeRequest
+	10, // 8: hal.adapters.timetagger.v1.AdapterTimeTaggerService.GetStatus:input_type -> hal.adapters.timetagger.v1.GetStatusRequest
+	12, // 9: hal.adapters.timetagger.v1.AdapterTimeTaggerService.SetConfig:input_type -> hal.adapters.timetagger.v1.SetConfigRequest
+	22, // 10: hal.adapters.timetagger.v1.AdapterTimeTaggerService.AutoRecover:input_type -> hal.adapters.common.v1.AutoRecoverRequest
+	23, // 11: hal.adapters.timetagger.v1.AdapterTimeTaggerService.Tune:input_type -> hal.adapters.common.v1.TuneRequest
+	14, // 12: hal.adapters.timetagger.v1.AdapterTimeTaggerService.StartDataCollection:input_type -> hal.adapters.timetagger.v1.StartDataCollectionRequest
+	16, // 13: hal.adapters.timetagger.v1.AdapterTimeTaggerService.StopDataCollection:input_type -> hal.adapters.timetagger.v1.StopDataCollectionRequest
+	18, // 14: hal.adapters.timetagger.v1.AdapterTimeTaggerService.TriggerEvent:input_type -> hal.adapters.timetagger.v1.TriggerEventRequest
+	24, // 15: hal.adapters.timetagger.v1.AdapterTimeTaggerService.HealthCheck:output_type -> hal.adapters.common.v1.HealthCheckResponse
+	25, // 16: hal.adapters.timetagger.v1.AdapterTimeTaggerService.ResourceHealthCheck:output_type -> hal.adapters.common.v1.ResourceHealthCheckResponse
+	2,  // 17: hal.adapters.timetagger.v1.AdapterTimeTaggerService.GetProductInfo:output_type -> hal.adapters.timetagger.v1.GetProductInfoResponse
+	5,  // 18: hal.adapters.timetagger.v1.AdapterTimeTaggerService.ListMeasurementTypes:output_type -> hal.adapters.timetagger.v1.ListMeasurementTypesResponse
+	7,  // 19: hal.adapters.timetagger.v1.AdapterTimeTaggerService.Initialize:output_type -> hal.adapters.timetagger.v1.InitializeResponse
+	9,  // 20: hal.adapters.timetagger.v1.AdapterTimeTaggerService.Deinitialize:output_type -> hal.adapters.timetagger.v1.DeinitializeResponse
+	11, // 21: hal.adapters.timetagger.v1.AdapterTimeTaggerService.GetStatus:output_type -> hal.adapters.timetagger.v1.GetStatusResponse
+	13, // 22: hal.adapters.timetagger.v1.AdapterTimeTaggerService.SetConfig:output_type -> hal.adapters.timetagger.v1.SetConfigResponse
+	26, // 23: hal.adapters.timetagger.v1.AdapterTimeTaggerService.AutoRecover:output_type -> hal.adapters.common.v1.AutoRecoverResponse
+	27, // 24: hal.adapters.timetagger.v1.AdapterTimeTaggerService.Tune:output_type -> hal.adapters.common.v1.TuneResponse
+	15, // 25: hal.adapters.timetagger.v1.AdapterTimeTaggerService.StartDataCollection:output_type -> hal.adapters.timetagger.v1.StartDataCollectionResponse
+	17, // 26: hal.adapters.timetagger.v1.AdapterTimeTaggerService.StopDataCollection:output_type -> hal.adapters.timetagger.v1.StopDataCollectionResponse
+	19, // 27: hal.adapters.timetagger.v1.AdapterTimeTaggerService.TriggerEvent:output_type -> hal.adapters.timetagger.v1.TriggerEventResponse
+	15, // [15:28] is the sub-list for method output_type
+	2,  // [2:15] is the sub-list for method input_type
+	2,  // [2:2] is the sub-list for extension type_name
+	2,  // [2:2] is the sub-list for extension extendee
+	0,  // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_hal_adapters_timetagger_v1_timetagger_proto_init() }
@@ -1181,7 +1343,7 @@ func file_hal_adapters_timetagger_v1_timetagger_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_hal_adapters_timetagger_v1_timetagger_proto_rawDesc), len(file_hal_adapters_timetagger_v1_timetagger_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   16,
+			NumMessages:   19,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

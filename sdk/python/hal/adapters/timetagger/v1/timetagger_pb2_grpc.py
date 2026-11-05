@@ -55,6 +55,11 @@ class AdapterTimeTaggerServiceStub:
                 request_serializer=hal_dot_adapters_dot_timetagger_dot_v1_dot_timetagger__pb2.GetProductInfoRequest.SerializeToString,
                 response_deserializer=hal_dot_adapters_dot_timetagger_dot_v1_dot_timetagger__pb2.GetProductInfoResponse.FromString,
                 _registered_method=True)
+        self.ListMeasurementTypes = channel.unary_unary(
+                '/hal.adapters.timetagger.v1.AdapterTimeTaggerService/ListMeasurementTypes',
+                request_serializer=hal_dot_adapters_dot_timetagger_dot_v1_dot_timetagger__pb2.ListMeasurementTypesRequest.SerializeToString,
+                response_deserializer=hal_dot_adapters_dot_timetagger_dot_v1_dot_timetagger__pb2.ListMeasurementTypesResponse.FromString,
+                _registered_method=True)
         self.Initialize = channel.unary_unary(
                 '/hal.adapters.timetagger.v1.AdapterTimeTaggerService/Initialize',
                 request_serializer=hal_dot_adapters_dot_timetagger_dot_v1_dot_timetagger__pb2.InitializeRequest.SerializeToString,
@@ -125,6 +130,13 @@ class AdapterTimeTaggerServiceServicer:
     def GetProductInfo(self, request, context):
         """Static identity of the hardware behind the adapter: serial number,
         vendor, firmware/software version.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ListMeasurementTypes(self, request, context):
+        """List of supported measurement types per device type.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -246,6 +258,11 @@ def add_AdapterTimeTaggerServiceServicer_to_server(servicer, server):
                     servicer.GetProductInfo,
                     request_deserializer=hal_dot_adapters_dot_timetagger_dot_v1_dot_timetagger__pb2.GetProductInfoRequest.FromString,
                     response_serializer=hal_dot_adapters_dot_timetagger_dot_v1_dot_timetagger__pb2.GetProductInfoResponse.SerializeToString,
+            ),
+            'ListMeasurementTypes': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListMeasurementTypes,
+                    request_deserializer=hal_dot_adapters_dot_timetagger_dot_v1_dot_timetagger__pb2.ListMeasurementTypesRequest.FromString,
+                    response_serializer=hal_dot_adapters_dot_timetagger_dot_v1_dot_timetagger__pb2.ListMeasurementTypesResponse.SerializeToString,
             ),
             'Initialize': grpc.unary_unary_rpc_method_handler(
                     servicer.Initialize,
@@ -375,6 +392,33 @@ class AdapterTimeTaggerService:
             '/hal.adapters.timetagger.v1.AdapterTimeTaggerService/GetProductInfo',
             hal_dot_adapters_dot_timetagger_dot_v1_dot_timetagger__pb2.GetProductInfoRequest.SerializeToString,
             hal_dot_adapters_dot_timetagger_dot_v1_dot_timetagger__pb2.GetProductInfoResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListMeasurementTypes(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/hal.adapters.timetagger.v1.AdapterTimeTaggerService/ListMeasurementTypes',
+            hal_dot_adapters_dot_timetagger_dot_v1_dot_timetagger__pb2.ListMeasurementTypesRequest.SerializeToString,
+            hal_dot_adapters_dot_timetagger_dot_v1_dot_timetagger__pb2.ListMeasurementTypesResponse.FromString,
             options,
             channel_credentials,
             insecure,
