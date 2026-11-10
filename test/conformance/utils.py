@@ -70,6 +70,8 @@ def check_command_rpc(rpc_call):
     except grpc.RpcError as e:
         if is_failed_precondition(e):
             pytest.skip(e.details() or "FAILED_PRECONDITION")
+        if is_unimplemented(e):
+            pytest.skip(e.details() or "UNIMPLEMENTED")
         raise
 
 

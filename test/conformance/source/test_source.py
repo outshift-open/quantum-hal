@@ -134,19 +134,6 @@ class TestSource:
                 response, "message", str, allow_empty=False
             )
 
-    def test_get_product_info(self, client, source_kind):
-        """Test GetProductInfo RPC"""
-        request = source_pb2.GetProductInfoRequest(
-            **rpc_request(source_kind, "GetProductInfo")
-        )
-        response = client.GetProductInfo(request)
-        assert response is not None
-        validate_response_fields(response, {
-            "serial_number": (str, True),
-            "product_code": (str, True),
-            "software_version": (str, True),
-        })
-
     def test_initialize(self, client, source_kind):
         """Test Initialize RPC"""
         request = source_pb2.InitializeRequest(
@@ -157,6 +144,24 @@ class TestSource:
         validate_response_field(
             response, "message", str, allow_empty=False
         )
+
+    def test_get_product_info(self, client, source_kind):
+        """Test GetProductInfo RPC.
+
+        Must run after test_initialize — adapters that enforce an
+        Initialize-first contract (e.g. Qunnect) return FAILED_PRECONDITION
+        for this RPC until the device has been initialized.
+        """
+        request = source_pb2.GetProductInfoRequest(
+            **rpc_request(source_kind, "GetProductInfo")
+        )
+        response = client.GetProductInfo(request)
+        assert response is not None
+        validate_response_fields(response, {
+            "serial_number": (str, True),
+            "product_code": (str, True),
+            "software_version": (str, True),
+        })
 
     def test_deinitialize(self, client, source_kind):
         """Test Deinitialize RPC"""
