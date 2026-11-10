@@ -3,9 +3,11 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from hal.adapters.common.v1 import common_pb2 as _common_pb2
+from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
+from collections.abc import Iterable as _Iterable, Mapping as _Mapping
 from typing import ClassVar as _ClassVar, Optional as _Optional, Union as _Union
 
 DESCRIPTOR: _descriptor.FileDescriptor
@@ -48,6 +50,28 @@ class GetProductInfoResponse(_message.Message):
     software_version: str
     vendor: str
     def __init__(self, serial_number: _Optional[str] = ..., product_code: _Optional[str] = ..., software_version: _Optional[str] = ..., vendor: _Optional[str] = ...) -> None: ...
+
+class ListMeasurementTypesRequest(_message.Message):
+    __slots__ = ("resource_type",)
+    RESOURCE_TYPE_FIELD_NUMBER: _ClassVar[int]
+    resource_type: str
+    def __init__(self, resource_type: _Optional[str] = ...) -> None: ...
+
+class MeasurementTypeInfo(_message.Message):
+    __slots__ = ("id", "description", "name")
+    ID_FIELD_NUMBER: _ClassVar[int]
+    DESCRIPTION_FIELD_NUMBER: _ClassVar[int]
+    NAME_FIELD_NUMBER: _ClassVar[int]
+    id: str
+    description: str
+    name: str
+    def __init__(self, id: _Optional[str] = ..., description: _Optional[str] = ..., name: _Optional[str] = ...) -> None: ...
+
+class ListMeasurementTypesResponse(_message.Message):
+    __slots__ = ("measurement_types",)
+    MEASUREMENT_TYPES_FIELD_NUMBER: _ClassVar[int]
+    measurement_types: _containers.RepeatedCompositeFieldContainer[MeasurementTypeInfo]
+    def __init__(self, measurement_types: _Optional[_Iterable[_Union[MeasurementTypeInfo, _Mapping]]] = ...) -> None: ...
 
 class InitializeRequest(_message.Message):
     __slots__ = ("product_id", "config_json", "resource_type")

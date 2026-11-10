@@ -5,7 +5,7 @@
 version: v1
 lint:
   use:
-    - DEFAULT
+    - STANDARD
   except:
     # Intentional: common.proto's HealthCheck/ResourceHealthCheck/AutoRecover/
     # Tune request-response types are deliberately shared across every
