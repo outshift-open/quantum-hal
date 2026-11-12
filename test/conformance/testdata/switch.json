@@ -121,7 +121,7 @@
         },
         "TriggerEvent": {
           "run_id": "run-1",
-          "event_type": "fault",
+          "event_type": "toggle",
           "payload_json": {}
         }
       }

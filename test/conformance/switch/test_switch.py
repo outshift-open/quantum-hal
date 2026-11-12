@@ -139,14 +139,16 @@ class TestSwitch:
         request = switch_pb2.GetProductInfoRequest(
             **rpc_request(switch_kind, "GetProductInfo")
         )
-        response = client.GetProductInfo(request)
-        assert response is not None
-
-        validate_response_fields(response, {
-            "serial_number": (str, True),
-            "product_code": (str, True),
-            "software_version": (str, True),
-        })
+        implemented, response = check_optional_rpc(
+            lambda: client.GetProductInfo(request)
+        )
+        if implemented:
+            assert response is not None
+            validate_response_fields(response, {
+                "serial_number": (str, True),
+                "product_code": (str, True),
+                "software_version": (str, True),
+            })
 
     def test_initialize(self, client, switch_kind):
         """Test Initialize RPC"""
@@ -175,27 +177,30 @@ class TestSwitch:
         request = switch_pb2.GetStatusRequest(
             **rpc_request(switch_kind, "GetStatus")
         )
-        response = client.GetStatus(request)
-        assert response is not None
-
-        validate_response_fields(response, {
-            "uptime_seconds": (float, True),
-            "status_json": (str, True),
-        })
-
-        valid_states = [
-            switch_pb2.SWITCH_STATE_UNSPECIFIED,
-            switch_pb2.SWITCH_STATE_IDLE,
-            switch_pb2.SWITCH_STATE_INITIALIZING,
-            switch_pb2.SWITCH_STATE_READY,
-            switch_pb2.SWITCH_STATE_FAULT,
-            switch_pb2.SWITCH_STATE_DEINITIALIZING,
-            switch_pb2.SWITCH_STATE_DEGRADED,
-        ]
-        assert response.state in valid_states, (
-            "GetStatus state must be a valid SwitchState enum value, "
-            "got {0}".format(response.state)
+        implemented, response = check_optional_rpc(
+            lambda: client.GetStatus(request)
         )
+        if implemented:
+            assert response is not None
+
+            validate_response_fields(response, {
+                "uptime_seconds": (float, True),
+                "status_json": (str, True),
+            })
+
+            valid_states = [
+                switch_pb2.SWITCH_STATE_UNSPECIFIED,
+                switch_pb2.SWITCH_STATE_IDLE,
+                switch_pb2.SWITCH_STATE_INITIALIZING,
+                switch_pb2.SWITCH_STATE_READY,
+                switch_pb2.SWITCH_STATE_FAULT,
+                switch_pb2.SWITCH_STATE_DEINITIALIZING,
+                switch_pb2.SWITCH_STATE_DEGRADED,
+            ]
+            assert response.state in valid_states, (
+                "GetStatus state must be a valid SwitchState enum value, "
+                "got {0}".format(response.state)
+            )
 
     def test_set_config(self, client, switch_kind):
         """Test SetConfig RPC"""

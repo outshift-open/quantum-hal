@@ -40,6 +40,54 @@
           "payload_json": {}
         }
       }
+    },
+    {
+      "resource_type": "QUNNECT",
+      "product_id": "qunnect-source-1",
+      "rpcs": {
+        "HealthCheck": {},
+        "ResourceHealthCheck": {},
+        "GetProductInfo": {},
+        "Initialize": {
+          "config": {
+            "config_json": {
+              "setpoint_temp_c": 80.0,
+              "ta_current_a": 0.5,
+              "lcr_voltage_v": 1.5,
+              "coupling_power_dbm": -10.0,
+              "pump_power_dbm": -8.0
+            }
+          }
+        },
+        "Deinitialize": {},
+        "GetStatus": {},
+        "SetConfig": {
+          "config": {
+            "config_json": {
+              "setpoint_temp_c": 80.0,
+              "lcr_voltage_v": 1.5
+            }
+          }
+        },
+        "AutoRecover": {},
+        "Tune": {
+          "config_json": {}
+        },
+        "StartEmission": {
+          "run_id": "qunnect-run-1",
+          "config": {
+            "config_json": {}
+          }
+        },
+        "StopEmission": {
+          "run_id": "qunnect-run-1"
+        },
+        "TriggerEvent": {
+          "run_id": "qunnect-run-1",
+          "event_type": "fault",
+          "payload_json": {}
+        }
+      }
     }
   ]
 }
