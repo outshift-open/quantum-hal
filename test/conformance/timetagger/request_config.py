@@ -70,6 +70,18 @@ def _normalize_fields(fields):
     return normalized
 
 
+# Base fields injected from the kind into each RPC's request kwargs.
+# RPCs absent from this table get the default set (product_id + resource_type).
+# Use an empty list for RPCs that need no base fields (e.g. HealthCheck).
+_RPC_BASE_FIELDS: "dict[str, list[str]]" = {
+    # Common RPCs — no device-scoped fields
+    "HealthCheck": [],
+    # ListMeasurementTypesRequest only declares resource_type (no product_id)
+    "ListMeasurementTypes": ["resource_type"],
+}
+_DEFAULT_BASE_FIELDS = ["product_id", "resource_type"]
+
+
 def rpc_request(kind, rpc_name):
     """Build one RPC's request kwargs; copy product_id/resource_type from the kind."""
     rpcs = kind.get("rpcs") or {}
@@ -80,12 +92,7 @@ def rpc_request(kind, rpc_name):
                 rpc_name, type(rpc_fields).__name__
             )
         )
-    if rpc_name == "HealthCheck":
-        return _normalize_fields(rpc_fields)
-    # Kind-level product_id and resource_type are used by every RPC.
-    fields = {
-        "product_id": kind.get("product_id", ""),
-        "resource_type": kind.get("resource_type", ""),
-    }
+    base_field_names = _RPC_BASE_FIELDS.get(rpc_name, _DEFAULT_BASE_FIELDS)
+    fields = {f: kind.get(f, "") for f in base_field_names}
     fields.update(rpc_fields)
     return _normalize_fields(fields)

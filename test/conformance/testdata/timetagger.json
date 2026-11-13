@@ -24,8 +24,8 @@
         },
         "StartDataCollection": {
           "run_id": "mock-run-1",
-          "config_json": {
-            "measurement_types": ["coincidence_rate_static_default"],
+            "config_json": {
+            "measurement_types": ["coincidence_rate"],
             "influx_bucket_name": "qentra-data-mock"
           }
         },

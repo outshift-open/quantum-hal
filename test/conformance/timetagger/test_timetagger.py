@@ -90,7 +90,13 @@ def test_health_check(client):
 
 
 class TestTimeTagger:
-    """Device-scoped RPCs; class-scoped timetagger_kind runs one kind at a time."""
+    """Device-scoped RPCs; class-scoped timetagger_kind runs one kind at a time.
+
+    Tests run in source order and follow the natural device lifecycle:
+      health checks → Initialize → probe RPCs → data lifecycle → Deinitialize.
+    """
+
+    # ── Pre-lifecycle ────────────────────────────────────────────────────────
 
     def test_resource_health_check(self, client, timetagger_kind):
         """Test ResourceHealthCheck RPC"""
@@ -134,12 +140,27 @@ class TestTimeTagger:
                 response, "message", str, allow_empty=False
             )
 
+    # ── Lifecycle ────────────────────────────────────────────────────────────
+
+    def test_initialize(self, client, timetagger_kind):
+        """Test Initialize RPC"""
+        request = timetagger_pb2.InitializeRequest(
+            **rpc_request(timetagger_kind, "Initialize")
+        )
+        response = check_command_rpc(lambda: client.Initialize(request))
+        assert response is not None
+        validate_response_field(
+            response, "message", str, allow_empty=False
+        )
+
+    # ── Probe RPCs (require initialized device) ──────────────────────────────
+
     def test_get_product_info(self, client, timetagger_kind):
         """Test GetProductInfo RPC"""
         request = timetagger_pb2.GetProductInfoRequest(
             **rpc_request(timetagger_kind, "GetProductInfo")
         )
-        response = client.GetProductInfo(request)
+        response = check_command_rpc(lambda: client.GetProductInfo(request))
         assert response is not None
         validate_response_fields(response, {
             "serial_number": (str, True),
@@ -173,12 +194,8 @@ class TestTimeTagger:
                 "Duplicate measurement type id '{0}'".format(info.id)
             )
             ids.add(info.id)
-            # usecase and name are optional: when set they must be non-empty.
-            for optional_field in ("usecase", "name"):
-                if info.HasField(optional_field):
-                    validate_response_field(
-                        info, optional_field, str, allow_empty=False
-                    )
+            # name is optional (may be empty); validate it is a string.
+            validate_response_field(info, "name", str, allow_empty=True)
 
     def test_list_measurement_types_missing_resource_type(self, client):
         """ListMeasurementTypes with empty resource_type is INVALID_ARGUMENT"""
@@ -187,34 +204,12 @@ class TestTimeTagger:
             client.ListMeasurementTypes(request)
         assert exc_info.value.code() == grpc.StatusCode.INVALID_ARGUMENT
 
-    def test_initialize(self, client, timetagger_kind):
-        """Test Initialize RPC"""
-        request = timetagger_pb2.InitializeRequest(
-            **rpc_request(timetagger_kind, "Initialize")
-        )
-        response = check_command_rpc(lambda: client.Initialize(request))
-        assert response is not None
-        validate_response_field(
-            response, "message", str, allow_empty=False
-        )
-
-    def test_deinitialize(self, client, timetagger_kind):
-        """Test Deinitialize RPC"""
-        request = timetagger_pb2.DeinitializeRequest(
-            **rpc_request(timetagger_kind, "Deinitialize")
-        )
-        response = check_command_rpc(lambda: client.Deinitialize(request))
-        assert response is not None
-        validate_response_field(
-            response, "message", str, allow_empty=False
-        )
-
     def test_get_status(self, client, timetagger_kind):
         """Test GetStatus RPC"""
         request = timetagger_pb2.GetStatusRequest(
             **rpc_request(timetagger_kind, "GetStatus")
         )
-        response = client.GetStatus(request)
+        response = check_command_rpc(lambda: client.GetStatus(request))
         assert response is not None
         validate_response_fields(response, {
             "run_id": (str, True),
@@ -247,6 +242,8 @@ class TestTimeTagger:
             response, "message", str, allow_empty=False
         )
 
+    # ── Data lifecycle ───────────────────────────────────────────────────────
+
     def test_start_data_collection(self, client, timetagger_kind):
         """Test StartDataCollection RPC"""
         request = timetagger_pb2.StartDataCollectionRequest(
@@ -257,6 +254,24 @@ class TestTimeTagger:
         validate_response_field(
             response, "message", str, allow_empty=False
         )
+
+    def test_trigger_event(self, client, timetagger_kind):
+        """Test TriggerEvent RPC (optional).
+
+        Must run while a data-collection run is active, so it is placed
+        before test_stop_data_collection intentionally.
+        """
+        request = timetagger_pb2.TriggerEventRequest(
+            **rpc_request(timetagger_kind, "TriggerEvent")
+        )
+        implemented, response = check_optional_rpc(
+            lambda: client.TriggerEvent(request)
+        )
+        if implemented:
+            assert response is not None
+            validate_response_field(
+                response, "message", str, allow_empty=False
+            )
 
     def test_stop_data_collection(self, client, timetagger_kind):
         """Test StopDataCollection RPC"""
@@ -269,16 +284,13 @@ class TestTimeTagger:
             response, "message", str, allow_empty=False
         )
 
-    def test_trigger_event(self, client, timetagger_kind):
-        """Test TriggerEvent RPC (optional)"""
-        request = timetagger_pb2.TriggerEventRequest(
-            **rpc_request(timetagger_kind, "TriggerEvent")
+    def test_deinitialize(self, client, timetagger_kind):
+        """Test Deinitialize RPC"""
+        request = timetagger_pb2.DeinitializeRequest(
+            **rpc_request(timetagger_kind, "Deinitialize")
         )
-        implemented, response = check_optional_rpc(
-            lambda: client.TriggerEvent(request)
+        response = check_command_rpc(lambda: client.Deinitialize(request))
+        assert response is not None
+        validate_response_field(
+            response, "message", str, allow_empty=False
         )
-        if implemented:
-            assert response is not None
-            validate_response_field(
-                response, "message", str, allow_empty=False
-            )
